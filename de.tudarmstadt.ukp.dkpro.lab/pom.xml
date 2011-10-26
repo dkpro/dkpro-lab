@@ -360,7 +360,6 @@
 		</dependencies>
 	</dependencyManagement>
 	<scm>
-		<developerConnection>scm:svn:https://maggie.tk.informatik.tu-darmstadt.de/svn/dkpro/experiments/rec/lab/trunk</developerConnection>
 	</scm>
 	<build>
 		<plugins>
