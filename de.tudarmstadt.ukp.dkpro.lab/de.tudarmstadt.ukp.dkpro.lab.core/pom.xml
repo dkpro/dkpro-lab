@@ -22,10 +22,8 @@
 		<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
 		<version>0.7.0-SNAPSHOT</version>
 	</parent>
-	<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
 	<artifactId>de.tudarmstadt.ukp.dkpro.lab.core</artifactId>
 	<name>The Lab - Core Platform</name>
-	<version>0.7.0-SNAPSHOT</version>
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
@@ -98,7 +96,6 @@
 		<dependency>
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
-			<version>20090211</version>
 		</dependency>
 		<dependency>
 			<groupId>jfree</groupId>
