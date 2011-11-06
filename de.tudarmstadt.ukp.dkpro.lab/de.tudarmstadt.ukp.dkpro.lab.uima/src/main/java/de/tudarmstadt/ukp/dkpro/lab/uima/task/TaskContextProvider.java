@@ -52,9 +52,8 @@ public class TaskContextProvider
 	@ConfigurationParameter(name = PARAM_CONTEXT_ID, mandatory = true)
 	private String instanceId;
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
+	public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
 		throws ResourceInitializationException
 	{
 		if (!super.initialize(aSpecifier, aAdditionalParams)) {

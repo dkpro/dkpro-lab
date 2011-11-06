@@ -3,6 +3,7 @@ package de.tudarmstadt.ukp.dkpro.lab.ml.example;
 import static org.uimafit.util.JCasUtil.select;
 import static org.uimafit.util.JCasUtil.selectCovered;
 import static java.util.Arrays.*;
+import static java.util.Collections.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -57,7 +58,7 @@ public class ExamplePosAnnotator
 	            new CharacterNGramProliferator(fromRight, 0, 3)));
 
 	    // a list of feature extractors that require the token and the sentence
-	    this.contextFeatureExtractors = asList(new ContextExtractor<Token>(Token.class,
+	    this.contextFeatureExtractors = singletonList(new ContextExtractor<Token>(Token.class,
 	        new TypePathExtractor(Token.class, "stem"), new Preceding(2), new Following(2)));
 
 	  }

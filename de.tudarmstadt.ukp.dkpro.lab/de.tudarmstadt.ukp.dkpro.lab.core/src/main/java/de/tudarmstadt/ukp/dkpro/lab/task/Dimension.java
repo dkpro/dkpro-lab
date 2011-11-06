@@ -92,7 +92,7 @@ public abstract class Dimension<T>
 	/**
 	 * Create a new dimension from the values of an {@link Enum}.
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static <T extends Enum<T>> Dimension<T> create(String aName, Class<T> aEnum)
 	{
 		if (!Enum.class.isAssignableFrom(aEnum)) {

@@ -136,7 +136,7 @@ public class TaskContextMetadata
 		setId(props.getProperty("uuid"));
 		setLabel(props.getProperty("label"));
 
-		for (String key : (Set<String>) (Set) props.keySet()) {
+		for (String key : (Set<String>) (Set<?>) props.keySet()) {
 			if (!key.startsWith(IMPORT)) {
 				continue;
 			}

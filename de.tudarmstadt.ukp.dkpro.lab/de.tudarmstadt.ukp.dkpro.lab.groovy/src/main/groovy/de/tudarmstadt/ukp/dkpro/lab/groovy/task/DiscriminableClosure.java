@@ -24,6 +24,8 @@ public class DiscriminableClosure
 	extends AbstractClosureProxy
 	implements Discriminable
 {
+	private static final long serialVersionUID = -4012729586437644140L;
+	
 	private String name;
 
 	public DiscriminableClosure(Closure aClosure)

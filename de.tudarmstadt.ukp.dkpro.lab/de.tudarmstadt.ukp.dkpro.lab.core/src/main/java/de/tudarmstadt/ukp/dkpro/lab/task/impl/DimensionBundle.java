@@ -28,7 +28,7 @@ public class DimensionBundle<T>
 {
 	public static final String KEY_BUNDLE_ID = "__bundleId";
 
-	private Map<String, T>[] values;
+	private final Map<String, T>[] values;
 	private int current;
 
 	public DimensionBundle(String aName, Map<String, T>... aValues)
@@ -39,6 +39,7 @@ public class DimensionBundle<T>
 	}
 
 
+	@SuppressWarnings("unchecked")
 	public DimensionBundle(String aName, Object[]... aValues)
 	{
 		super(aName);

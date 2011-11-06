@@ -17,6 +17,11 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.experiments.storage;
 
+import static org.junit.Assert.assertEquals;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.annotation.Resource;
 
 import org.junit.After;
@@ -27,6 +32,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService;
+import de.tudarmstadt.ukp.dkpro.lab.storage.impl.PropertiesAdapter;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -49,30 +55,17 @@ public class StorageServiceTest
 	}
 
 	@Test
-	public void makeJunitHappy()
+	public void storeReadProperties()
 	{
-		// Do nothing
-	}
+		Map<String, String> data = new HashMap<String, String>();
+		data.put("key1", "value1");
+		data.put("key2", "value2");
+	
+		storageService.storeBinary("dummy", "data", new PropertiesAdapter(data));
 
-//	@Test
-//	public void testAppend() throws Exception
-//	{
-//		JSONObject child = new JSONObject();
-//		child.put("alive", true);
-//
-//		JSONObject payload = new JSONObject();
-//		payload.put("ok", true);
-//		payload.put("nested", child);
-//
-//		JSONArray ref = new JSONArray();
-//		ref.put(payload);
-//		ref.put(payload);
-//
-//		storageService.appendObject("dummy", "arrayTest", payload);
-//		storageService.appendObject("dummy", "arrayTest", payload);
-//
-//		JSONArray aArray = storageService.retrieveArray("dummy", "arrayTest");
-//
-//		assertEquals(ref.toString(), aArray.toString());
-//	}
+		Map<String, String> data2 = storageService.retrieveBinary(
+				"dummy", "data", new PropertiesAdapter(data)).getMap();
+		
+		assertEquals(data, data2);
+	}
 }

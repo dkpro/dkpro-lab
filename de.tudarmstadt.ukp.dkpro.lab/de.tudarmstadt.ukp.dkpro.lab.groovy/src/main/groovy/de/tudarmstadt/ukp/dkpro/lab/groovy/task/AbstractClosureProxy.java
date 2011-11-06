@@ -32,6 +32,8 @@ import groovy.lang.Closure;
 public abstract class AbstractClosureProxy
 	extends Closure
 {
+	private static final long serialVersionUID = -3406724476488622300L;
+	
 	protected Closure target;
 
 	/**
@@ -148,6 +150,7 @@ public abstract class AbstractClosureProxy
 		return this.target.getMaximumNumberOfParameters();
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	public Class[] getParameterTypes()
 	{

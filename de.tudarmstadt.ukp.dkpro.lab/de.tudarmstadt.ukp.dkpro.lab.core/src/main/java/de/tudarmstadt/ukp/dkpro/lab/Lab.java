@@ -19,9 +19,6 @@ package de.tudarmstadt.ukp.dkpro.lab;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.logging.Handler;
-import java.util.logging.LogManager;
-
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.dao.DataAccessResourceFailureException;
@@ -99,7 +96,6 @@ public class Lab
 		return getTaskExecutionService().run(aConfiguration);
 	}
 
-	@SuppressWarnings("null")
 	public String runAsking(Task aConfiguration)
 		throws Exception
 	{

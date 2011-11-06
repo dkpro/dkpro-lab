@@ -21,16 +21,17 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import javax.ws.rs.core.MultivaluedMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jboss.resteasy.specimpl.UriInfoImpl;
 import org.springframework.dao.DataAccessResourceFailureException;
+
+import de.tudarmstadt.ukp.dkpro.lab.resteasy.UriInfoImpl;
 
 public class ImportUtil
 {
