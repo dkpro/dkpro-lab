@@ -350,7 +350,7 @@
 		</dependencies>
 	</dependencyManagement>
 	<scm>
-	<developerConnection>scm:git:https://richard.eckart@code.google.com/p/dkpro-lab/</developerConnection>
+	<developerConnection>scm:git:https://code.google.com/p/dkpro-lab/</developerConnection>
 	</scm>
 	<build>
 		<plugins>
