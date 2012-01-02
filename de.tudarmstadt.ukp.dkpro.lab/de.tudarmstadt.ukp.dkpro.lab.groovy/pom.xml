@@ -23,7 +23,7 @@
 		<version>0.8.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>de.tudarmstadt.ukp.dkpro.lab.groovy</artifactId>
-	<name>The Lab - Groovy Support</name>
+	<name>DKPro Lab - Groovy Support</name>
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>

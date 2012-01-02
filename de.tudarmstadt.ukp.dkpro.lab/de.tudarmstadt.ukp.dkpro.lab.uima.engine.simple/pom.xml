@@ -22,8 +22,8 @@
 		<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
 		<version>0.8.0-SNAPSHOT</version>
 	</parent>
-	<artifactId>de.tudarmstadt.ukp.dkpro.lab.uima.engine.uutuc</artifactId>
-	<name>The Lab - Simple UIMA Execution Engine</name>
+	<artifactId>de.tudarmstadt.ukp.dkpro.lab.uima.engine.simple</artifactId>
+	<name>DKPro Lab - Simple UIMA Execution Engine</name>
 	<dependencies>
 		<dependency>
 			<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>

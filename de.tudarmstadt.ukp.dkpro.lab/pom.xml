@@ -19,20 +19,20 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<artifactId>dkpro-parent-pom</artifactId>
-		<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
-		<version>1</version>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
 	</parent>
 	<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
 	<artifactId>de.tudarmstadt.ukp.dkpro.lab</artifactId>
 	<packaging>pom</packaging>
-	<name>The Lab</name>
+	<name>DKPro Lab</name>
 	<version>0.8.0-SNAPSHOT</version>
 	<modules>
 		<module>de.tudarmstadt.ukp.dkpro.lab.core</module>
 		<module>de.tudarmstadt.ukp.dkpro.lab.groovy</module>
 		<module>de.tudarmstadt.ukp.dkpro.lab.uima</module>
-		<module>de.tudarmstadt.ukp.dkpro.lab.uima.engine.uutuc</module>
+		<module>de.tudarmstadt.ukp.dkpro.lab.uima.engine.simple</module>
 		<module>de.tudarmstadt.ukp.dkpro.lab.uima.engine.cpe</module>
 		<module>de.tudarmstadt.ukp.dkpro.lab.support.slf4j</module>
 		<module>de.tudarmstadt.ukp.dkpro.lab.ml.example</module>
@@ -218,18 +218,8 @@
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
-				<artifactId>de.tudarmstadt.ukp.dkpro.lab.ir</artifactId>
-				<version>0.7.0-SNAPSHOT</version>
-			</dependency>
-			<dependency>
-				<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
-				<artifactId>de.tudarmstadt.ukp.dkpro.lab.ir.example</artifactId>
-				<version>0.7.0-SNAPSHOT</version>
-			</dependency>
-			<dependency>
-				<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
 				<artifactId>de.tudarmstadt.ukp.dkpro.lab.ml.example</artifactId>
-				<version>0.6.0-SNAPSHOT</version>
+				<version>0.8.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
@@ -243,17 +233,7 @@
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
-				<artifactId>de.tudarmstadt.ukp.dkpro.lab.uima.engine.hadoop</artifactId>
-				<version>0.7.0-SNAPSHOT</version>
-			</dependency>
-			<dependency>
-				<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
-				<artifactId>de.tudarmstadt.ukp.dkpro.lab.uima.engine.uimaas</artifactId>
-				<version>0.7.0-SNAPSHOT</version>
-			</dependency>
-			<dependency>
-				<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
-				<artifactId>de.tudarmstadt.ukp.dkpro.lab.uima.engine.uutuc</artifactId>
+				<artifactId>de.tudarmstadt.ukp.dkpro.lab.uima.engine.simple</artifactId>
 				<version>0.8.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
@@ -349,14 +329,16 @@
 		</dependencies>
 	</dependencyManagement>
 	<scm>
-	<developerConnection>scm:git:https://code.google.com/p/dkpro-lab/</developerConnection>
+		<connection>scm:git:https://code.google.com/p/dkpro-lab/</connection>
+		<developerConnection>scm:git:https://code.google.com/p/dkpro-lab/</developerConnection>
+		<url>http://code.google.com/p/dkpro-lab/source/browse/</url>
 	</scm>
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-report-plugin</artifactId>
-				<version>2.5</version>
+				<version>2.11</version>
 				<configuration>
 					<environmentVariables>
 						<DKPRO_HOME>target/repository</DKPRO_HOME>
@@ -451,4 +433,17 @@
 			</build>
 		</profile>
 	</profiles>
+	<url>http://code.google.com/p/dkpro-lab/</url>
+	<description>DKPro Lab is a lightweight framework for parameter sweeping experiments. It allows to set up experiments consisting of multiple interdependent tasks in a declarative manner with minimal overhead. Parameters are injected into tasks using via annotated class fields. Data produced by a task for any particular parameter configuration is stored and re-used whenever possible to avoid the needless recalculation of results. Reports can be attached to each task to post-process the experimental results and present them in a convenient manner, e.g. as tables or charts.</description>
+	<issueManagement>
+		<system>code.google.com</system>
+		<url>http://code.google.com/p/dkpro-lab/issues</url>
+	</issueManagement>
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
 </project>

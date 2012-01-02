@@ -23,7 +23,7 @@
 		<version>0.8.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>de.tudarmstadt.ukp.dkpro.lab.uima.engine.cpe</artifactId>
-	<name>The Lab - UIMA CPE Execution Engine</name>
+	<name>DKPro Lab - UIMA CPE Execution Engine</name>
 	<dependencies>
 		<dependency>
 			<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>

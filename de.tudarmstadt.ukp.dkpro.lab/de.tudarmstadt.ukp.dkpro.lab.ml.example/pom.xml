@@ -23,7 +23,7 @@
 		<version>0.8.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>de.tudarmstadt.ukp.dkpro.lab.ml.example</artifactId>
-	<name>The Lab - Machine Learning - Example</name>
+	<name>DKPro Lab - Machine Learning - Example</name>
 	<repositories>
 		<repository>
 			<id>cleartk</id>
@@ -96,7 +96,7 @@
 		</dependency>
 		<dependency>
 			<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
-			<artifactId>de.tudarmstadt.ukp.dkpro.lab.uima.engine.uutuc</artifactId>
+			<artifactId>de.tudarmstadt.ukp.dkpro.lab.uima.engine.simple</artifactId>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

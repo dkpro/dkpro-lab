@@ -23,7 +23,7 @@
 		<version>0.8.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>de.tudarmstadt.ukp.dkpro.lab.uima</artifactId>
-	<name>The Lab - UIMA Support</name>
+	<name>DKPro Lab - UIMA Support</name>
 	<dependencies>
 		<dependency>
 			<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
