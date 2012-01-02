@@ -20,7 +20,7 @@
 	<parent>
 		<artifactId>de.tudarmstadt.ukp.dkpro.lab</artifactId>
 		<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
-		<version>0.7.0</version>
+		<version>0.7.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>de.tudarmstadt.ukp.dkpro.lab.core</artifactId>
 	<name>The Lab - Core Platform</name>
