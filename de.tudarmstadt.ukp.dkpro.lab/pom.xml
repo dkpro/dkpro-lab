@@ -27,7 +27,7 @@
 	<artifactId>de.tudarmstadt.ukp.dkpro.lab</artifactId>
 	<packaging>pom</packaging>
 	<name>The Lab</name>
-	<version>0.7.0</version>
+	<version>0.8.0-SNAPSHOT</version>
 	<modules>
 		<module>de.tudarmstadt.ukp.dkpro.lab.core</module>
 		<module>de.tudarmstadt.ukp.dkpro.lab.groovy</module>
@@ -214,7 +214,7 @@
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
 				<artifactId>de.tudarmstadt.ukp.dkpro.lab.core</artifactId>
-				<version>0.7.0</version>
+				<version>0.8.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
@@ -234,12 +234,12 @@
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
 				<artifactId>de.tudarmstadt.ukp.dkpro.lab.uima</artifactId>
-				<version>0.7.0</version>
+				<version>0.8.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
 				<artifactId>de.tudarmstadt.ukp.dkpro.lab.uima.engine.cpe</artifactId>
-				<version>0.7.0</version>
+				<version>0.8.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
@@ -254,12 +254,12 @@
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
 				<artifactId>de.tudarmstadt.ukp.dkpro.lab.uima.engine.uutuc</artifactId>
-				<version>0.7.0</version>
+				<version>0.8.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
 				<artifactId>de.tudarmstadt.ukp.dkpro.lab.groovy</artifactId>
-				<version>0.7.0</version>
+				<version>0.8.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.codehaus.jackson</groupId>
