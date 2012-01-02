@@ -19,9 +19,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>org.sonatype.oss</groupId>
-		<artifactId>oss-parent</artifactId>
-		<version>7</version>
+		<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+		<artifactId>dkpro-parent-pom</artifactId>
+		<version>1</version>
 	</parent>
 	<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
 	<artifactId>de.tudarmstadt.ukp.dkpro.lab</artifactId>
@@ -37,6 +37,18 @@
 		<module>de.tudarmstadt.ukp.dkpro.lab.support.slf4j</module>
 		<module>de.tudarmstadt.ukp.dkpro.lab.ml.example</module>
 	</modules>
+	<repositories>
+		<repository>
+			<id>cleartk</id>
+			<name>ClearTK Maven Repository</name>
+			<url>http://cleartk.googlecode.com/svn/repo/</url>
+		</repository>
+		<repository>
+			<id>ukp-oss</id>
+			<name>UKP Public Repository</name>
+			<url>http://zoidberg.ukp.informatik.tu-darmstadt.de/artifactory/repo/</url>
+		</repository>
+	</repositories>
 	<dependencyManagement>
 		<dependencies>
 			<dependency>

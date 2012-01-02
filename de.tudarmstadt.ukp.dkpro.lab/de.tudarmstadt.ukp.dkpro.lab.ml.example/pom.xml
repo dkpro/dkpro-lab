@@ -24,18 +24,6 @@
 	</parent>
 	<artifactId>de.tudarmstadt.ukp.dkpro.lab.ml.example</artifactId>
 	<name>DKPro Lab - Machine Learning - Example</name>
-	<repositories>
-		<repository>
-			<id>cleartk</id>
-			<name>ClearTK Maven Repository</name>
-			<url>http://cleartk.googlecode.com/svn/repo/</url>
-		</repository>
-		<repository>
-			<id>ukp-oss</id>
-			<name>UKP Public Repository</name>
-			<url>http://zoidberg.ukp.informatik.tu-darmstadt.de/artifactory/repo/</url>
-		</repository>
-	</repositories>
 	<dependencies>
 		<dependency>
 			<groupId>xerces</groupId>
