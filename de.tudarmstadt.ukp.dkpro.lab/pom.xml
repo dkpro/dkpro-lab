@@ -16,7 +16,8 @@
 	See the License for the specific language governing permissions and
 	limitations under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<artifactId>dkpro-parent-pom</artifactId>
@@ -27,7 +28,7 @@
 	<artifactId>de.tudarmstadt.ukp.dkpro.lab</artifactId>
 	<packaging>pom</packaging>
 	<name>The Lab</name>
-	<version>0.8.0-SNAPSHOT</version>
+	<version>0.7.0-SNAPSHOT</version>
 	<modules>
 		<module>de.tudarmstadt.ukp.dkpro.lab.core</module>
 		<module>de.tudarmstadt.ukp.dkpro.lab.groovy</module>
@@ -214,7 +215,7 @@
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
 				<artifactId>de.tudarmstadt.ukp.dkpro.lab.core</artifactId>
-				<version>0.8.0-SNAPSHOT</version>
+				<version>0.7.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
@@ -234,12 +235,12 @@
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
 				<artifactId>de.tudarmstadt.ukp.dkpro.lab.uima</artifactId>
-				<version>0.8.0-SNAPSHOT</version>
+				<version>0.7.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
 				<artifactId>de.tudarmstadt.ukp.dkpro.lab.uima.engine.cpe</artifactId>
-				<version>0.8.0-SNAPSHOT</version>
+				<version>0.7.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
@@ -254,12 +255,12 @@
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
 				<artifactId>de.tudarmstadt.ukp.dkpro.lab.uima.engine.uutuc</artifactId>
-				<version>0.8.0-SNAPSHOT</version>
+				<version>0.7.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
 				<artifactId>de.tudarmstadt.ukp.dkpro.lab.groovy</artifactId>
-				<version>0.8.0-SNAPSHOT</version>
+				<version>0.7.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.codehaus.jackson</groupId>
