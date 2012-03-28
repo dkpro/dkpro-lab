@@ -26,7 +26,6 @@ import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,7 +65,7 @@ public class FlexTable <V>
 
 	{
 		columns = new LinkedHashMap<String, Object>();
-		rows = new HashMap<String, Map<String, V>>();
+		rows = new LinkedHashMap<String, Map<String, V>>();
 	}
 
 	private FlexTable(Class<V> aDataClass)
@@ -89,6 +88,15 @@ public class FlexTable <V>
 		defaultValue = aDefaultValue;
 	}
 
+	/**
+	 * Set the format use to render cell values. Per default this is set to {@code null} so the
+	 * {@link String#valueOf(Object)} method is used for rendering. If this is set, the method
+	 * {@link String#format(String, Object...)} is used instead.
+	 * 
+	 * @param aFormatString a format string
+	 * 
+	 * @see {@link String#format(String, Object...)}
+	 */
 	public void setFormatString(String aFormatString)
 	{
 		formatString = aFormatString;
@@ -132,7 +140,8 @@ public class FlexTable <V>
 		}
 	}
 
-	public Map<String, V> getRow(String aId){
+	public Map<String, V> getRow(String aId) 
+	{
 		return rows.get(aId);
 	}
 
@@ -153,6 +162,30 @@ public class FlexTable <V>
 	{
 		Set<String> keySet = columns.keySet();
 		return keySet.toArray(new String[keySet.size()]);
+	}
+	
+	/**
+	 * Enable/disable compact rendering mode. In compact mode, invariant columns may be rendered
+	 * as a separate section in the output or totally omitted. This is turned on by default. To
+	 * always render all columns, disable this.
+	 */
+	public void setCompact(boolean aCompact)
+	{
+		compact = aCompact;
+	}
+	
+	public boolean isCompact()
+	{
+		return compact;
+	}
+	
+	/**
+	 * Enable/disable automatic sorting of rows by ID. This is turned on by default. To render rows
+	 * in the order they were added to the table, disable this.
+	 */
+	public void setSortRows(boolean aWriteSorted)
+	{
+		writeSorted = aWriteSorted;
 	}
 
 	protected String[] getCompactColumnIds(boolean aAllSame)
@@ -218,12 +251,13 @@ public class FlexTable <V>
 	{
 		return new StreamWriter()
 		{
+			protected  PrintWriter writer;
+			
 			@Override
 			public void write(OutputStream aStream)
 				throws Exception
 			{
-
-				PrintWriter writer = new PrintWriter(new OutputStreamWriter(aStream, "UTF-8"));
+				writer = new PrintWriter(new OutputStreamWriter(aStream, "UTF-8"));
 
 				if (compact && rows.size() > 0) {
 					String firstRowId = getRowIds()[0];
@@ -249,9 +283,7 @@ public class FlexTable <V>
 						i++;
 					}
 				}
-				writer.print("| *");
-				writer.print(StringUtils.join(buf, "* | *"));
-				writer.println("* |");
+				printHeaderRow(buf);
 
 				for (String rowId : getRowIds()) {
 					buf[0] = rowId;
@@ -260,12 +292,24 @@ public class FlexTable <V>
 						buf[i] = getValueAsString(rowId, colId).replace('|', ' ');
 						i++;
 					}
-					writer.print("| !");
-					writer.print(StringUtils.join(buf, " | "));
-					writer.println(" |");
+					printRow(buf);
 				}
 
 				writer.flush();
+			}
+
+			protected void printHeaderRow(String[] aHeaders)
+			{
+				writer.print("| *");
+				writer.print(StringUtils.join(aHeaders, "* | *"));
+				writer.println("* |");
+			}
+
+			protected void printRow(String[] aCells)
+			{
+				writer.print("| !");
+				writer.print(StringUtils.join(aCells, " | "));
+				writer.println(" |");
 			}
 		};
 	}
