@@ -43,8 +43,9 @@ public class ChartUtil
 	 * Exports a JFreeChart to a SVG file.
 	 *
 	 * @param chart JFreeChart to export
-	 * @param bounds the dimensions of the viewport
-	 * @param svgFile the output file.
+	 * @param aOS stream to write to.
+	 * @param aWidth width of the chart in pixels
+	 * @param aHeight height of the chart in pixels
 	 * @throws IOException if writing the svgFile fails.
 	 * @see <a href="http://dolf.trieschnigg.nl/jfreechart/">Saving JFreeChart as SVG vector images
 	 *      using Batik</a>
@@ -69,6 +70,15 @@ public class ChartUtil
 		out.close();
 	}
 
+	/**
+	 * Exports a JFreeChart to a scalable PDF file.
+	 *
+	 * @param chart JFreeChart to export
+	 * @param aOS stream to write to.
+	 * @param aWidth width of the chart in pixels
+	 * @param aHeight height of the chart in pixels
+	 * @throws IOException if writing the svgFile fails.
+	 */
 	public static void writeChartAsPDF(OutputStream aOS, JFreeChart chart, int aWidth, int aHeight)
 		throws IOException
 	{

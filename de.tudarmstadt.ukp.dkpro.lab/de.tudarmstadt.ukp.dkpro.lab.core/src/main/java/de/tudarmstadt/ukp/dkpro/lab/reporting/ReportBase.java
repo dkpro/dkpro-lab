@@ -128,6 +128,14 @@ public abstract class ReportBase
 		return out;
 	}
 
+	/**
+	 * Get the context label for the given context. Normally this is the context ID, but if a
+	 * label function is set using the {@link LabelFunction#PROP_TASK_CONTEXT_ID} property,
+	 * this function is instead called and used to create the context label. 
+	 * 
+	 * @param aContextId a context ID.
+	 * @return the label.
+	 */
 	protected String getContextLabel(String aContextId)
 	{
 		String func = getProperties().get(TASK_LABEL_FUNC_PROP);
@@ -153,6 +161,9 @@ public abstract class ReportBase
 		return result;
 	}
 
+	/**
+	 * @return
+	 */
 	protected String getContextLabel()
 	{
 		return getContextLabel(getContext().getId());

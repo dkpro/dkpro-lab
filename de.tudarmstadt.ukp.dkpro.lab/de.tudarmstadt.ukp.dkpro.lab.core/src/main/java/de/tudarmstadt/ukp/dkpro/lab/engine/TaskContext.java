@@ -60,30 +60,39 @@ public interface TaskContext
 	// Convenience logging API
 	void message(String msg);
 
-	// Convenience storage API
 	/**
-	 * Store a resource. A resource is always stored within the context, even if originally imported.
+	 * Store a resource. A resource is always stored within the current context, even if originally
+	 * imported.
 	 */
 	void storeBinary(String aKey, StreamWriter aStreamWriter);
 
 	/**
-	 * Store a resource. A resource is always stored within the context, even if originally imported.
+	 * Store a resource. A resource is always stored within the current context, even if originally
+	 * imported.
 	 */
 	void storeBinary(String aKey, InputStream aStream);
 
+	/**
+	 * Get the location of the specified key as a file. If the key is imported, the {@link AccessMode}
+	 * controls if the data is left in the original context (READONLY) or copied to the current
+	 * context (READWRITE). 
+	 * <p>
+	 * If the key does not exist in the current context and is not imported from another context,
+	 * then a new folder is created in the current context and returned (see 
+	 * {@link StorageService#getStorageFolder(String, String)}).
+	 */
 	File getStorageLocation(String aKey, AccessMode aMode);
 
 	boolean containsKey(String aKey);
 
 	/**
-	 * Retrieve a resource taking into account imports. Resources stored in the
-	 * context are preferred to imported resources.
+	 * Retrieve a resource taking into account imports. Resources stored in the context are
+	 * preferred to imported resources.
 	 */
 	<T extends StreamReader> T retrieveBinary(String aSearchResultKey, T aReader);
 
 	/**
-	 * Resolves the given import URI to the meta data of the task containing the addressed
-	 * resource.
+	 * Resolves the given import URI to the meta data of the task containing the addressed resource.
 	 */
 	TaskContextMetadata resolve(URI uri);
 }
