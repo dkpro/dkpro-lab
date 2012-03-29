@@ -33,15 +33,16 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.Set;
-import java.util.Map.Entry;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.dao.DataAccessResourceFailureException;
 
 import de.tudarmstadt.ukp.dkpro.lab.Lab;
+import de.tudarmstadt.ukp.dkpro.lab.ProgressMeter;
 import de.tudarmstadt.ukp.dkpro.lab.Util;
 import de.tudarmstadt.ukp.dkpro.lab.engine.LifeCycleManager;
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
@@ -55,6 +56,7 @@ import de.tudarmstadt.ukp.dkpro.lab.logging.LoggingService;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService;
 import de.tudarmstadt.ukp.dkpro.lab.storage.impl.PropertiesAdapter;
 import de.tudarmstadt.ukp.dkpro.lab.task.Dimension;
+import de.tudarmstadt.ukp.dkpro.lab.task.FixedSizeDimension;
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
 import de.tudarmstadt.ukp.dkpro.lab.task.Task;
 import de.tudarmstadt.ukp.dkpro.lab.task.TaskContextMetadata;
@@ -107,14 +109,19 @@ public class BatchTask
 	public void execute(TaskContext aContext)
 		throws Exception
 	{
+		// Try to calculate the parameter space size.
+		int estimatedSize = 1;
+		for (Dimension<?> d : parameterSpace.getDimensions()) {
+			if (d instanceof FixedSizeDimension) {
+				FixedSizeDimension fsd = (FixedSizeDimension) d;
+				if (fsd.size() > 0) {
+					estimatedSize *= fsd.size();
+				}
+			}
+		}
+		ProgressMeter progress = new ProgressMeter(estimatedSize);
+		
 		Map<String, Object> executedSubtasks = new LinkedHashMap<String, Object>();
-
-//		int pSpaceSize = 0;
-//		for (Map<String, Object> config : parameterSpace) {
-//			pSpaceSize++;
-//		}
-//		log.info("Parameter space size:" +pSpaceSize);
-
 		for (Map<String, Object> config : parameterSpace) {
 			log.info("== Running new configuration ["+aContext.getId()+"] ==");
 			List<String> keys = new ArrayList<String>(config.keySet());
@@ -171,6 +178,9 @@ public class BatchTask
 					continue;
 				}
 			}
+			
+			progress.next();
+			log.info("Completed configuration " + progress);
 		}
 
 		// Set the subtask property and persist again, so the property is available to reports

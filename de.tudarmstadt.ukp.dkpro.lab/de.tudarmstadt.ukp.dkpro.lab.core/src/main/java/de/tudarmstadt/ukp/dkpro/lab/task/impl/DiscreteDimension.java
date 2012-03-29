@@ -24,6 +24,7 @@ import de.tudarmstadt.ukp.dkpro.lab.task.FixedSizeDimension;
 
 public class DiscreteDimension<T>
 	extends Dimension<T>
+	implements FixedSizeDimension
 {
 	private T[] values;
 	private int current;
@@ -66,6 +67,12 @@ public class DiscreteDimension<T>
 	public T[] values()
 	{
 		return values;
+	}
+
+	@Override
+	public int size()
+	{
+		return values.length;
 	}
 
 	@Override

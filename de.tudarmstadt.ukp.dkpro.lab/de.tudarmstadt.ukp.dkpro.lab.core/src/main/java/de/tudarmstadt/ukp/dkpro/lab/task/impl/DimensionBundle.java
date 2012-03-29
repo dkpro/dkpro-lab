@@ -23,9 +23,11 @@ import java.util.NoSuchElementException;
 
 import de.tudarmstadt.ukp.dkpro.lab.Util;
 import de.tudarmstadt.ukp.dkpro.lab.task.Dimension;
+import de.tudarmstadt.ukp.dkpro.lab.task.FixedSizeDimension;
 
 public class DimensionBundle<T>
 	extends Dimension<Map<String, T>>
+	implements FixedSizeDimension
 {
 	public static final String KEY_BUNDLE_ID = "__bundleId";
 
@@ -91,6 +93,12 @@ public class DimensionBundle<T>
 	public Map<String, T>[] values()
 	{
 		return values;
+	}
+	
+	@Override
+	public int size()
+	{
+		return values.length;
 	}
 
 	public String getBundleId()

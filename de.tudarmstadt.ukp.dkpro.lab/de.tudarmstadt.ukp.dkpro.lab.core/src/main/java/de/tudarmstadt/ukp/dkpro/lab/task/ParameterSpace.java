@@ -47,6 +47,15 @@ public class ParameterSpace implements Iterable<Map<String, Object>>
 		}
 	}
 	
+	public Dimension<?>[] getDimensions()
+	{
+		return dimensions;
+	}
+	
+	/**
+	 * Gets the number of steps taken in the parameter space. Steps that are skipped due to a 
+	 * {@link Constraint} are counted as well.
+	 */
 	public int getStepCount()
 	{
 		return stepCount;
@@ -60,6 +69,11 @@ public class ParameterSpace implements Iterable<Map<String, Object>>
 	public void removeCondition(Constraint aConstraint)
 	{
 		constraints.remove(aConstraint);
+	}
+	
+	public Set<Constraint> getConstraints()
+	{
+		return constraints;
 	}
 
 	@Override
