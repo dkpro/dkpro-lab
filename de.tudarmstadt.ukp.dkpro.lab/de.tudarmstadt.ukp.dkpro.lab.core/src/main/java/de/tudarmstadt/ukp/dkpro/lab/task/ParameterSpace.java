@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.DimensionBundle;
@@ -30,6 +31,7 @@ public class ParameterSpace implements Iterable<Map<String, Object>>
 {
 	private Dimension<?>[] dimensions;
 	private Set<Constraint> constraints;
+	private int stepCount = 0;
 
 	public ParameterSpace(Dimension<?>... aDimensions)
 	{
@@ -39,9 +41,15 @@ public class ParameterSpace implements Iterable<Map<String, Object>>
 
 	public void reset()
 	{
+		stepCount = 0;
 		for (Dimension<?> d : dimensions) {
 			d.rewind();
 		}
+	}
+	
+	public int getStepCount()
+	{
+		return stepCount;
 	}
 
 	public void addConstraint(Constraint aConstraint)
@@ -77,8 +85,12 @@ public class ParameterSpace implements Iterable<Map<String, Object>>
 				if (incDim == -3) {
 					for (Dimension<?> d : dimensions) {
 						d.rewind();
-						// FIXME REC 2011-02-13 - Cannot handle dimensions of size 0
-						d.next();
+						try {
+							d.next();
+						}
+						catch (NoSuchElementException e) {
+							// No need to move the cursor to the first element in empty dimensions.
+						}
 					}
 					incDim = dimensions.length - 1;
 					if (conditionsMet()) {
@@ -96,8 +108,12 @@ public class ParameterSpace implements Iterable<Map<String, Object>>
 				else {
 					while (!dimensions[incDim].hasNext()) {
 						dimensions[incDim].rewind();
-						// FIXME REC 2011-02-13 - Cannot handle dimensions of size 0
-						dimensions[incDim].next();
+						try {
+							dimensions[incDim].next();
+						}
+						catch (NoSuchElementException e) {
+							// No need to move the cursor to the first element in empty dimensions.
+						}
 						incDim--;
 						if (incDim < 0) {
 							return; // Nothing more to iterate over
@@ -113,6 +129,9 @@ public class ParameterSpace implements Iterable<Map<String, Object>>
 		private boolean conditionsMet()
 		{
 			Map<String, Object> config = current();
+
+			stepCount++;
+
 			for (Constraint c : constraints) {
 				if (!c.isValid(config)) {
 					return false;
@@ -132,27 +151,37 @@ public class ParameterSpace implements Iterable<Map<String, Object>>
 			Map<String, Object> config = new LinkedHashMap<String, Object>();
 			// Pass 1: no dynamic dimensions
 			for (Dimension<?> d : dimensions) {
-				if (d instanceof DimensionBundle<?>) {
-					DimensionBundle<?> bundle = ((DimensionBundle<?>) d);
-					String bundleId = bundle.getBundleId();
-					if (bundleId != null) {
-						config.put(bundle.getName(), bundle.getBundleId());
+				try {
+					if (d instanceof DimensionBundle<?>) {
+						DimensionBundle<?> bundle = ((DimensionBundle<?>) d);
+						String bundleId = bundle.getBundleId();
+						if (bundleId != null) {
+							config.put(bundle.getName(), bundle.getBundleId());
+						}
+						config.putAll(bundle.current());
 					}
-					config.putAll(bundle.current());
+					else if (d instanceof DynamicDimension) {
+						// defer
+					}
+					else {
+						config.put(d.getName(), d.current());
+					}
 				}
-				else if (d instanceof DynamicDimension) {
-					// defer
-				}
-				else {
-					config.put(d.getName(), d.current());
+				catch (NoSuchElementException e) {
+					// Empty dimensions contribute nothing
 				}
 			}
 
 			// Pass 2: dynamic dimensions
 			for (Dimension<?> d : dimensions) {
 				if (d instanceof DynamicDimension) {
-					((DynamicDimension) d).setConfiguration(config);
-					config.put(d.getName(), d.current());
+					try {
+						((DynamicDimension) d).setConfiguration(config);
+						config.put(d.getName(), d.current());
+					}
+					catch (NoSuchElementException e) {
+						// Empty dimensions contribute nothing
+					}
 				}
 			}
 			return config;

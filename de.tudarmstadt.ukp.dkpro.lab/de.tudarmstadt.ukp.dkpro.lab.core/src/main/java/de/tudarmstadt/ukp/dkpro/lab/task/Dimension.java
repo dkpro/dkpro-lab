@@ -49,6 +49,19 @@ public abstract class Dimension<T>
 	 */
 	public abstract void rewind();
 
+	/**
+	 * Get the next value.
+	 * 
+	 * @throws NoSuchElementException if the dimension is empty.
+	 */
+	@Override
+	public abstract T next();
+	
+	/**
+	 * Get the current value.
+	 * 
+	 * @throws NoSuchElementException if the dimension is empty.
+	 */
 	public abstract T current();
 
 	/**

@@ -39,10 +39,26 @@ public class ParameterSpaceTest
 			n++;
 		}
 		assertEquals(3 * 2 * 2, n);
+		assertEquals((3 * 2 * 2), pSpace.getStepCount());
 	}
 
 	@Test
-	public void testWithCondition()
+	public void testZeroSizeDimension()
+	{
+		Dimension<String> letters = Dimension.create("letters", "a", "b", "c");
+		Dimension<Integer> numbers = Dimension.create("numbers");
+
+		int n = 0;
+		ParameterSpace pSpace = new ParameterSpace(letters, numbers);
+		for (@SuppressWarnings("unused") Map<String, Object> config : pSpace) {
+			n++;
+		}
+		assertEquals(3 , n);
+		assertEquals(3, pSpace.getStepCount());
+	}
+
+	@Test
+	public void testWithConstraint()
 	{
 		Dimension<String> letters = Dimension.create("letters", "a", "b", "c");
 		Dimension<Integer> numbers = Dimension.create("numbers", 1, 2);
@@ -68,5 +84,6 @@ public class ParameterSpaceTest
 			n++;
 		}
 		assertEquals((3 * 2 * 2) - 2, n);
+		assertEquals((3 * 2 * 2), pSpace.getStepCount());
 	}
 }

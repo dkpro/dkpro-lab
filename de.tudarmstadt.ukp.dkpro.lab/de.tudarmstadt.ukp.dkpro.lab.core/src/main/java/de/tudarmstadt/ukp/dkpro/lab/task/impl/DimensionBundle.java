@@ -19,6 +19,7 @@ package de.tudarmstadt.ukp.dkpro.lab.task.impl;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import de.tudarmstadt.ukp.dkpro.lab.Util;
 import de.tudarmstadt.ukp.dkpro.lab.task.Dimension;
@@ -70,10 +71,15 @@ public class DimensionBundle<T>
 	@Override
 	public Map<String, T> current()
 	{
+		if (values.length == 0) {
+			throw new NoSuchElementException("Dimension [" + getName() + "] is empty");
+		}
+		
+		// Remove the bundle key from the values
 		Map<String, T> mapCopy = new HashMap<String, T>(values[current]);
 		mapCopy.remove(KEY_BUNDLE_ID);
+		
 		return mapCopy;
-//		return values[current];
 	}
 
 	@Override

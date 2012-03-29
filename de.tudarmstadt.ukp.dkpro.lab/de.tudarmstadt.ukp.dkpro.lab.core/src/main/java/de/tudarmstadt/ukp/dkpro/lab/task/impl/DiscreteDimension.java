@@ -17,7 +17,10 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.lab.task.impl;
 
+import java.util.NoSuchElementException;
+
 import de.tudarmstadt.ukp.dkpro.lab.task.Dimension;
+import de.tudarmstadt.ukp.dkpro.lab.task.FixedSizeDimension;
 
 public class DiscreteDimension<T>
 	extends Dimension<T>
@@ -48,6 +51,9 @@ public class DiscreteDimension<T>
 	@Override
 	public T current()
 	{
+		if (values.length == 0) {
+			throw new NoSuchElementException("Dimension [" + getName() + "] is empty");
+		}
 		return values[current];
 	}
 
