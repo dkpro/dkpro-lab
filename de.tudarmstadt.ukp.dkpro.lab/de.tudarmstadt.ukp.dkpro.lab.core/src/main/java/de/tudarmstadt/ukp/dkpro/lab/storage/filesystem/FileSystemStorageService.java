@@ -35,6 +35,7 @@ import java.util.Map;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.dao.DataAccessResourceFailureException;
@@ -73,14 +74,23 @@ public class FileSystemStorageService
 	@Override
 	public void delete(String aContextId)
 	{
-		Util.delete(getContextFolder(aContextId, false));
+		try {
+			FileUtils.deleteDirectory(getContextFolder(aContextId, false));
+		}
+		catch (IOException e) {
+			throw new DataAccessResourceFailureException(e.getMessage(), e);
+		}
 	}
 
 	@Override
 	public void delete(String aContextId, String aKey)
 	{
-		Util.delete(new File(getContextFolder(aContextId, false), aKey));
-
+		try {
+			FileUtils.deleteDirectory(new File(getContextFolder(aContextId, false), aKey));
+		}
+		catch (IOException e) {
+			throw new DataAccessResourceFailureException(e.getMessage(), e);
+		}
 	}
 
 	@Override

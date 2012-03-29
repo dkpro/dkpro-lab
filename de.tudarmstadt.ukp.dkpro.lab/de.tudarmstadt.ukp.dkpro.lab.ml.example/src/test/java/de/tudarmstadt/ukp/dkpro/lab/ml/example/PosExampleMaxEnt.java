@@ -24,6 +24,7 @@ import static org.uimafit.util.JCasUtil.select;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -205,7 +206,7 @@ public class PosExampleMaxEnt
 		throws Exception
 	{
 		File repo = new File("target/repository");
-		Util.delete(repo);
+		FileUtils.deleteDirectory(repo);
 		repo.mkdirs();
 		((FileSystemStorageService) Lab.getInstance().getStorageService()).setStorageRoot(repo);
 	}

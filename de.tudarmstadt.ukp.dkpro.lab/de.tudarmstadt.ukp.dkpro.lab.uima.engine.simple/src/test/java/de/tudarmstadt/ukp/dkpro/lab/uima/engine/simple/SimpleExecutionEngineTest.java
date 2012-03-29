@@ -32,6 +32,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.jcas.JCas;
@@ -73,7 +74,7 @@ public class SimpleExecutionEngineTest
 		throws Exception
 	{
 		File repo = new File("target/repository");
-		Util.delete(repo);
+		FileUtils.deleteDirectory(repo);
 		((FileSystemStorageService) storageService).setStorageRoot(repo);
 
 		assertNotNull(executionService);

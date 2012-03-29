@@ -22,6 +22,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
+import org.springframework.dao.DataAccessResourceFailureException;
+
 import de.tudarmstadt.ukp.dkpro.lab.engine.LifeCycleException;
 import de.tudarmstadt.ukp.dkpro.lab.engine.LifeCycleManager;
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
@@ -106,7 +109,13 @@ public class DefaultLifeCycleManager
 	public void fail(TaskContext aContext, Task aConfiguration)
 		throws LifeCycleException
 	{
-		aContext.getStorageService().delete(aContext.getId());
+		try {
+			aContext.getStorageService().delete(aContext.getId());
+		}
+		catch (DataAccessResourceFailureException e) {
+			aContext.message("Unable to clean up context after failure. Some data may remain in " +
+					"the context.");
+		}
 		aContext.message("Task failed ["+aConfiguration.getType()+"]");
 	}
 

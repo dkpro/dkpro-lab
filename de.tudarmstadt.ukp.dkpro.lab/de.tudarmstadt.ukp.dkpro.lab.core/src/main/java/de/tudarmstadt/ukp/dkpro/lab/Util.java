@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.GZIPInputStream;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.springframework.dao.DataAccessResourceFailureException;
@@ -194,18 +195,6 @@ public class Util
 		catch (IOException e) {
 			// Ignore exceptions happening while closing.
 		}
-	}
-
-	public static void delete(final File file)
-	{
-		if (file.isDirectory()) {
-			if (file.exists()) {
-				for (final File f : file.listFiles()) {
-					delete(f);
-				}
-			}
-		}
-		file.delete();
 	}
 
 	/**
