@@ -48,7 +48,14 @@ public interface StorageService
 		/**
 		 * @since 0.2.0
 		 */
-		READWRITE
+		READWRITE,
+
+		/**
+		 * Only add new files, but do not modify existing files.
+		 * 
+		 * @since 0.8.0
+		 */
+		ADD_ONLY
 	}
 
 	/**

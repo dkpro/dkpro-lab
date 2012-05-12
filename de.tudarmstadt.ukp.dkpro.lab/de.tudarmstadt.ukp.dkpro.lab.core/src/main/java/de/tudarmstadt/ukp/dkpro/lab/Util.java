@@ -24,16 +24,21 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Array;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
-import java.nio.channels.FileChannel;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.GZIPInputStream;
 
+import org.apache.commons.io.FileExistsException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+import org.apache.commons.lang.reflect.MethodUtils;
+import org.apache.tools.ant.taskdefs.Execute;
 import org.springframework.dao.DataAccessResourceFailureException;
+import org.springframework.util.MethodInvoker;
 
 import de.tudarmstadt.ukp.dkpro.lab.storage.StreamReader;
 import de.tudarmstadt.ukp.dkpro.lab.task.Discriminable;
@@ -207,6 +212,19 @@ public class Util
 	public static void copy(File aIn, File aOut)
 		throws IOException
 	{
+		copy(aIn, aOut, false);
+	}
+	
+	/**
+	 * Recursively copy files and directories. The target must not exist before this operation.
+	 *
+	 * @param aIn the source.
+	 * @param aOut the target.
+	 * @throws IOException if something goes wrong.
+	 */
+	public static void copy(File aIn, File aOut, boolean aLink)
+		throws IOException
+	{
 		if (aOut.exists()) {
 			throw new IOException("Target ["+aOut+"] already exists");
 		}
@@ -214,28 +232,23 @@ public class Util
 		if (aIn.isDirectory()) {
 			aOut.mkdirs();
 			for (File child : aIn.listFiles()) {
-				copy(child, new File(aOut, child.getName()));
+				copy(child, new File(aOut, child.getName()), aLink);
 			}
 		}
 		else {
-			copyFile(aIn, aOut);
+			if (aLink) {
+				createSymbolicLink(aIn, aOut);
+			}
+			else {
+				copyFile(aIn, aOut);
+			}
 		}
 	}
 
 	public static void copyFile(final File aIn, final File aOut)
 		throws IOException
 	{
-		FileChannel inChannel = null;
-		FileChannel outChannel = null;
-		try {
-			inChannel = new FileInputStream(aIn).getChannel();
-			outChannel = new FileOutputStream(aOut).getChannel();
-			inChannel.transferTo(0, inChannel.size(), outChannel);
-		}
-		finally {
-			close(inChannel);
-			close(outChannel);
-		}
+		FileUtils.copyFile(aIn, aOut);
 	}
 
 	public static String toString(final Object aObject)
@@ -271,6 +284,77 @@ public class Util
 		}
 		finally {
 			Util.close(is);
+		}
+	}
+	
+	public static boolean isWindows()
+	{
+		return (System.getProperty("os.name").toLowerCase().indexOf("win") >= 0);
+	}
+
+	public static boolean isMac()
+	{
+		return (System.getProperty("os.name").toLowerCase().indexOf("mac") >= 0);
+	}
+
+	public static boolean isUnix()
+	{
+		String os = System.getProperty("os.name").toLowerCase();
+		return (os.indexOf("nix") >= 0 || os.indexOf("nux") >= 0);
+	}
+
+	public static boolean isSymlinkSupported()
+	{
+		return isMac() || isUnix();
+	}
+	
+	public static void createSymbolicLink(File aSource, File aTarget) throws IOException
+	{
+		if (aTarget.exists()) {
+			throw new FileExistsException(aTarget);
+		}
+		
+		File parentDir = aTarget.getAbsoluteFile().getParentFile();
+		if (parentDir != null && !parentDir.exists()) {
+			FileUtils.forceMkdir(parentDir);
+		}
+		
+		// Try Java 7 methods
+		try {
+			Object fromPath = MethodUtils.invokeExactMethod(aSource, "toPath", new Object[0]);
+			Object toPath = MethodUtils.invokeExactMethod(aTarget, "toPath", new Object[0]);
+			Object options = Array.newInstance(Class.forName("java.nio.file.attribute.FileAttribute"), 0);
+			MethodInvoker inv = new MethodInvoker();
+			inv.setStaticMethod("java.nio.file.Files.createSymbolicLink");
+			inv.setArguments(new Object[] { toPath, fromPath, options });
+			inv.prepare();
+			inv.invoke();
+			return;
+		}
+		catch (ClassNotFoundException e) {
+			// Ignore
+		}
+		catch (NoSuchMethodException e) {
+			// Ignore
+		}
+		catch (IllegalAccessException e) {
+			// Ignore
+		}
+		catch (InvocationTargetException e) {
+			if ("java.nio.file.FileAlreadyExistsException".equals(e.getTargetException().getClass().getName())) {
+				throw new FileExistsException(aTarget);
+			}
+		}
+
+		// If the Java 7 stuff is not available, fall back to Runtime.exec
+		String[] cmdline = { "ln", "-s", aSource.getAbsolutePath(), aTarget.getAbsolutePath() };
+		Execute exe = new Execute();
+		exe.setVMLauncher(false);
+		exe.setCommandline(cmdline);
+		exe.execute();
+		if (exe.isFailure()) {
+			throw new IOException("Unable to create symlink from [" + aSource + "] to [" + aTarget
+					+ "]");
 		}
 	}
 

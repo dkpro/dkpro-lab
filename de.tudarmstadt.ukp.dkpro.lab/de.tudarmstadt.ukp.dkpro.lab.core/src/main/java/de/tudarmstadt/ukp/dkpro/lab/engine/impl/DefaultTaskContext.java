@@ -240,11 +240,12 @@ public class DefaultTaskContext
 			// data at this point if it can assure a copy-on-write behavior. E.g. it may copy
 			// imported storage folders now but imported stream-access (files) keys later.
 			if (key != null) {
-				if (aMode == AccessMode.READWRITE) {
+				switch (aMode) {
+				case ADD_ONLY:
+				case READWRITE:
 					storage.copy(getId(), aKey, key, aMode);
 					return new StorageKey(getId(), aKey);
-				}
-				else {
+				case READONLY:
 					return key;
 				}
 			}

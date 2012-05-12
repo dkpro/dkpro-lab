@@ -260,17 +260,26 @@ public class FileSystemStorageService
 		// If the resource is imported from another context and will be modified and it is a
 		// folder, we have to copy it to the current context now, since we cannot do a
 		// copy-on-write strategy as for streams.
-		if (isStorageFolder(key.contextId, key.key) && aMode == AccessMode.READWRITE) {
-			log.info("Write access to imported storage folder [" + aKey
-					+ "] was requested. Copying to current context");
+		if (isStorageFolder(key.contextId, key.key) && (aMode == AccessMode.READWRITE || aMode == AccessMode.ADD_ONLY)) {
 			try {
-				Util.copy(new File(getContextFolder(key.contextId, false), key.key), new File(
-						getContextFolder(aContextId, false), aKey));
+				File source = new File(getContextFolder(key.contextId, false), key.key);
+				File target = new File(getContextFolder(aContextId, false), aKey);
+				
+				if (Util.isSymlinkSupported() && aMode == AccessMode.ADD_ONLY) {
+					log.info("Write access to imported storage folder [" + aKey
+							+ "] was requested. Linking to current context");
+					Util.copy(source, target, true);
+				}
+				else {
+					log.info("Write access to imported storage folder [" + aKey
+							+ "] was requested. Copying to current context");
+					Util.copy(source, target, false);
+				}
 			}
 			catch (IOException e) {
 				throw new DataAccessResourceFailureException(e.getMessage(), e);
 			}
-
+			
 			// Key should point to the local context now
 			key = new StorageKey(aContextId, aKey);
 		}
