@@ -64,9 +64,19 @@ public class TaskBase
 		imports = new HashMap<String, String>();
 	}
 
+	/**
+	 * Create a new task with a default type name. The type is the simple name of the class. If 
+	 * it is an inner class, only the name of the inner class is used. Be careful that type names
+	 * must uniquely identify a task class.
+	 */
 	public TaskBase()
 	{
-		setType(getClass().getName());
+		String className = getClass().getName();
+		int innerClassSep = className.lastIndexOf('$');
+		if (innerClassSep != 1) {
+			className = className.substring(innerClassSep+1);
+		}
+		setType(className);
 	}
 
 	public TaskBase(String aType)
