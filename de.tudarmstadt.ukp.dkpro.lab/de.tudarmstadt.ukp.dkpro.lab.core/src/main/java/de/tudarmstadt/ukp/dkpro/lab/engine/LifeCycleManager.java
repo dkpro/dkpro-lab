@@ -65,7 +65,7 @@ public interface LifeCycleManager
 	 * @param aConfiguration the task configuration.
 	 * @throws LifeCycleException if something goes wrong.
 	 */
-	void fail(TaskContext aContext, Task aConfiguration)
+	void fail(TaskContext aContext, Task aConfiguration, Throwable aCause)
 		throws LifeCycleException;
 
 	/**

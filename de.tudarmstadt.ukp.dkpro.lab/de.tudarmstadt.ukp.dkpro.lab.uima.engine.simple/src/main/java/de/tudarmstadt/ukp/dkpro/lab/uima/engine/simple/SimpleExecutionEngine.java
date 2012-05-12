@@ -158,11 +158,11 @@ public class SimpleExecutionEngine
 			return ctx.getId();
 		}
 		catch (LifeCycleException e) {
-			ctx.getLifeCycleManager().fail(ctx, aConfiguration);
+			ctx.getLifeCycleManager().fail(ctx, aConfiguration, e);
 			throw e;
 		}
 		catch (Exception e) {
-			ctx.getLifeCycleManager().fail(ctx, aConfiguration);
+			ctx.getLifeCycleManager().fail(ctx, aConfiguration, e);
 			throw new ExecutionException(e);
 		}
 		finally {

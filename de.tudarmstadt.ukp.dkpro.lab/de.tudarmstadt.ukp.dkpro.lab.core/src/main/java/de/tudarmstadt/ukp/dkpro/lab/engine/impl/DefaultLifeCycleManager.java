@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.springframework.dao.DataAccessResourceFailureException;
 
 import de.tudarmstadt.ukp.dkpro.lab.engine.LifeCycleException;
@@ -106,7 +107,7 @@ public class DefaultLifeCycleManager
 	}
 
 	@Override
-	public void fail(TaskContext aContext, Task aConfiguration)
+	public void fail(TaskContext aContext, Task aConfiguration, Throwable aCause)
 		throws LifeCycleException
 	{
 		try {
@@ -117,6 +118,9 @@ public class DefaultLifeCycleManager
 					"the context.");
 		}
 		aContext.message("Task failed ["+aConfiguration.getType()+"]");
+		if (aCause != null) {
+			aContext.message("Cause for failure: " + ExceptionUtils.getRootCauseMessage(aCause));
+		}
 	}
 
 	@Override
