@@ -33,6 +33,7 @@ import java.util.Map.Entry;
 
 import javax.ws.rs.core.UriBuilder;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -74,7 +75,10 @@ public class TaskBase
 		String className = getClass().getName();
 		int innerClassSep = className.lastIndexOf('$');
 		if (innerClassSep != 1) {
-			className = className.substring(innerClassSep+1);
+			String innerName = className.substring(innerClassSep+1);
+			if (!StringUtils.isNumeric(innerName)) {
+				className = innerName;
+			}
 		}
 		setType(className);
 	}
@@ -308,7 +312,7 @@ public class TaskBase
 		aContext.storeBinary(DISCRIMINATORS_KEY, new PropertiesAdapter(getResolvedDescriminators(aContext)));
 	}
 
-	private void analyze(Class<?> aClazz, Class<? extends Annotation> aAnnotation, Map<String, String> props)
+	protected void analyze(Class<?> aClazz, Class<? extends Annotation> aAnnotation, Map<String, String> props)
 	{
 		if (aClazz.getSuperclass() != null) {
 			analyze(aClazz.getSuperclass(), aAnnotation, props);

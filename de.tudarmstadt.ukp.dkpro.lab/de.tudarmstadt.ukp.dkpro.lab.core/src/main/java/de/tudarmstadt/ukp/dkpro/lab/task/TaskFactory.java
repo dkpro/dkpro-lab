@@ -42,6 +42,10 @@ public class TaskFactory
 				paDirect.setPropertyValue(key, value);
 			}
 		}
+		
+		if (aTask instanceof ConfigurationAware) {
+			((ConfigurationAware) aTask).setConfiguration(aConfiguration);
+		}
 	}
 
 	public static <T extends Task> T createTask(Class<T> aTaskClass,

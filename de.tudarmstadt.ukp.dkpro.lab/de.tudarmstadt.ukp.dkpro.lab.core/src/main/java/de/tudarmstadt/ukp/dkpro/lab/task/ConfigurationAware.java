@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2011
+ * Copyright 2012
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  *   
@@ -15,10 +15,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package de.tudarmstadt.ukp.dkpro.lab.task.impl;
+package de.tudarmstadt.ukp.dkpro.lab.task;
 
-import de.tudarmstadt.ukp.dkpro.lab.task.ConfigurationAware;
+import java.util.Map;
 
-public interface DynamicDimension extends ConfigurationAware
+public interface ConfigurationAware
 {
+	void setConfiguration(Map<String, Object> aConfig);
 }

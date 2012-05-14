@@ -55,6 +55,7 @@ import de.tudarmstadt.ukp.dkpro.lab.engine.impl.ImportUtil;
 import de.tudarmstadt.ukp.dkpro.lab.logging.LoggingService;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService;
 import de.tudarmstadt.ukp.dkpro.lab.storage.impl.PropertiesAdapter;
+import de.tudarmstadt.ukp.dkpro.lab.task.ConfigurationAware;
 import de.tudarmstadt.ukp.dkpro.lab.task.Dimension;
 import de.tudarmstadt.ukp.dkpro.lab.task.FixedSizeDimension;
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
@@ -64,6 +65,7 @@ import de.tudarmstadt.ukp.dkpro.lab.task.TaskFactory;
 
 public class BatchTask
 	extends ExecutableTaskBase
+	implements ConfigurationAware
 {
 	private Log log = LogFactory.getLog(getClass());
 
@@ -74,6 +76,8 @@ public class BatchTask
 	private Set<Task> tasks = new HashSet<Task>();
 	private ParameterSpace parameterSpace;
 	private ExecutionPolicy executionPolicy = ExecutionPolicy.RUN_AGAIN;
+	private Map<String, Object> inheritedConfig;
+	private Set<String> inheritedScope;
 
 	{
 		// Just to make sure there is one run if no parameter space is set.
@@ -104,7 +108,19 @@ public class BatchTask
 	{
 		tasks = new HashSet<Task>(aTasks);
 	}
-
+	
+	@Override
+	public void setConfiguration(Map<String, Object> aConfig)
+	{
+		parameterSpace.reset();
+		inheritedConfig = aConfig;
+	}
+	
+	public void setScope(Set<String> aScope) 
+	{
+		inheritedScope = aScope;
+	}
+	
 	@Override
 	public void execute(TaskContext aContext)
 		throws Exception
@@ -123,6 +139,14 @@ public class BatchTask
 		
 		Map<String, Object> executedSubtasks = new LinkedHashMap<String, Object>();
 		for (Map<String, Object> config : parameterSpace) {
+			if (inheritedConfig != null) {
+				for (Entry<String, Object> e : inheritedConfig.entrySet()) {
+					if (!config.containsKey(e.getKey())) {
+						config.put(e.getKey(), e.getValue());
+					}
+				}
+			}
+			
 			log.info("== Running new configuration ["+aContext.getId()+"] ==");
 			List<String> keys = new ArrayList<String>(config.keySet());
 			for (String key : keys) {
@@ -136,8 +160,11 @@ public class BatchTask
 			}
 
 			Set<String> scope = new HashSet<String>();
+			if (inheritedScope != null) {
+				scope.addAll(inheritedScope);
+			}
 
-			configureTasks(aContext, config);
+			configureTasks(aContext, config, scope);
 
 			Queue<Task> queue = new LinkedList<Task>(tasks);
 			Set<Task> loopDetection = new HashSet<Task>();
@@ -214,6 +241,11 @@ public class BatchTask
 	private TaskContextMetadata getExistingExecution(TaskContext aContext, Task aTask,
 			Map<String, Object> aConfig, Set<String> aScope)
 	{
+		// Batch tasks are always run again since we do not store discriminators for them
+		if (aTask instanceof BatchTask) {
+			return null;
+		}
+		
 		try {
 			TaskContextMetadata meta = getLatestExecution(aContext, aTask.getType(), aTask
 					.getDescriminators(), aConfig);
@@ -278,9 +310,12 @@ public class BatchTask
 		}
 	}
 
-	private void configureTasks(TaskContext aContext, Map<String, Object> aConfig)
+	private void configureTasks(TaskContext aContext, Map<String, Object> aConfig, Set<String> aScope)
 	{
 		for (Task task : tasks) {
+			if (task instanceof BatchTask) {
+				((BatchTask) task).setScope(aScope);
+			}
 			TaskFactory.configureTask(task, aConfig);
 		}
 	}
@@ -291,7 +326,8 @@ public class BatchTask
 		private Map<String, Object> config;
 		private Set<String> scope;
 
-		public ScopedTaskContextFactory(TaskContextFactory aContextFactory, Map<String, Object> aConfig, Set<String> aScope)
+		public ScopedTaskContextFactory(TaskContextFactory aContextFactory,
+				Map<String, Object> aConfig, Set<String> aScope)
 		{
 			contextFactory = (DefaultTaskContextFactory) aContextFactory;
 			config = aConfig;
