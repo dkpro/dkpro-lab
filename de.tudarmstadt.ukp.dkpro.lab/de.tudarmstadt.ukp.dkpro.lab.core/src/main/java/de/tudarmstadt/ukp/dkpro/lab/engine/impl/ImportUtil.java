@@ -53,14 +53,18 @@ public class ImportUtil
 
 			Set<String> keys = aDiscriminators.keySet();
 			nextKey: for (String key : keys) {
-				if (!(e.getKey().equals(key) || Pattern.matches(keyPattern, key))) {
+				// Issue 12 - Bug when using maps or empty arrays as parameters
+				//            Pattern matching disabled.
+				if (!(e.getKey().equals(key) /*|| Pattern.matches(keyPattern, key)*/ )) {
 					// key pattern does not match or equal the key. Try next key
 					log.trace("No key match: ["+keyPattern+"] ["+key+"]");
 					continue nextKey;
 				}
 
 				String val = aDiscriminators.get(key);
-				if (!(e.getValue().equals(val) || Pattern.matches(valuePattern, val))) {
+				// Issue 12 - Bug when using maps or empty arrays as parameters
+				//            Pattern matching disabled.
+				if (!(e.getValue().equals(val) /* || Pattern.matches(valuePattern, val)*/ )) {
 					// value pattern does not match or equal the property value, this is
 					// not the context we look for
 					log.debug("No value match: ["+key+"] ["+valuePattern+"] ["+val+"]");
