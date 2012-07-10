@@ -73,7 +73,63 @@ public class BatchTaskTest
 		
 		Lab.getInstance().run(outerTask);
 	}
-	
+
+	@Ignore("Currently does not run on Jenkins")
+	@Test
+	public void testNested2() throws Exception
+	{
+		File repo = new File("target/repository/"+getClass().getSimpleName()+"/"+name.getMethodName());
+		FileUtils.deleteDirectory(repo);
+		repo.mkdirs();
+		((FileSystemStorageService) Lab.getInstance().getStorageService()).setStorageRoot(repo);
+		
+		BatchTask innerTask = new BatchTask() {
+			@Discriminator
+			private Integer outer;
+			
+			@Override
+			public void execute(TaskContext aContext)
+				throws Exception
+			{
+				// Dynamically configure parameter space of nested batch task
+				Integer[] values = new Integer[outer];
+				for (int i = 0; i < outer; i++) {
+					values[i] = i;
+				}
+				Dimension<Integer> innerDim = Dimension.create("inner", values);
+				ParameterSpace innerPSpace = new ParameterSpace(innerDim);
+				setParameterSpace(innerPSpace);
+				
+				// Execute the batch task
+				super.execute(aContext);
+			}
+			
+			@Override
+			public void setConfiguration(Map<String, Object> aConfig)
+			{
+				super.setConfiguration(aConfig);
+				System.out.printf("A %10d %s %s%n", this.hashCode(), getType(), aConfig);
+			}
+		};
+		innerTask.addTask(new ConfigDumperTask1());
+		
+		Dimension<Integer> outerDim = Dimension.create("outer", 1, 2, 3);
+		ParameterSpace outerPSpace = new ParameterSpace(outerDim);
+		BatchTask outerTask = new BatchTask() {
+			@Override
+			public void setConfiguration(Map<String, Object> aConfig)
+			{
+				super.setConfiguration(aConfig);
+				System.out.printf("B %10d %s %s%n", this.hashCode(), getType(), aConfig);
+			}
+		};
+		outerTask.setParameterSpace(outerPSpace);
+		outerTask.addTask(innerTask);
+		outerTask.addTask(new ConfigDumperTask2());
+		
+		Lab.getInstance().run(outerTask);
+	}
+
 	public static class ConfigDumperTask1 extends ExecutableTaskBase implements ConfigurationAware
 	{
 		@Discriminator

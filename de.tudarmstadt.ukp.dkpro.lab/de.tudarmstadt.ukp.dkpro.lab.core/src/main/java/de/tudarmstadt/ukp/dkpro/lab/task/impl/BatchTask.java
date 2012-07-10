@@ -37,6 +37,7 @@ import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.dao.DataAccessResourceFailureException;
@@ -150,7 +151,7 @@ public class BatchTask
 			log.info("== Running new configuration ["+aContext.getId()+"] ==");
 			List<String> keys = new ArrayList<String>(config.keySet());
 			for (String key : keys) {
-				log.info("["+key+"]: ["+Util.toString(config.get(key))+"]");
+				log.info("["+key+"]: ["+StringUtils.abbreviateMiddle(Util.toString(config.get(key)), "…", 150)+"]");
 			}
 
 			if (log.isTraceEnabled()) {
