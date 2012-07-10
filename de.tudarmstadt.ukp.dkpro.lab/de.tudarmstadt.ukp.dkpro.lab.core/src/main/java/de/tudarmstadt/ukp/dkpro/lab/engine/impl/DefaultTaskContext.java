@@ -58,6 +58,12 @@ public class DefaultTaskContext
 	}
 
 	@Override
+	public TaskContextFactory getTaskContextFactory()
+	{
+		return owner;
+	}
+	
+	@Override
 	public String getId()
 	{
 		return getMetadata().getId();

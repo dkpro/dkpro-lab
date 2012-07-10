@@ -95,4 +95,6 @@ public interface TaskContext
 	 * Resolves the given import URI to the meta data of the task containing the addressed resource.
 	 */
 	TaskContextMetadata resolve(URI uri);
+	
+	TaskContextFactory getTaskContextFactory();
 }
