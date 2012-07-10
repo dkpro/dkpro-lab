@@ -17,6 +17,7 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.lab.task;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -79,7 +80,15 @@ public class ParameterSpace implements Iterable<Map<String, Object>>
 	@Override
 	public Iterator<Map<String, Object>> iterator()
 	{
-		return new ParameterSpaceIterator();
+		if (dimensions.length > 0) {
+			return new ParameterSpaceIterator();
+		}
+		else {
+			// Run once with empty configuration map if no dimensions are given
+			Set<Map<String, Object>> dummy = new HashSet<Map<String, Object>>();
+			dummy.add(new HashMap<String, Object>());
+			return dummy.iterator();
+		}
 	}
 
 	private class ParameterSpaceIterator
