@@ -53,9 +53,8 @@ public class ImportUtil
 
 			Set<String> keys = aDiscriminators.keySet();
 			nextKey: for (String key : keys) {
-				// Issue 12 - Bug when using maps or empty arrays as parameters
-				//            Pattern matching disabled.
-				if (!(e.getKey().equals(key) /*|| Pattern.matches(keyPattern, key)*/ )) {
+				// Pattern matching must remain active here!!
+				if (!(e.getKey().equals(key) || Pattern.matches(keyPattern, key) )) {
 					// key pattern does not match or equal the key. Try next key
 					log.trace("No key match: ["+keyPattern+"] ["+key+"]");
 					continue nextKey;
