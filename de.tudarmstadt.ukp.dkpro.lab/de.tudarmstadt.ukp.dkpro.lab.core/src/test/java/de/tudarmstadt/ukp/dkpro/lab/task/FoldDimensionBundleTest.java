@@ -38,6 +38,13 @@ import de.tudarmstadt.ukp.dkpro.lab.task.impl.FoldDimensionBundle;
 
 public class FoldDimensionBundleTest
 {
+	@Before
+	public void setup()
+	{
+		String path = "target/repository/"+getClass().getSimpleName()+"/"+name.getMethodName();
+		System.setProperty("DKPRO_HOME", new File(path).getAbsolutePath());
+	}
+	
 	@Test
 	public void testSimpleFold()
 	{

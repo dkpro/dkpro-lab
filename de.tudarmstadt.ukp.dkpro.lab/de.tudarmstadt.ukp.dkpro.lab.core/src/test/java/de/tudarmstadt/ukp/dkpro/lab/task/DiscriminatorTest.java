@@ -21,7 +21,6 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -29,20 +28,21 @@ import org.junit.rules.TestName;
 
 import de.tudarmstadt.ukp.dkpro.lab.Lab;
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
-import de.tudarmstadt.ukp.dkpro.lab.storage.filesystem.FileSystemStorageService;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.ExecutableTaskBase;
 
 public class DiscriminatorTest
 {
+	@Before
+	public void setup()
+	{
+		String path = "target/repository/"+getClass().getSimpleName()+"/"+name.getMethodName();
+		System.setProperty("DKPRO_HOME", new File(path).getAbsolutePath());
+	}
+	
 	@Test
 	public void testMap() throws Exception
 	{
-		File repo = new File("target/repository/"+getClass().getSimpleName()+"/"+name.getMethodName());
-		FileUtils.deleteDirectory(repo);
-		repo.mkdirs();
-		((FileSystemStorageService) Lab.getInstance().getStorageService()).setStorageRoot(repo);
-
 		Map<String, String> map1 = new HashMap<String, String>();
 		map1.put("A", "89zsöoibca");
 		map1.put("243jh1g45", "09z2#3ROj 	2r!]9832");

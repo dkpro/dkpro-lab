@@ -20,30 +20,28 @@ package de.tudarmstadt.ukp.dkpro.lab.task;
 import java.io.File;
 import java.util.Map;
 
-import org.apache.commons.io.FileUtils;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 
 import de.tudarmstadt.ukp.dkpro.lab.Lab;
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
-import de.tudarmstadt.ukp.dkpro.lab.storage.filesystem.FileSystemStorageService;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.ExecutableTaskBase;
 
 public class BatchTaskTest
 {
-	@Ignore("Currently does not run on Jenkins")
+	@Before
+	public void setup()
+	{
+		String path = "target/repository/"+getClass().getSimpleName()+"/"+name.getMethodName();
+		System.setProperty("DKPRO_HOME", new File(path).getAbsolutePath());
+	}
+	
 	@Test
 	public void testNested() throws Exception
-	{
-		File repo = new File("target/repository/"+getClass().getSimpleName()+"/"+name.getMethodName());
-		FileUtils.deleteDirectory(repo);
-		repo.mkdirs();
-		((FileSystemStorageService) Lab.getInstance().getStorageService()).setStorageRoot(repo);
-		
+	{		
 		Dimension innerDim = Dimension.create("inner", "1", "2", "3");
 		ParameterSpace innerPSpace = new ParameterSpace(innerDim);
 		BatchTask innerTask = new BatchTask() {
@@ -74,15 +72,9 @@ public class BatchTaskTest
 		Lab.getInstance().run(outerTask);
 	}
 
-	@Ignore("Currently does not run on Jenkins")
 	@Test
 	public void testNested2() throws Exception
 	{
-		File repo = new File("target/repository/"+getClass().getSimpleName()+"/"+name.getMethodName());
-		FileUtils.deleteDirectory(repo);
-		repo.mkdirs();
-		((FileSystemStorageService) Lab.getInstance().getStorageService()).setStorageRoot(repo);
-		
 		BatchTask innerTask = new BatchTask() {
 			@Discriminator
 			private Integer outer;
