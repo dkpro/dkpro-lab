@@ -31,6 +31,7 @@ import org.apache.uima.collection.CollectionProcessingEngine;
 import org.apache.uima.collection.EntityProcessStatus;
 import org.apache.uima.collection.StatusCallbackListener;
 import org.apache.uima.resource.ResourceManager;
+import org.uimafit.factory.CpeBuilder;
 
 import de.tudarmstadt.ukp.dkpro.lab.engine.ExecutionException;
 import de.tudarmstadt.ukp.dkpro.lab.engine.LifeCycleException;
