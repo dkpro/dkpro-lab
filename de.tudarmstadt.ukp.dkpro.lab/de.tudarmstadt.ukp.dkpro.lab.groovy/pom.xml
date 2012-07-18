@@ -20,7 +20,7 @@
 	<parent>
 		<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
 		<artifactId>de.tudarmstadt.ukp.dkpro.lab</artifactId>
-		<version>0.8.0</version>
+		<version>0.9.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>de.tudarmstadt.ukp.dkpro.lab.groovy</artifactId>
 	<name>DKPro Lab - Groovy Support</name>
