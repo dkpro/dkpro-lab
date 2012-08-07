@@ -32,10 +32,9 @@ public class FoldDimensionBundle<T> extends DimensionBundle<Collection<T>> imple
 	private int validationBucket = -1;
 	private int folds;
 	
-	@SuppressWarnings("unchecked")
 	public FoldDimensionBundle(String aName, Dimension<T> aFoldedDimension, int aFolds)
 	{
-		super(aName);
+		super(aName, new Object[0] );
 		foldedDimension = aFoldedDimension;
 		folds = aFolds;
 	}
