@@ -42,7 +42,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.dao.DataAccessResourceFailureException;
 
-import de.tudarmstadt.ukp.dkpro.lab.Lab;
 import de.tudarmstadt.ukp.dkpro.lab.ProgressMeter;
 import de.tudarmstadt.ukp.dkpro.lab.Util;
 import de.tudarmstadt.ukp.dkpro.lab.engine.LifeCycleManager;
@@ -173,7 +172,7 @@ public class BatchTask
 			while (!queue.isEmpty()) {
 				Task task = queue.poll();
 
-				TaskExecutionService execService = Lab.getInstance().getTaskExecutionService();
+				TaskExecutionService execService = aContext.getExecutionService();
 
 				// Check if the task was already executed
 				TaskContextMetadata existing = getExistingExecution(aContext, task, config, executedSubtasks.keySet());
@@ -339,6 +338,7 @@ public class BatchTask
 		protected TaskContext createContext(TaskContextMetadata aMetadata)
 		{
 			ScopedTaskContext ctx = new ScopedTaskContext(contextFactory);
+			ctx.setExecutionService(getExecutionService());
 			ctx.setLifeCycleManager(getLifeCycleManager());
 			ctx.setStorageService(getStorageService());
 			ctx.setLoggingService(getLoggingService());
@@ -382,6 +382,12 @@ public class BatchTask
 		public StorageService getStorageService()
 		{
 			return contextFactory.getStorageService();
+		}
+		
+		@Override
+		public TaskExecutionService getExecutionService()
+		{
+			return contextFactory.getExecutionService();
 		}
 	}
 

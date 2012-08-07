@@ -32,6 +32,7 @@ import org.springframework.dao.DataAccessResourceFailureException;
 import de.tudarmstadt.ukp.dkpro.lab.engine.LifeCycleManager;
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContextFactory;
+import de.tudarmstadt.ukp.dkpro.lab.engine.TaskExecutionService;
 import de.tudarmstadt.ukp.dkpro.lab.logging.LoggingService;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StreamReader;
@@ -50,6 +51,7 @@ public class DefaultTaskContext
 	private StorageService storageService;
 	private LifeCycleManager lifeCycleManager;
 	private TaskContextMetadata metadata;
+	private TaskExecutionService executionService;
 
 	public DefaultTaskContext(final TaskContextFactory aOwner)
 	{
@@ -113,6 +115,17 @@ public class DefaultTaskContext
 	public LifeCycleManager getLifeCycleManager()
 	{
 		return lifeCycleManager;
+	}
+	
+	public void setExecutionService(TaskExecutionService aExecutionService)
+	{
+		executionService = aExecutionService;
+	}
+
+	@Override
+	public TaskExecutionService getExecutionService()
+	{
+		return executionService;
 	}
 
 	@Override

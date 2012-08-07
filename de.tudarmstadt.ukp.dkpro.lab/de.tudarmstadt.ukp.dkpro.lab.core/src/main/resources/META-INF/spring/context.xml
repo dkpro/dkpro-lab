@@ -26,8 +26,8 @@
 		class="de.tudarmstadt.ukp.dkpro.lab.engine.impl.DefaultTaskContextFactory">
 		<property name="storageService" ref="StorageService" />
 		<property name="loggingService" ref="LoggingService" />
-		<property name="lifeCycleManager" ref="LifeCycleManager">
-		</property>
+		<property name="lifeCycleManager" ref="LifeCycleManager"/>
+		<property name="executionService" ref="TaskExecutionService"/>
 	</bean>
 
 	<bean id="LifeCycleManager"

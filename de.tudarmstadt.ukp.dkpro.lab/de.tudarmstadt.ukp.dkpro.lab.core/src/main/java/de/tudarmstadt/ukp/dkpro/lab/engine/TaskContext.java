@@ -54,6 +54,8 @@ public interface TaskContext
 	String getId();
 
 	TaskContextMetadata getMetadata();
+	
+	TaskExecutionService getExecutionService();
 
 	void destroy();
 
