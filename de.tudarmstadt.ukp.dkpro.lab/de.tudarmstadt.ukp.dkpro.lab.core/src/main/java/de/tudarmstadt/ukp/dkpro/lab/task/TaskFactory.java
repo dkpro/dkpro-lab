@@ -25,6 +25,19 @@ import org.springframework.beans.PropertyAccessorFactory;
 
 public class TaskFactory
 {
+	/**
+	 * Configure a task using the given parameter configuration. When the task has a field or a
+	 * setter for any of the parameters, its value is set to the parameter value. Setter access is
+	 * preferred over direct field access. If a task implements {@link ConfigurationAware} the
+	 * full parameter configuration is also set via the
+	 * {@link ConfigurationAware#setConfiguration(Map)} method.
+	 * <p>
+	 * The task should declare any parameters that affect its output as {@link Discriminator}s (
+	 * see also {@link Task#getDescriminators()}.
+	 * 
+	 * @param aTask the task to configure.
+	 * @param aConfiguration the parameter configuration.
+	 */
 	public static void configureTask(Task aTask, Map<String, Object> aConfiguration)
 	{
 		PropertyAccessor paBean = PropertyAccessorFactory.forBeanPropertyAccess(aTask);

@@ -62,13 +62,30 @@ public interface Task
 	 *
 	 * @param aKey the descriminator name.
 	 * @param aValue the value.
+	 * 
+	 * @see #getDescriminators()
 	 */
 	void setDescriminator(String aKey, String aValue);
 
 	String getDescriminator(String aKey);
 
+	/**
+	 * Get the discriminators for the task. Discriminators are used to determine if a task has
+	 * already been executed for a particular parameter configuration. Normally the discriminators
+	 * are the set of all parameters that affets a task's output and their parameter values.
+	 */
 	Map<String, String> getDescriminators();
 
+	/**
+	 * Get the discriminators for the task and all tasks it depends on.
+	 * 
+	 * @param aContext
+	 *            context of the current task used to resolve the data-dependencies.
+	 * @return merged set of discriminators of the current task and the tasks it depends on.
+	 * @throws IllegalStateException
+	 *             if there is a conflict between the discriminators of an imported task context and
+	 *             the current discriminator values of the task.
+	 */
 	Map<String, String> getResolvedDescriminators(TaskContext aContext);
 
 	/**
