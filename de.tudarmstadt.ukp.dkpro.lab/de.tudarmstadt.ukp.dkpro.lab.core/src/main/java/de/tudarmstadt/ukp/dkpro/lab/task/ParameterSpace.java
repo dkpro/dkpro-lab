@@ -62,16 +62,31 @@ public class ParameterSpace implements Iterable<Map<String, Object>>
 		return stepCount;
 	}
 
+	/**
+	 * Add the constraint.
+	 * 
+	 * @see #getConstraints()
+	 */
 	public void addConstraint(Constraint aConstraint)
 	{
 		constraints.add(aConstraint);
 	}
 
-	public void removeCondition(Constraint aConstraint)
+	/**
+	 * Remove the constraint.
+	 * 
+	 * @see #getConstraints()
+	 */
+	public void removeConstraint(Constraint aConstraint)
 	{
 		constraints.remove(aConstraint);
 	}
 	
+	/**
+	 * Get the constraints. If no constraints are set, all parameter combinations are executed. If
+	 * constraints are set, a parameter combination is only executed if at least one constraint
+	 * allows the combination, otherwise the combination is skipped.
+	 */
 	public Set<Constraint> getConstraints()
 	{
 		return constraints;
@@ -116,7 +131,7 @@ public class ParameterSpace implements Iterable<Map<String, Object>>
 						}
 					}
 					incDim = dimensions.length - 1;
-					if (conditionsMet()) {
+					if (constraintsMet()) {
 						return;
 					}
 				}
@@ -146,21 +161,29 @@ public class ParameterSpace implements Iterable<Map<String, Object>>
 					incDim = dimensions.length - 1;
 				}
 			}
-			while (!conditionsMet());
+			while (!constraintsMet());
 		}
 
-		private boolean conditionsMet()
+		private boolean constraintsMet()
 		{
 			Map<String, Object> config = current();
 
 			stepCount++;
 
+			// If no constraints are set, run everything
+			if (constraints.isEmpty()) {
+				return true;
+			}
+			
+			// If constraints are set, run a configuration if any of them says "ok"
 			for (Constraint c : constraints) {
-				if (!c.isValid(config)) {
-					return false;
+				if (c.isValid(config)) {
+					return true;
 				}
 			}
-			return true;
+			
+			// default to not running
+			return false;
 		}
 
 		@Override
