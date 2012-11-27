@@ -26,6 +26,9 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContextFactory;
+import de.tudarmstadt.ukp.dkpro.lab.reporting.LabelFunction;
+import de.tudarmstadt.ukp.dkpro.lab.reporting.ReportBase;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StreamReader;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StreamWriter;
 
@@ -53,21 +56,43 @@ public class TaskContextMetadata
 		imports = new HashMap<String, String>();
 	}
 
+	/**
+	 * Get the task ID. 
+	 * 
+	 * @see TaskContextFactory#createContext(Task)
+	 */
 	public String getId()
 	{
 		return uuid;
 	}
 
+	/**
+	 * Set the task ID.
+	 * 
+	 * @see TaskContextFactory#createContext(Task)
+	 */
 	public void setId(String aUuid)
 	{
 		uuid = aUuid;
 	}
 
+	/**
+	 * Get the task context label.
+	 */
 	public String getLabel()
 	{
 		return label;
 	}
 
+	/**
+	 * Set an arbitrary label on the task context. This is only used for display purposes and not
+	 * evaluated at any point by the framework. It is typically used in batch reports to provide
+	 * a more readable label for a task execution, often using a particularly characteristic
+	 * parameter or parameter combination.
+	 * 
+	 * @see ReportBase#getContextLabel
+	 * @see LabelFunction
+	 */
 	public void setLabel(String aLabel)
 	{
 		label = aLabel;
@@ -83,26 +108,41 @@ public class TaskContextMetadata
 		type = aName;
 	}
 
+	/**
+	 * Get the timestamp for the beginning of the task execution.
+	 */
 	public long getStart()
 	{
 		return start;
 	}
 
+	/**
+	 * Set the timestamp for the beginning of the task execution.
+	 */
 	public void setStart(long aStart)
 	{
 		start = aStart;
 	}
 
+	/**
+	 * Get the timestamp for the end of the task execution.
+	 */
 	public long getEnd()
 	{
 		return end;
 	}
 
+	/**
+	 * Set the timestamp for the end of the task execution.
+	 */
 	public void setEnd(long aEnd)
 	{
 		end = aEnd;
 	}
 
+	/**
+	 * Set the data-dependencies of the task.
+	 */
 	public void setImports(Map<String, String> aImports)
 	{
 		imports.clear();
@@ -111,6 +151,9 @@ public class TaskContextMetadata
 		}
 	}
 
+	/**
+	 * Get the data-dependencies of the task.
+	 */
 	public Map<String, String> getImports()
 	{
 		return imports;
@@ -119,10 +162,13 @@ public class TaskContextMetadata
 	@Override
 	public String toString()
 	{
-		return "ExperimentEntry [uuid=" + uuid + ", name=" + type + ", start=" + start + ", end="
-				+ end + "]";
+		return "TaskContextMetadata [uuid=" + uuid + ", name=" + type + ", start=" + start
+				+ ", end=" + end + "]";
 	}
 
+	/**
+	 * Load the context meta data.
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public void read(InputStream aInputStream)
@@ -144,6 +190,9 @@ public class TaskContextMetadata
 		}
 	}
 
+	/**
+	 * Write the context meta data.
+	 */
 	@Override
 	public void write(OutputStream aStream)
 		throws Exception

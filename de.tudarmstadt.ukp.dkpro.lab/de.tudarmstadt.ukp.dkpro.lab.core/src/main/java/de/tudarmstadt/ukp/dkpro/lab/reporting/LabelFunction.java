@@ -19,9 +19,22 @@ package de.tudarmstadt.ukp.dkpro.lab.reporting;
 
 import java.util.Map;
 
+/**
+ * Generate a salient label for a parameter configuration. This can be used to make 
+ * {@link Report reports} more readable.
+ * 
+ * @see Report#TASK_LABEL_FUNC_PROP
+ * 
+ * @author Richard Eckart de Castilho
+ */
 public interface LabelFunction
 {
 	public static final String PROP_TASK_CONTEXT_ID = "__TASK_CONTEXT_ID__";
 
+	/**
+	 * 
+	 * @param aProperties a parameter configuration.
+	 * @return a label.
+	 */
 	String makeLabel(Map<String, String> aProperties);
 }

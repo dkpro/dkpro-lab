@@ -18,6 +18,7 @@
 package de.tudarmstadt.ukp.dkpro.lab.engine;
 
 import de.tudarmstadt.ukp.dkpro.lab.task.Task;
+import de.tudarmstadt.ukp.dkpro.lab.task.TaskContextMetadata;
 
 /**
  * @author Richard Eckart de Castilho
@@ -25,7 +26,8 @@ import de.tudarmstadt.ukp.dkpro.lab.task.Task;
 public interface TaskContextFactory
 {
 	/**
-	 * Create a new context for the given task configuration.
+	 * Create a new context for the given task configuration. A task ID is generated and the
+	 * {@link TaskContextMetadata} is initialized.
 	 *
 	 * @param aConfiguration a task configuration.
 	 * @return the new context.

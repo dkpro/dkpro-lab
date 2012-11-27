@@ -19,10 +19,20 @@ package de.tudarmstadt.ukp.dkpro.lab.reporting;
 
 import static de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask.SUBTASKS_KEY;
 import de.tudarmstadt.ukp.dkpro.lab.task.TaskContextMetadata;
+import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask;
 
+/**
+ * Base class for reports on {@link BatchTask}s. Provides convenience methods to access the subtask
+ * contexts.
+ * 
+ * @author Richard Eckart de Castilho
+ */
 public abstract class BatchReportBase
 	extends ReportBase
 {
+	/**
+	 * Get the context IDs of the subtasks.
+	 */
 	protected String[] getSubtaskContextIds()
 	{
 		String allSubTasks = getProperties().get(SUBTASKS_KEY);
@@ -33,6 +43,9 @@ public abstract class BatchReportBase
 		return subTasks;
 	}
 
+	/**
+	 * Get the context meta data of the subtasks.
+	 */
 	protected TaskContextMetadata[] getSubtasks()
 	{
 		String[] subTaskIds = getSubtaskContextIds();

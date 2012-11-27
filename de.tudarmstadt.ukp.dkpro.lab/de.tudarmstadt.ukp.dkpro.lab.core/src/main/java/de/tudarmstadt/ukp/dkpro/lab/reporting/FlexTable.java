@@ -46,7 +46,7 @@ import de.tudarmstadt.ukp.dkpro.lab.storage.StreamWriter;
 
 /**
  * Conveniently create a tabular data structure which may be persisted to and read from a CSV file
- * or serialized as a TWiki table.
+ * or serialized in several other formats.
  *
  * @author Richard Eckart de Castilho
  *
@@ -121,7 +121,8 @@ public class FlexTable <V>
 	}
 
 	/**
-	 * Append new columns to an existing row. If no row with the given ID is present, a new one is created.
+	 * Append new columns to an existing row. If no row with the given ID is present, a new one is 
+	 * created.
 	 *
 	 * @param aId the row ID.
 	 * @param aRow the row data.
