@@ -38,6 +38,7 @@ import java.util.Queue;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.dao.DataAccessResourceFailureException;
@@ -54,6 +55,8 @@ import de.tudarmstadt.ukp.dkpro.lab.engine.impl.DefaultTaskContextFactory;
 import de.tudarmstadt.ukp.dkpro.lab.engine.impl.ImportUtil;
 import de.tudarmstadt.ukp.dkpro.lab.logging.LoggingService;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService;
+import de.tudarmstadt.ukp.dkpro.lab.storage.TaskContextNotFoundException;
+import de.tudarmstadt.ukp.dkpro.lab.storage.UnresolvedImportException;
 import de.tudarmstadt.ukp.dkpro.lab.storage.impl.PropertiesAdapter;
 import de.tudarmstadt.ukp.dkpro.lab.task.ConfigurationAware;
 import de.tudarmstadt.ukp.dkpro.lab.task.Dimension;
@@ -62,6 +65,7 @@ import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
 import de.tudarmstadt.ukp.dkpro.lab.task.Task;
 import de.tudarmstadt.ukp.dkpro.lab.task.TaskContextMetadata;
 import de.tudarmstadt.ukp.dkpro.lab.task.TaskFactory;
+import de.tudarmstadt.ukp.dkpro.lab.task.UnfulfillablePrerequisiteException;
 
 public class BatchTask
 	extends ExecutableTaskBase
@@ -169,13 +173,15 @@ public class BatchTask
 			Queue<Task> queue = new LinkedList<Task>(tasks);
 			Set<Task> loopDetection = new HashSet<Task>();
 
+			List<Exception> deferralReasons = new ArrayList<Exception>();
 			while (!queue.isEmpty()) {
 				Task task = queue.poll();
 
 				TaskExecutionService execService = aContext.getExecutionService();
 
 				// Check if the task was already executed
-				TaskContextMetadata existing = getExistingExecution(aContext, task, config, executedSubtasks.keySet());
+				TaskContextMetadata existing = getExistingExecution(aContext, task, config, 
+						executedSubtasks.keySet());
 				if (existing != null) {
 					log.debug("Using existing execution [" + existing.getId() + "]");
 					executedSubtasks.put(existing.getId(), "");
@@ -193,14 +199,23 @@ public class BatchTask
 					executedSubtasks.put(uuid, "");
 					scope.add(uuid);
 					loopDetection.clear();
+					deferralReasons.clear();
 				}
-				catch (DataAccessResourceFailureException e) {
+				catch (UnresolvedImportException e) {
 					log.debug("Deferring execution of task ["+task.getType()+"]: "+e.getMessage());
 					queue.add(task);
 					if (loopDetection.contains(task)) {
-						throw new IllegalStateException("Prerequisites for task [" + task.getType()
-								+ "] cannot be fulfilled causing an endless loop. Bailing out.");
+						StringBuilder details = new StringBuilder();
+						for (Exception r : deferralReasons) {
+							details.append("\n");
+							details.append("- " + ExceptionUtils.getRootCauseMessage(r));
+						}
+						
+						throw new UnfulfillablePrerequisiteException("Prerequisites for task [" 
+								+ task.getType() + "] cannot be fulfilled causing an endless loop." +
+								"Bailing out. Details:" + details);
 					}
+					deferralReasons.add(e);
 					loopDetection.add(task);
 					continue;
 				}
@@ -215,9 +230,20 @@ public class BatchTask
 		persist(aContext);
 	}
 
+	/**
+	 * Locate the latest task execution compatible with the given task configuration.
+	 * 
+	 * @param aContext the context of the current batch task.
+	 * @param aType the type of the task context to find.
+	 * @param aDiscriminators the discriminators of the task context to find.
+	 * @param aConfig the current parameter configuration.
+	 * @throws TaskContextNotFoundException if a matching task context could not be found.
+	 * @see ImportUtil#matchConstraints(Map, Map, boolean)
+	 */
 	private TaskContextMetadata getLatestExecution(TaskContext aContext, String aType,
 			Map<String, String> aDiscriminators, Map<String, Object> aConfig)
 	{
+		// Convert parameter values to strings
 		Map<String, String >config = new HashMap<String, String>();
 		for (Entry<String, Object> e : aConfig.entrySet()) {
 			config.put(e.getKey(), Util.toString(e.getValue()));
@@ -234,10 +260,18 @@ public class BatchTask
 				return meta;
 			}
 		}
-		throw ImportUtil.createTaskNeverExecutedException(aType, aDiscriminators);
+		throw ImportUtil.createContextNotFoundException(aType, aDiscriminators);
 
 	}
 
+	/**
+	 * Locate the latest task execution compatible with the given task configuration.
+	 * 
+	 * @param aContext the context of the current batch task.
+	 * @param aTask the the task whose task context should be found.
+	 * @param aConfig the current parameter configuration.
+	 * @return {@code null} if the context could not be found.
+	 */
 	private TaskContextMetadata getExistingExecution(TaskContext aContext, Task aTask,
 			Map<String, Object> aConfig, Set<String> aScope)
 	{
@@ -277,7 +311,7 @@ public class BatchTask
 				throw new IllegalStateException("Unknown executionPolicy ["+executionPolicy+"]");
 			}
 		}
-		catch (DataAccessResourceFailureException e) {
+		catch (TaskContextNotFoundException e) {
 			// Task context not found in storage
 			return null;
 		}

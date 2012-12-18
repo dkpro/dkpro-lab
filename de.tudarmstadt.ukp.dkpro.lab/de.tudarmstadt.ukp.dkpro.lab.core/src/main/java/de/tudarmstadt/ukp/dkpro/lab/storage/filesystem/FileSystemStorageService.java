@@ -153,7 +153,7 @@ public class FileSystemStorageService
 		List<TaskContextMetadata> contexts = getContexts(aTaskType, aConstraints);
 
 		if (contexts.size() == 0) {
-			throw ImportUtil.createTaskNeverExecutedException(aTaskType, aConstraints);
+			throw ImportUtil.createContextNotFoundException(aTaskType, aConstraints);
 		}
 
 		return contexts.get(0);

@@ -29,9 +29,8 @@ import javax.ws.rs.core.MultivaluedMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.dao.DataAccessResourceFailureException;
-
 import de.tudarmstadt.ukp.dkpro.lab.resteasy.UriInfoImpl;
+import de.tudarmstadt.ukp.dkpro.lab.storage.TaskContextNotFoundException;
 
 public class ImportUtil
 {
@@ -103,7 +102,7 @@ public class ImportUtil
 		return constraints;
 	}
 
-	public static DataAccessResourceFailureException createTaskNeverExecutedException(
+	public static TaskContextNotFoundException createContextNotFoundException(
 			String aTaskType, Map<String, String> aConstraints)
 	{
 		if (aTaskType == null) {
@@ -122,6 +121,6 @@ public class ImportUtil
 				sb.append("]\n");
 			}
 		}
-		return new DataAccessResourceFailureException(sb.toString());
+		return new TaskContextNotFoundException(sb.toString());
 	}
 }
