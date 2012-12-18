@@ -19,14 +19,18 @@ package de.tudarmstadt.ukp.dkpro.lab.task;
 
 import java.io.File;
 import java.util.Map;
+import java.util.Properties;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 
 import de.tudarmstadt.ukp.dkpro.lab.Lab;
+import de.tudarmstadt.ukp.dkpro.lab.engine.ExecutionException;
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
+import de.tudarmstadt.ukp.dkpro.lab.storage.impl.PropertiesAdapter;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.ExecutableTaskBase;
 
@@ -37,6 +41,47 @@ public class BatchTaskTest
 	{
 		String path = "target/repository/"+getClass().getSimpleName()+"/"+name.getMethodName();
 		System.setProperty("DKPRO_HOME", new File(path).getAbsolutePath());
+	}
+	
+	@Test(expected=ExecutionException.class)
+	public void importTest() throws Exception
+	{
+		Task producer = new ExecutableTaskBase()
+		{
+			@Override
+			public void execute(TaskContext aContext)
+				throws Exception
+			{
+				System.out.println("Running producer");
+				
+				Properties data = new Properties();
+				data.setProperty("key", "value");
+				
+				aContext.storeBinary("DATA", new PropertiesAdapter(data));
+			}
+		};
+
+		Task consumer = new ExecutableTaskBase()
+		{
+			@Override
+			public void execute(TaskContext aContext)
+				throws Exception
+			{
+				System.out.println("Running consumer");
+				
+				Properties data = new Properties();
+				aContext.retrieveBinary("DATA", new PropertiesAdapter(data));
+				Assert.assertEquals(data.getProperty("key"), "value");
+			}
+		};
+		
+		consumer.addImportLatest("DATA", "DATA1", producer.getType());
+		
+		BatchTask batch = new BatchTask();
+		batch.addTask(producer);
+		batch.addTask(consumer);
+		
+		Lab.getInstance().run(batch);
 	}
 	
 	@Test

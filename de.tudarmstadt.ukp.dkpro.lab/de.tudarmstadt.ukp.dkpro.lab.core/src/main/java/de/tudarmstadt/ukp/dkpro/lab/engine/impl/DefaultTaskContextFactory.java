@@ -29,14 +29,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.safehaus.uuid.UUIDGenerator;
 import org.springframework.beans.factory.BeanNameAware;
-import org.springframework.dao.DataAccessResourceFailureException;
-
 import de.tudarmstadt.ukp.dkpro.lab.engine.LifeCycleManager;
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContextFactory;
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskExecutionService;
 import de.tudarmstadt.ukp.dkpro.lab.logging.LoggingService;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService;
+import de.tudarmstadt.ukp.dkpro.lab.storage.UnresolvedImportException;
 import de.tudarmstadt.ukp.dkpro.lab.task.Task;
 import de.tudarmstadt.ukp.dkpro.lab.task.TaskContextMetadata;
 
@@ -139,7 +138,7 @@ public class DefaultTaskContextFactory
 			if (LATEST_CONTEXT_SCHEME.equals(uri.getScheme()) || CONTEXT_ID_SCHEME.equals(uri.getScheme())) {
 				String uuid = aContext.resolve(uri).getId();
 				if (!getStorageService().containsKey(uuid, uri.getPath())) {
-					throw new DataAccessResourceFailureException("Unable to resolve key ["
+					throw new UnresolvedImportException("Unable to resolve key ["
 							+ e.getKey() + "] of task [" + aContext.getMetadata().getType()
 							+ "] pointing to [" + e.getValue() + "]");
 				}

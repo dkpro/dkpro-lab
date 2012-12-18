@@ -110,6 +110,7 @@ public interface StorageService
 	 * @param aConstraints a set of further constraints in addition to the type.
 	 * @return the metadata.
 	 * @since 0.3.0
+	 * @throws TaskContextNotFoundException if a matching task context could not be found.
 	 */
 	TaskContextMetadata getLatestContext(String aTaskType, Map<String, String> aConstraints);
 
