@@ -187,6 +187,7 @@ public class BatchTask
 					executedSubtasks.put(existing.getId(), "");
 					scope.add(existing.getId());
 					loopDetection.clear();
+					deferralReasons.clear();
 					continue;
 				}
 
