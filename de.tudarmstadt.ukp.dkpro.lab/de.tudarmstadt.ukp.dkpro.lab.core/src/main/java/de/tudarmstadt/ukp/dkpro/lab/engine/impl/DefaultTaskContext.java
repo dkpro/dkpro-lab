@@ -39,6 +39,8 @@ import de.tudarmstadt.ukp.dkpro.lab.storage.StreamReader;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StreamWriter;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.StorageKey;
+import de.tudarmstadt.ukp.dkpro.lab.storage.TaskContextNotFoundException;
+import de.tudarmstadt.ukp.dkpro.lab.storage.UnresolvedImportException;
 import de.tudarmstadt.ukp.dkpro.lab.task.TaskContextMetadata;
 import static de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.*;
 
@@ -216,10 +218,20 @@ public class DefaultTaskContext
 	{
 		StorageService storage = getStorageService();
 		if (LATEST_CONTEXT_SCHEME.equals(aUri.getScheme())) {
-			return storage.getLatestContext(aUri.getAuthority(), extractConstraints(aUri));
+			try {
+				return storage.getLatestContext(aUri.getAuthority(), extractConstraints(aUri));
+			}
+			catch (TaskContextNotFoundException e) {
+				throw new UnresolvedImportException(e.getMessage());
+			}
 		}
 		else if (CONTEXT_ID_SCHEME.equals(aUri.getScheme())) {
-			return storage.getContext(aUri.getAuthority());
+			try {
+				return storage.getContext(aUri.getAuthority());
+			}
+			catch (TaskContextNotFoundException e) {
+				throw new UnresolvedImportException(e.getMessage());
+			}
 		}
 		else {
 			throw new DataAccessResourceFailureException("Unknown scheme in import ["+aUri+"]");

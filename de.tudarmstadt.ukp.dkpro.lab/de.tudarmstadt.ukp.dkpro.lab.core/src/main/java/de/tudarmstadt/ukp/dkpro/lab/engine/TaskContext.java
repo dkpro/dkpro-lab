@@ -26,6 +26,7 @@ import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StreamReader;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StreamWriter;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
+import de.tudarmstadt.ukp.dkpro.lab.storage.UnresolvedImportException;
 import de.tudarmstadt.ukp.dkpro.lab.task.TaskContextMetadata;
 
 /**
@@ -95,6 +96,8 @@ public interface TaskContext
 
 	/**
 	 * Resolves the given import URI to the meta data of the task containing the addressed resource.
+	 * 
+	 * @throws UnresolvedImportException if the import could not be resolved.
 	 */
 	TaskContextMetadata resolve(URI uri);
 	

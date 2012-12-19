@@ -453,10 +453,20 @@ public class BatchTask
 			StorageService storage = getStorageService();
 			if (LATEST_CONTEXT_SCHEME.equals(aUri.getScheme())) {
 				Map<String, String> constraints = extractConstraints(aUri);
-				meta = getLatestExecution(this, aUri.getAuthority(), constraints, config);
+				try {
+					meta = getLatestExecution(this, aUri.getAuthority(), constraints, config);
+				}
+				catch (TaskContextNotFoundException e) {
+					throw new UnresolvedImportException(e.getMessage());
+				}
 			}
 			else if (CONTEXT_ID_SCHEME.equals(aUri.getScheme())) {
-				meta = storage.getContext(aUri.getAuthority());
+				try {
+					meta = storage.getContext(aUri.getAuthority());
+				}
+				catch (TaskContextNotFoundException e) {
+					throw new UnresolvedImportException(e.getMessage());
+				}
 			}
 			else {
 				throw new DataAccessResourceFailureException("Unknown scheme in import ["+aUri+"]");
