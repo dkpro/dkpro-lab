@@ -463,7 +463,7 @@ public class BatchTask
 			}
 
 			if (!scope.contains(meta.getId())) {
-				throw new DataAccessResourceFailureException("Resolved context [" + meta.getId()
+				throw new UnresolvedImportException("Resolved context [" + meta.getId()
 						+ "] not in scope " + scope);
 			}
 
