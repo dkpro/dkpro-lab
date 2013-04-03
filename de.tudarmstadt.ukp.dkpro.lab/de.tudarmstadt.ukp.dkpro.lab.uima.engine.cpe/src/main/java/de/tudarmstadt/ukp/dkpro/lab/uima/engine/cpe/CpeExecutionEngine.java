@@ -123,7 +123,7 @@ public class CpeExecutionEngine
 			ctx.getLifeCycleManager().fail(ctx, aConfiguration, e);
 			throw e;
 		}
-		catch (Exception e) {
+		catch (Throwable e) {
 			ctx.getLifeCycleManager().fail(ctx, aConfiguration, e);
 			throw new ExecutionException(e);
 		}

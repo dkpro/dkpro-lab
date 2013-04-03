@@ -53,7 +53,11 @@ public class ExecutableTaskEngine
 			try {
 				((ExecutableTask) aConfiguration).execute(ctx);
 			}
-			catch (Exception e) {
+			catch (LifeCycleException e) {
+				ctx.getLifeCycleManager().fail(ctx, aConfiguration, e);
+				throw e;
+			}
+			catch (Throwable e) {
 				ctx.getLifeCycleManager().fail(ctx, aConfiguration, e);
 				throw new ExecutionException(e);
 			}

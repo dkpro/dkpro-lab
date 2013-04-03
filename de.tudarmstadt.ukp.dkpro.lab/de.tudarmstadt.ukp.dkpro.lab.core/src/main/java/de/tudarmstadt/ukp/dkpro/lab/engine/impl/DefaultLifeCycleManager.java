@@ -101,7 +101,19 @@ public class DefaultLifeCycleManager
 				i++;
 			}
 		}
-		aContext.storeBinary(TaskContextMetadata.METADATA_KEY, aContext.getMetadata());
+		
+		// This is a critical file as it marks if a task has completed successfully or not. If
+		// this file cannot be created properly, e.g. because the disk is full, then there will be
+		// subsequent and hard to debug errors. Thus, if the file cannot be created properly, any
+		// potentially incomplete version of this file has to be deleted.
+		try {
+			aContext.storeBinary(TaskContextMetadata.METADATA_KEY, aContext.getMetadata());
+		}
+		catch (Throwable e) {
+			aContext.getStorageService().delete(aContext.getId(), TaskContextMetadata.METADATA_KEY);
+			throw new LifeCycleException("Unable to write [" + TaskContextMetadata.METADATA_KEY
+					+ "] to mark context as complete.", e);
+		}
 		aContext.message("Completed task ["+aConfiguration.getType()+"]");
 	}
 
