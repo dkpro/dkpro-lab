@@ -197,6 +197,7 @@ public class PosExampleCrf
 	public void clean()
 		throws Exception
 	{
+		System.setProperty("DKPRO_HOME", new File("target").getAbsolutePath());
 		File repo = new File("target/repository");
 		FileUtils.deleteDirectory(repo);
 		repo.mkdirs();
