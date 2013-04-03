@@ -29,6 +29,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.safehaus.uuid.UUIDGenerator;
 import org.springframework.beans.factory.BeanNameAware;
+import org.springframework.beans.factory.annotation.Required;
+
 import de.tudarmstadt.ukp.dkpro.lab.engine.LifeCycleManager;
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContextFactory;
@@ -172,6 +174,7 @@ public class DefaultTaskContextFactory
 		}
 	}
 
+	@Required
 	public void setLifeCycleManager(LifeCycleManager aLifeCycleManager)
 	{
 		lifeCycleManager = aLifeCycleManager;
@@ -182,6 +185,7 @@ public class DefaultTaskContextFactory
 		return lifeCycleManager;
 	}
 
+	@Required
 	public void setStorageService(StorageService aStorageService)
 	{
 		storageService = aStorageService;
@@ -192,6 +196,7 @@ public class DefaultTaskContextFactory
 		return storageService;
 	}
 
+	@Required
 	public void setLoggingService(LoggingService aLoggingService)
 	{
 		loggingService = aLoggingService;
@@ -202,13 +207,14 @@ public class DefaultTaskContextFactory
 		return loggingService;
 	}
 
-	public TaskExecutionService getExecutionService()
-	{
-		return executionService;
-	}
-
+	@Required
 	public void setExecutionService(TaskExecutionService aExecutionService)
 	{
 		executionService = aExecutionService;
+	}
+
+	public TaskExecutionService getExecutionService()
+	{
+		return executionService;
 	}
 }
