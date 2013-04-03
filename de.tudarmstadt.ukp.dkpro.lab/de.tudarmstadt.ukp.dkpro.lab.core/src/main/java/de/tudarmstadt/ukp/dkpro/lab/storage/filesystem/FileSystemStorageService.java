@@ -102,13 +102,23 @@ public class FileSystemStorageService
 	@Override
 	public List<TaskContextMetadata> getContexts()
 	{
-		List<TaskContextMetadata> entries = new ArrayList<TaskContextMetadata>();
+		List<TaskContextMetadata> contexts = new ArrayList<TaskContextMetadata>();
 		for (File child : storageRoot.listFiles()) {
 			if (new File(child, METADATA_KEY).exists()) {
-				entries.add(retrieveBinary(child.getName(), METADATA_KEY, new TaskContextMetadata()));
+				contexts.add(retrieveBinary(child.getName(), METADATA_KEY, new TaskContextMetadata()));
 			}
 		}
-		return entries;
+		
+		Collections.sort(contexts, new Comparator<TaskContextMetadata>()
+		{
+			@Override
+			public int compare(TaskContextMetadata aO1, TaskContextMetadata aO2)
+			{
+				return Long.signum(aO2.getEnd() - aO1.getEnd());
+			}
+		});
+		
+		return contexts;
 	}
 
 	@Override

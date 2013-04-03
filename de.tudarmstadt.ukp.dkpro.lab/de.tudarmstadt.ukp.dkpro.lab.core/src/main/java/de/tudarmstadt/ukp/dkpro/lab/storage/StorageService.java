@@ -115,7 +115,8 @@ public interface StorageService
 	TaskContextMetadata getLatestContext(String aTaskType, Map<String, String> aConstraints);
 
 	/**
-	 * Get a list of all persisted task contexts.
+	 * Get a list of all persisted task contexts. The list is sorted with the most recent contexts
+	 * first and the oldest ones last.
 	 *
 	 * @return a list of all persisted task contexts.
 	 * @since 0.2.0
@@ -124,7 +125,7 @@ public interface StorageService
 
 	/**
 	 * Get all executions of the given type matching the given constraints sorted in chronological
-	 * order. The latest is returned first.
+	 * order. The list is sorted with the most recent contexts first and the oldest ones last.
 	 */
 	List<TaskContextMetadata> getContexts(String aTaskType, Map<String, String> aConstraints);
 
