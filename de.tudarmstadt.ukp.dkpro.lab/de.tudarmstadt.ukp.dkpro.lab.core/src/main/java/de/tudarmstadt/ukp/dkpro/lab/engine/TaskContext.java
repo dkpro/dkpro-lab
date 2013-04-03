@@ -60,8 +60,20 @@ public interface TaskContext
 
 	void destroy();
 
-	// Convenience logging API
+	/**
+	 * Log an informative message to the context.
+	 */
 	void message(String msg);
+	
+	/**
+	 * Log an error message to the context.
+	 */
+	void error(String msg);
+
+	/**
+	 * Log an error message and its cause to the context.
+	 */
+	void error(String msg, Throwable cause);
 
 	/**
 	 * Store a resource. A resource is always stored within the current context, even if originally

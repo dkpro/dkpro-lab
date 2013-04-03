@@ -25,4 +25,6 @@ package de.tudarmstadt.ukp.dkpro.lab.logging;
 public interface LoggingService
 {
 	void message(String aUuid, String aMessage);
+
+	void error(String aUuid, String aMessage, Throwable aCause);
 }

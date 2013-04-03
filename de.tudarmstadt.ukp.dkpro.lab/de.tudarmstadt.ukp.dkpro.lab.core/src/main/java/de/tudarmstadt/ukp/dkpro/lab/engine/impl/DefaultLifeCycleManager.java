@@ -23,7 +23,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.springframework.dao.DataAccessResourceFailureException;
 
 import de.tudarmstadt.ukp.dkpro.lab.engine.LifeCycleException;
@@ -94,9 +93,9 @@ public class DefaultLifeCycleManager
 						+ reports.size() + ")");
 			}
 			catch (Exception e) {
-				aContext.message("Report failed [" + reportClass.getName() + "] (" + i + "/"
-						+ reports.size() + "): " + e.getMessage());
-//				throw new LifeCycleException(e);
+				aContext.error("Report failed [" + reportClass.getName() + "] (" + i + "/"
+						+ reports.size() + ")", e);
+				throw new LifeCycleException(e);
 			}
 			finally {
 				i++;
@@ -114,13 +113,10 @@ public class DefaultLifeCycleManager
 			aContext.getStorageService().delete(aContext.getId());
 		}
 		catch (DataAccessResourceFailureException e) {
-			aContext.message("Unable to clean up context after failure. Some data may remain in " +
-					"the context.");
+			aContext.error("Unable to clean up context after failure. Some data may remain in " +
+					"the context.", e);
 		}
-		aContext.message("Task failed ["+aConfiguration.getType()+"]");
-		if (aCause != null) {
-			aContext.message("Cause for failure: " + ExceptionUtils.getRootCauseMessage(aCause));
-		}
+		aContext.error("Task failed ["+aConfiguration.getType()+"]", aCause);
 	}
 
 	@Override

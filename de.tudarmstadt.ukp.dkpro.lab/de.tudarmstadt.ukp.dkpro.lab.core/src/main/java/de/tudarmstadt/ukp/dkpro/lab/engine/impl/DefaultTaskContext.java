@@ -80,6 +80,18 @@ public class DefaultTaskContext
 	}
 
 	@Override
+	public void error(String aMsg)
+	{
+		getLoggingService().error(getId(), aMsg, null);
+	}
+	
+	@Override
+	public void error(String aMsg, Throwable aCause)
+	{
+		getLoggingService().error(getId(), aMsg, aCause);
+	}
+	
+	@Override
 	public void destroy()
 	{
 		getLifeCycleManager().destroy(this);

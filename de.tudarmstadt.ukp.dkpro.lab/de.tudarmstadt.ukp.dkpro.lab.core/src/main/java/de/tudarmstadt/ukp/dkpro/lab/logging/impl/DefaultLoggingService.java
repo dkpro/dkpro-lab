@@ -17,6 +17,7 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.lab.logging.impl;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -31,5 +32,20 @@ public class DefaultLoggingService
 	public void message(String aUuid, String aMessage)
 	{
 		log.info("["+aUuid+"] "+aMessage);
+	}
+	
+	@Override
+	public void error(String aUuid, String aMessage, Throwable aCause)
+	{
+		if (aCause != null) {
+			log.error("[" + aUuid + "] " + aMessage + "(caused by "
+					+ ExceptionUtils.getRootCauseMessage(aCause) + ")");
+			if (log.isDebugEnabled()) {
+				log.debug("[" + aUuid + "] Problem stack trace:", aCause);
+			}
+		}
+		else {
+			log.error("["+aUuid+"] "+aMessage);
+		}
 	}
 }
