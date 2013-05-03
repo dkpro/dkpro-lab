@@ -28,12 +28,32 @@
 	<version>0.9.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>DKPro Lab</name>
+	<url>http://code.google.com/p/dkpro-lab/</url>
+	<description>DKPro Lab is a lightweight framework for parameter sweeping experiments. It allows to set up experiments consisting of multiple interdependent tasks in a declarative manner with minimal overhead. Parameters are injected into tasks using via annotated class fields. Data produced by a task for any particular parameter configuration is stored and re-used whenever possible to avoid the needless recalculation of results. Reports can be attached to each task to post-process the experimental results and present them in a convenient manner, e.g. as tables or charts.</description>
+	<issueManagement>
+		<system>code.google.com</system>
+		<url>http://code.google.com/p/dkpro-lab/issues</url>
+	</issueManagement>
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	<properties>
+		<uima.core.version>2.4.0</uima.core.version>
+		<uima.as.version>2.4.0</uima.as.version>
+		<spring.version>3.1.4.RELEASE</spring.version>
+		<activemq.version>5.4.2</activemq.version>
+	</properties>
 	<modules>
 		<module>de.tudarmstadt.ukp.dkpro.lab.core</module>
 		<module>de.tudarmstadt.ukp.dkpro.lab.groovy</module>
 		<module>de.tudarmstadt.ukp.dkpro.lab.uima</module>
 		<module>de.tudarmstadt.ukp.dkpro.lab.uima.engine.simple</module>
 		<module>de.tudarmstadt.ukp.dkpro.lab.uima.engine.cpe</module>
+		<module>de.tudarmstadt.ukp.dkpro.lab.uima.engine.uimaas</module>
 		<module>de.tudarmstadt.ukp.dkpro.lab.support.slf4j</module>
 		<module>de.tudarmstadt.ukp.dkpro.lab.ml.example</module>
 	</modules>
@@ -54,17 +74,17 @@
 			<dependency>
 				<groupId>org.apache.uima</groupId>
 				<artifactId>uimaj-core</artifactId>
-				<version>2.3.1</version>
+				<version>${uima.core.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.uima</groupId>
 				<artifactId>uimaj-cpe</artifactId>
-				<version>2.3.1</version>
+				<version>${uima.core.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.uima</groupId>
 				<artifactId>uimaj-as-core</artifactId>
-				<version>2.3.1</version>
+				<version>${uima.as.version}</version>
 				<exclusions>
 					<exclusion>
 						<artifactId>spring</artifactId>
@@ -75,7 +95,7 @@
 			<dependency>
 				<groupId>org.apache.uima</groupId>
 				<artifactId>uimaj-as-jms</artifactId>
-				<version>2.3.1</version>
+				<version>${uima.as.version}</version>
 				<exclusions>
 					<exclusion>
 						<artifactId>spring</artifactId>
@@ -86,7 +106,7 @@
 			<dependency>
 				<groupId>org.apache.uima</groupId>
 				<artifactId>uimaj-as-activemq</artifactId>
-				<version>2.3.1</version>
+				<version>${uima.as.version}</version>
 				<exclusions>
 					<exclusion>
 						<artifactId>spring</artifactId>
@@ -117,7 +137,7 @@
 			<dependency>
 				<groupId>log4j</groupId>
 				<artifactId>log4j</artifactId>
-				<version>1.2.15</version>
+				<version>1.2.17</version>
 				<exclusions>
 					<exclusion>
 						<artifactId>mail</artifactId>
@@ -145,52 +165,52 @@
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-core</artifactId>
-				<version>3.1.0.RELEASE</version>
+				<version>${spring.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-context</artifactId>
-				<version>3.1.0.RELEASE</version>
+				<version>${spring.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-test</artifactId>
-				<version>3.1.0.RELEASE</version>
+				<version>${spring.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-tx</artifactId>
-				<version>3.1.0.RELEASE</version>
+				<version>${spring.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-jms</artifactId>
-				<version>3.1.0.RELEASE</version>
+				<version>${spring.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-asm</artifactId>
-				<version>3.1.0.RELEASE</version>
+				<version>${spring.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-expression</artifactId>
-				<version>3.1.0.RELEASE</version>
+				<version>${spring.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-webmvc</artifactId>
-				<version>3.1.0.RELEASE</version>
+				<version>${spring.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-context-support</artifactId>
-				<version>3.1.0.RELEASE</version>
+				<version>${spring.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-web</artifactId>
-				<version>3.1.0.RELEASE</version>
+				<version>${spring.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>dom4j</groupId>
@@ -221,7 +241,7 @@
 			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
-				<version>4.8.2</version>
+				<version>4.10</version>
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
@@ -246,6 +266,11 @@
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
 				<artifactId>de.tudarmstadt.ukp.dkpro.lab.uima.engine.simple</artifactId>
+				<version>0.9.0-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
+				<artifactId>de.tudarmstadt.ukp.dkpro.lab.uima.engine.uimaas</artifactId>
 				<version>0.9.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
@@ -311,32 +336,32 @@
 			<dependency>
 				<groupId>org.apache.activemq</groupId>
 				<artifactId>activemq-all</artifactId>
-				<version>5.4.2</version>
+				<version>${activemq.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.activemq</groupId>
 				<artifactId>activemq-core</artifactId>
-				<version>5.4.2</version>
+				<version>${activemq.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.activemq</groupId>
 				<artifactId>activemq-jaas</artifactId>
-				<version>5.4.2</version>
+				<version>${activemq.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.activemq</groupId>
 				<artifactId>activemq-web</artifactId>
-				<version>5.4.2</version>
+				<version>${activemq.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.activemq</groupId>
 				<artifactId>activemq-spring</artifactId>
-				<version>5.4.2</version>
+				<version>${activemq.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.activemq</groupId>
 				<artifactId>kahadb</artifactId>
-				<version>5.4.2</version>
+				<version>${activemq.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.codehaus.groovy</groupId>
@@ -450,17 +475,4 @@
 			</build>
 		</profile>
 	</profiles>
-	<url>http://code.google.com/p/dkpro-lab/</url>
-	<description>DKPro Lab is a lightweight framework for parameter sweeping experiments. It allows to set up experiments consisting of multiple interdependent tasks in a declarative manner with minimal overhead. Parameters are injected into tasks using via annotated class fields. Data produced by a task for any particular parameter configuration is stored and re-used whenever possible to avoid the needless recalculation of results. Reports can be attached to each task to post-process the experimental results and present them in a convenient manner, e.g. as tables or charts.</description>
-	<issueManagement>
-		<system>code.google.com</system>
-		<url>http://code.google.com/p/dkpro-lab/issues</url>
-	</issueManagement>
-	<licenses>
-		<license>
-			<name>The Apache Software License, Version 2.0</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
 </project>
