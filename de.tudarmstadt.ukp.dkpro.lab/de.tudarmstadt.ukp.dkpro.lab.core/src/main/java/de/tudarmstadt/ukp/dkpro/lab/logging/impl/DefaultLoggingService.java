@@ -31,14 +31,14 @@ public class DefaultLoggingService
 	@Override
 	public void message(String aUuid, String aMessage)
 	{
-		log.info("["+aUuid+"] "+aMessage);
+		log.info("["+aUuid+"] "+aMessage);
 	}
 	
 	@Override
 	public void error(String aUuid, String aMessage, Throwable aCause)
 	{
 		if (aCause != null) {
-			log.error("[" + aUuid + "] " + aMessage + "(caused by "
+			log.error("[" + aUuid + "] " + aMessage + "(caused by "
 					+ ExceptionUtils.getRootCauseMessage(aCause) + ")");
 			if (log.isDebugEnabled()) {
 				log.debug("[" + aUuid + "] Problem stack trace:", aCause);
