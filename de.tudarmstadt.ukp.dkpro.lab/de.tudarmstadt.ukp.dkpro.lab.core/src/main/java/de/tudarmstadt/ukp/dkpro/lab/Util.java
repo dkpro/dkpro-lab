@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -72,7 +73,12 @@ public class Util
 	{
 		// If the URL already points to a file, there is not really much to do.
 		if ("file".equals(aUrl.getProtocol())) {
-			return new File(aUrl.getPath());
+		    try {
+		        return new File(aUrl.toURI());
+		    }
+		    catch (URISyntaxException e) {
+		        throw new IOException(e);
+		    }
 		}
 
 		// Lets see if we already have a file for this URL in our cache. Maybe
