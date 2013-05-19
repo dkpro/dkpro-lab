@@ -194,8 +194,13 @@ public class FileSystemStorageService
 			return aConsumer;
 		}
 		catch (IOException e) {
-			throw new DataAccessResourceFailureException(e.getMessage(), e);
+            throw new DataAccessResourceFailureException("Unable to access [" + aKey
+                    + "] in context [" + aContextId + "]", e);
 		}
+        catch (Throwable e) {
+            throw new DataAccessResourceFailureException("Unable to load [" + aKey
+                    + "] from context [" + aContextId + "]", e);
+        }
 		finally {
 			Util.close(is);
 		}
