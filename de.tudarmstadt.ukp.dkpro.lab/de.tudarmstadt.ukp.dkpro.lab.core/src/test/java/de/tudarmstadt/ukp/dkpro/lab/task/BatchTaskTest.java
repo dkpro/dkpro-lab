@@ -21,12 +21,12 @@ import java.io.File;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
-
 import de.tudarmstadt.ukp.dkpro.lab.Lab;
 import de.tudarmstadt.ukp.dkpro.lab.engine.ExecutionException;
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
@@ -39,10 +39,12 @@ public class BatchTaskTest
 	@Before
 	public void setup()
 	{
-		String path = "target/repository/"+getClass().getSimpleName()+"/"+name.getMethodName();
-		System.setProperty("DKPRO_HOME", new File(path).getAbsolutePath());
+        File path = new File("target/repository/" + getClass().getSimpleName() + "/"
+                + name.getMethodName());
+        System.setProperty("DKPRO_HOME", path.getAbsolutePath());
+        FileUtils.deleteQuietly(path);
 	}
-	
+
 	@Test(expected=ExecutionException.class)
 	public void importTest() throws Exception
 	{
@@ -165,6 +167,50 @@ public class BatchTaskTest
 		outerTask.addTask(new ConfigDumperTask2());
 		
 		Lab.getInstance().run(outerTask);
+	}
+	
+	@Test
+	public void testUnresolvable() throws Exception
+	{
+	    Dimension<String> dim = Dimension.create("param", "1", "2", "3");
+	    
+	    ParameterSpace pSpace = new ParameterSpace(dim);
+	    
+	    Task task1 = new ExecutableTaskBase()
+        {
+	        @Discriminator
+	        private String param;
+	        
+            @Override
+            public void execute(TaskContext aContext)
+                throws Exception
+            {
+                // Nothing to do
+            }
+        };
+	    
+        Task task2 = new ExecutableTaskBase()
+        {
+            @Discriminator
+            private String param;
+            
+            @Override
+            public void execute(TaskContext aContext)
+                throws Exception
+            {
+                // Nothing to do
+            }
+        };
+        
+        task2.addImport(task1, "DUMMY");
+        task1.addImport(task2, "DUMMY");
+        
+        BatchTask batchTask = new BatchTask();
+        batchTask.setParameterSpace(pSpace);
+        batchTask.addTask(task1);
+        batchTask.addTask(task2);
+
+        Lab.getInstance().run(batchTask);
 	}
 
 	public static class ConfigDumperTask1 extends ExecutableTaskBase implements ConfigurationAware

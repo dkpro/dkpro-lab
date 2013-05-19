@@ -36,6 +36,7 @@ import org.apache.commons.io.FileExistsException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang.reflect.MethodUtils;
 import org.apache.tools.ant.taskdefs.Execute;
 import org.springframework.dao.DataAccessResourceFailureException;
@@ -389,6 +390,26 @@ public class Util
 
         private Object readResolve() {
             return Util.LAB_STYLE;
+        }
+    }
+    
+    public static String getComprehensiveMessage(Throwable aThrowable)
+    {
+        StringBuilder sb = new StringBuilder();
+        getComprehensiveMessage(sb, aThrowable, 0);
+        return sb.toString();
+    }
+    
+    private static void getComprehensiveMessage(StringBuilder aSb, Throwable aThrowable, int aLevel)
+    {
+        aSb.append(aThrowable.getMessage());
+        Throwable cause = ExceptionUtils.getCause(aThrowable);
+        if (cause != null && cause != aThrowable) {
+            aSb.append('\n');
+            for (int i = 0; i < aLevel; i++) {
+                aSb.append("  ");
+            }
+            getComprehensiveMessage(aSb, cause, aLevel + 1);
         }
     }
 }

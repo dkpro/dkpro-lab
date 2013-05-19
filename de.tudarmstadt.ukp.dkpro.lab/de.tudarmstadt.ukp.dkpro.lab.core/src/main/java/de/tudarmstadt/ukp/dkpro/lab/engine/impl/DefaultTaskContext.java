@@ -234,7 +234,7 @@ public class DefaultTaskContext
 				return storage.getLatestContext(aUri.getAuthority(), extractConstraints(aUri));
 			}
 			catch (TaskContextNotFoundException e) {
-				throw new UnresolvedImportException(e.getMessage());
+                throw new UnresolvedImportException(this, aUri.toString(), e);
 			}
 		}
 		else if (CONTEXT_ID_SCHEME.equals(aUri.getScheme())) {
@@ -242,7 +242,7 @@ public class DefaultTaskContext
 				return storage.getContext(aUri.getAuthority());
 			}
 			catch (TaskContextNotFoundException e) {
-				throw new UnresolvedImportException(e.getMessage());
+                throw new UnresolvedImportException(this, aUri.toString(), e);
 			}
 		}
 		else {

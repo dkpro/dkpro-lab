@@ -138,11 +138,10 @@ public class DefaultTaskContextFactory
 			URI uri = URI.create(e.getValue());
 			// Try resolving by type
 			if (LATEST_CONTEXT_SCHEME.equals(uri.getScheme()) || CONTEXT_ID_SCHEME.equals(uri.getScheme())) {
-				String uuid = aContext.resolve(uri).getId();
+			    String uuid;
+		        uuid = aContext.resolve(uri).getId();
 				if (!getStorageService().containsKey(uuid, uri.getPath())) {
-					throw new UnresolvedImportException("Unable to resolve key ["
-							+ e.getKey() + "] of task [" + aContext.getMetadata().getType()
-							+ "] pointing to [" + e.getValue() + "]");
+                    throw new UnresolvedImportException(aContext, e.getKey(), e.getValue(), "Key not found");
 				}
 
 				String resolvedUri = CONTEXT_ID_SCHEME + "://" + uuid + uri.getPath();

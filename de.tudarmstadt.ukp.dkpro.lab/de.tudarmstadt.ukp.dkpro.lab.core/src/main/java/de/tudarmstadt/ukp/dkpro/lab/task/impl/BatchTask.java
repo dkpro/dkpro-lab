@@ -38,7 +38,6 @@ import java.util.Queue;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.dao.DataAccessResourceFailureException;
@@ -173,7 +172,7 @@ public class BatchTask
 			Queue<Task> queue = new LinkedList<Task>(tasks);
 			Set<Task> loopDetection = new HashSet<Task>();
 
-			List<Exception> deferralReasons = new ArrayList<Exception>();
+			List<UnresolvedImportException> deferralReasons = new ArrayList<UnresolvedImportException>();
 			while (!queue.isEmpty()) {
 				Task task = queue.poll();
 
@@ -207,14 +206,12 @@ public class BatchTask
 					queue.add(task);
 					if (loopDetection.contains(task)) {
 						StringBuilder details = new StringBuilder();
-						for (Exception r : deferralReasons) {
-							details.append("\n");
-							details.append("- " + ExceptionUtils.getRootCauseMessage(r));
+						for (UnresolvedImportException r : deferralReasons) {
+                            details.append("\n -");
+                            details.append(r.getMessage());
 						}
 						
-						throw new UnfulfillablePrerequisiteException("Prerequisites for task [" 
-								+ task.getType() + "] cannot be fulfilled causing an endless loop." +
-								"Bailing out. Details:" + details);
+						throw new UnfulfillablePrerequisiteException("Unable to continue as all of the remaining tasks have unfulfilled prerequisites.\nDetails:" + details);
 					}
 					deferralReasons.add(e);
 					loopDetection.add(task);
@@ -457,7 +454,7 @@ public class BatchTask
 					meta = getLatestExecution(this, aUri.getAuthority(), constraints, config);
 				}
 				catch (TaskContextNotFoundException e) {
-					throw new UnresolvedImportException(e.getMessage());
+				    throw new UnresolvedImportException(this, aUri.toString(), e);
 				}
 			}
 			else if (CONTEXT_ID_SCHEME.equals(aUri.getScheme())) {
@@ -465,7 +462,7 @@ public class BatchTask
 					meta = storage.getContext(aUri.getAuthority());
 				}
 				catch (TaskContextNotFoundException e) {
-					throw new UnresolvedImportException(e.getMessage());
+                    throw new UnresolvedImportException(this, aUri.toString(), e);
 				}
 			}
 			else {
@@ -473,8 +470,8 @@ public class BatchTask
 			}
 
 			if (!scope.contains(meta.getId())) {
-				throw new UnresolvedImportException("Resolved context [" + meta.getId()
-						+ "] not in scope " + scope);
+                throw new UnresolvedImportException(this, aUri.toString(), "Resolved context ["
+                        + meta.getId() + "] not in scope " + scope);
 			}
 
 			return meta;

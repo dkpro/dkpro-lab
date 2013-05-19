@@ -19,23 +19,52 @@ package de.tudarmstadt.ukp.dkpro.lab.storage;
 
 import org.springframework.dao.DataAccessResourceFailureException;
 
+import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
+
 /**
  * Exception thrown when an import cannot be resolved.
  * 
  * @author Richard Eckart de Castilho
  */
 public class UnresolvedImportException
-	extends DataAccessResourceFailureException
+    extends DataAccessResourceFailureException
 {
-	private static final long serialVersionUID = -6316793159383062743L;
+    private static final long serialVersionUID = -6316793159383062743L;
 
-	public UnresolvedImportException(String aMsg)
-	{
-		super(aMsg);
-	}
+    private TaskContext context;
+    
+    public UnresolvedImportException(TaskContext aContext, String aImport, String aReason)
+    {
+        super("Unable to resolve import of task [" + aContext.getMetadata().getType()
+                + "] pointing to [" + aImport + "]: " + aReason);
+        context = aContext;
+    }
 
-	public UnresolvedImportException(String aMsg, Throwable aCause)
-	{
-		super(aMsg, aCause);
-	}
+    public UnresolvedImportException(TaskContext aContext, String aImport, Throwable aCause)
+    {
+        super("Unable to resolve import of task [" + aContext.getMetadata().getType()
+                + "] pointing to [" + aImport + "]", aCause);
+        context = aContext;
+    }
+
+    public UnresolvedImportException(TaskContext aContext, String aKey, String aImport,
+            String aReason)
+    {
+        super("Unable to resolve key [" + aKey + "] of task [" + aContext.getMetadata().getType()
+                + "] pointing to [" + aImport + "]: " + aReason);
+        context = aContext;
+    }
+
+    public UnresolvedImportException(TaskContext aContext, String aKey, String aImport,
+            Throwable aCause)
+    {
+        super("Unable to resolve key [" + aKey + "] of task [" + aContext.getMetadata().getType()
+                + "] pointing to [" + aImport + "]", aCause);
+        context = aContext;
+    }
+    
+    public TaskContext getContext()
+    {
+        return context;
+    }
 }
