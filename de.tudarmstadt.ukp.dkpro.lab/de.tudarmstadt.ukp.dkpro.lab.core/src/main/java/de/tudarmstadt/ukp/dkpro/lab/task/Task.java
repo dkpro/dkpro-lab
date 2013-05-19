@@ -17,7 +17,9 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.lab.task;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.util.Map;
 import java.util.Set;
 
@@ -93,9 +95,15 @@ public interface Task
 	 *
 	 * @param aKey the local key
 	 * @param aUri the URI to import from
+	 * @deprecated Use {@link #addImport(URI, String)} or {@link #addImport(File, String)}.
 	 */
+	@Deprecated
 	void addImport(String aKey, String aUri);
 
+	/**
+	 * @deprecated Use {@link #addImport(TaskContext, String, String)}.
+	 */
+    @Deprecated
 	void addImportById(String aKey, String aUuid, String aSourceKey);
 
 	/**
@@ -104,12 +112,67 @@ public interface Task
 	 * @param aKey the local key
 	 * @param aSourceKey the key to import
 	 * @param aType the task type to import from
+	 * @deprecated Use {@link #addImport(Task, String)} or {@link #addImport(Task, String, String)}
+	 * instead.
 	 */
+	@Deprecated
 	void addImportLatest(String aKey, String aSourceKey, String aType);
 
+	/**
+     * @deprecated Use {@link #addImport(Task, String)} or {@link #addImport(Task, String, String)}
+     * instead. This signature still exists because it is used internally.
+	 */
+	@Deprecated
 	void addImportLatest(String aKey, String aSourceKey, String aType, String... aConstraints);
 
+    /**
+     * @deprecated Use {@link #addImport(Task, String)} or {@link #addImport(Task, String, String)}
+     * instead. This signature still exists because it is used internally.
+     */
+    @Deprecated
 	void addImportLatest(String aKey, String aSourceKey, String aType, Map<String, String> aConstraints);
+
+    /**
+     * Import the given URI under the given key to this task.
+     *
+     * @param aUri the URI to import
+     * @param aKey the key to import as
+     */
+    void addImport(URI aUri, String aKey);
+
+    /**
+     * Import the given file/folder under the given key to this task.
+     *
+     * @param aFile the File to import
+     * @param aKey the key to import as
+     */
+    void addImport(File aFile, String aKey);
+
+    /**
+     * Import the given key from the latest run of the specified task type.
+     *
+     * @param aTask the task to import from
+     * @param aKey the key to import
+     */
+	void addImport(Task aTask, String aKey);
+
+    /**
+     * Import the given key from the latest run of the specified task type.
+     *
+     * @param aTask the task to import from.
+     * @param aKey the key to import.
+     * @param aAlias an alias by which the current task is going to access the key.
+     */
+	void addImport(Task aTask, String aKey, String aAlias);
+	
+    /**
+     * Import the given key from the latest run of the specified task type.
+     *
+     * @param aTaskContext the task context to import from.
+     * @param aKey the key to import.
+     * @param aAlias an alias by which the current task is going to access the key.
+     */
+	void addImport(TaskContext aTaskContext, String aKey, String aAlias);
 
 	Map<String, String> getImports();
 

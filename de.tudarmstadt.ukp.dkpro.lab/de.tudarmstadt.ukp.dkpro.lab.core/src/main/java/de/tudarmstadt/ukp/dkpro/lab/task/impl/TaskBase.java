@@ -21,6 +21,7 @@ import static de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.CONTEXT_ID_SCH
 import static de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.LATEST_CONTEXT_SCHEME;
 import static de.tudarmstadt.ukp.dkpro.lab.storage.filesystem.FileSystemStorageService.isStaticImport;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -274,6 +275,36 @@ public class TaskBase
 		addImportLatest(aKey, aSourceKey, aType, constraints);
 	}
 
+	@Override
+	public void addImport(File aFile, String aKey)
+	{
+	    addImport(aFile.toURI(), aKey);
+	}
+	
+	@Override
+	public void addImport(URI aUri, String aKey)
+	{
+	    addImport(aKey, aUri.toString());
+	}
+	
+	@Override
+	public void addImport(Task aTask, String aKey)
+	{
+	    addImport(aTask, aKey);
+	}
+	
+	@Override
+	public void addImport(Task aTask, String aKey, String aAlias)
+	{
+	    addImportLatest(aAlias, aKey, aTask.getType());
+	}
+	
+	@Override
+	public void addImport(TaskContext aTaskContext, String aKey, String aAlias)
+	{
+	    addImportById(aAlias, aTaskContext.getId(), aKey);
+	}
+	
 	@Override
 	public Map<String, String> getImports()
 	{

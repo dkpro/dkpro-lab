@@ -175,9 +175,9 @@ public class PosExampleCrf
 
 		ParameterSpace pSpace = new ParameterSpace(Dimension.create("corpusPath", CORPUS_PATH));
 
-		featureExtractionTask.addImportLatest("XMI", "XMI", preprocessingTask.getType());
-		trainingTask.addImportLatest("MODEL", "MODEL", featureExtractionTask.getType());
-		analysisTask.addImportLatest("MODEL", "MODEL", trainingTask.getType());
+        featureExtractionTask.addImport(preprocessingTask, "XMI");
+        trainingTask.addImport(featureExtractionTask, "MODEL");
+        analysisTask.addImport(trainingTask, "MODEL");
 
 		BatchTask batch = new BatchTask();
 		batch.setParameterSpace(pSpace);

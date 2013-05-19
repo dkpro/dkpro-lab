@@ -75,7 +75,7 @@ public class BatchTaskTest
 			}
 		};
 		
-		consumer.addImportLatest("DATA", "DATA1", producer.getType());
+		consumer.addImport(producer, "DATA1", "DATA");
 		
 		BatchTask batch = new BatchTask();
 		batch.addTask(producer);
