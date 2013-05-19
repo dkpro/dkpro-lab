@@ -290,7 +290,7 @@ public class TaskBase
 	@Override
 	public void addImport(Task aTask, String aKey)
 	{
-	    addImport(aTask.getType(), aKey);
+	    addImport(aTask, aKey, aKey);
 	}
 	
 	@Override
