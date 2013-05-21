@@ -169,7 +169,7 @@ public class BatchTaskTest
 		Lab.getInstance().run(outerTask);
 	}
 	
-	@Test
+    @Test(expected=ExecutionException.class)
 	public void testUnresolvable() throws Exception
 	{
 	    Dimension<String> dim = Dimension.create("param", "1", "2", "3");
