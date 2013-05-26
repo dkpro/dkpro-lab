@@ -380,6 +380,41 @@
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<configuration>
+					<notimestamp>true</notimestamp>
+					<!-- Exclude UIMA types -->
+					<excludePackageNames>*.type</excludePackageNames>
+					<groups>
+						<group>
+							<title>Core framework</title>
+							<packages>de.tudarmstadt.ukp.dkpro.lab*</packages>
+						</group>
+						<group>
+							<title>UIMA support</title>
+							<packages>de.tudarmstadt.ukp.dkpro.lab.uima*</packages>
+						</group>
+						<group>
+							<title>Groovy support</title>
+							<packages>de.tudarmstadt.ukp.dkpro.lab.groovy*</packages>
+						</group>
+						<group>
+							<title>Examples</title>
+							<packages>de.tudarmstadt.ukp.dkpro.lab.ml.example*</packages>
+						</group>
+						<group>
+							<title>Internal APIs - not for public use</title>
+							<packages>de.tudarmstadt.ukp.dkpro.lab.engine.impl*:de.tudarmstadt.ukp.dkpro.lab.logging.impl*:de.tudarmstadt.ukp.dkpro.lab.resteasy*:de.tudarmstadt.ukp.dkpro.lab.storage.filesystem*</packages>
+						</group>
+						<group>
+							<title>EXPERIMENTAL - may not be useful at all</title>
+							<packages>de.tudarmstadt.ukp.dkpro.lab.uima.engine.uimaas*</packages>
+						</group>
+					</groups>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-report-plugin</artifactId>
 				<version>2.11</version>
 				<configuration>

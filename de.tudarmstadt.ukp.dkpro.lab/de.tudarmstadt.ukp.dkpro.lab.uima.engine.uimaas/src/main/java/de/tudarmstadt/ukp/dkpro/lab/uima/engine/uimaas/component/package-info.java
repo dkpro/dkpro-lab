@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2010
+ * Copyright 2013
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  *
@@ -17,10 +17,6 @@
  ******************************************************************************/
 
 /**
- * (Internal) Uri parsing code from JBoss RESTEasy.
- * 
- * The files in this package have been copied from the JBoss RESTEasy project in order to avoid
- * dragging in the complete RESTEasy framework and because recent versions available on Maven
- * Central.
+ * (EXPERIMENTAL) Helper classes for using UIMA-AS.
  */
-package de.tudarmstadt.ukp.dkpro.lab.resteasy;
+package de.tudarmstadt.ukp.dkpro.lab.uima.engine.uimaas.component;
