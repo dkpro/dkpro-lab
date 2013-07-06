@@ -17,13 +17,13 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.lab.groovy.task;
 
-import groovy.lang.Closure
+import groovy.lang.Closure;
 
-import java.util.Map
-import java.util.Map.Entry
+import java.util.Map;
+import java.util.Map.Entry;
 
-import de.tudarmstadt.ukp.dkpro.lab.task.Dimension
-import de.tudarmstadt.ukp.dkpro.lab.task.impl.DynamicDimension
+import de.tudarmstadt.ukp.dkpro.lab.task.Dimension;
+import de.tudarmstadt.ukp.dkpro.lab.task.impl.DynamicDimension;
 
 /**
  * A dimension made from Groovy {@link Closure}s.

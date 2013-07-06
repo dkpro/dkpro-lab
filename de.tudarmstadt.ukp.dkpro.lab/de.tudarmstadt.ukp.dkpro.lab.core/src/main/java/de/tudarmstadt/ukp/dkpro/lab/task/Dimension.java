@@ -19,6 +19,7 @@ package de.tudarmstadt.ukp.dkpro.lab.task;
 
 import java.util.Iterator;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.DimensionBundle;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.DiscreteDimension;

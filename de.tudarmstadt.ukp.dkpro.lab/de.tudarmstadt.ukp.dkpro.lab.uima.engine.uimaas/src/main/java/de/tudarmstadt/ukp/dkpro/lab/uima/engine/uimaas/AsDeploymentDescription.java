@@ -17,7 +17,7 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.lab.uima.engine.uimaas;
 
-import static de.tudarmstadt.ukp.dkpro.lab.Util.*;
+import static de.tudarmstadt.ukp.dkpro.lab.Util.close;
 import static org.dom4j.DocumentHelper.createDocument;
 import static org.dom4j.DocumentHelper.createElement;
 

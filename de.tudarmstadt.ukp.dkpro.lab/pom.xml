@@ -42,8 +42,9 @@
 		</license>
 	</licenses>
 	<properties>
-		<uima.core.version>2.4.0</uima.core.version>
-		<uima.as.version>2.4.0</uima.as.version>
+		<uima.core.version>2.4.1-SNAPSHOT</uima.core.version>
+		<uima.as.version>2.4.1-SNAPSHOT</uima.as.version>
+		<uima.fit.version>2.0.0-SNAPSHOT</uima.fit.version>
 		<spring.version>3.1.4.RELEASE</spring.version>
 		<activemq.version>5.4.2</activemq.version>
 	</properties>
@@ -83,6 +84,16 @@
 			</dependency>
 			<dependency>
 				<groupId>org.apache.uima</groupId>
+				<artifactId>uimafit</artifactId>
+				<version>${uima.fit.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.uima</groupId>
+				<artifactId>uimafit-cpe</artifactId>
+				<version>${uima.fit.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.uima</groupId>
 				<artifactId>uimaj-as-core</artifactId>
 				<version>${uima.as.version}</version>
 				<exclusions>
@@ -113,11 +124,6 @@
 						<groupId>org.springframework</groupId>
 					</exclusion>
 				</exclusions>
-			</dependency>
-			<dependency>
-				<groupId>org.uimafit</groupId>
-				<artifactId>uimafit</artifactId>
-				<version>1.4.0</version>
 			</dependency>
 			<dependency>
 				<groupId>org.slf4j</groupId>

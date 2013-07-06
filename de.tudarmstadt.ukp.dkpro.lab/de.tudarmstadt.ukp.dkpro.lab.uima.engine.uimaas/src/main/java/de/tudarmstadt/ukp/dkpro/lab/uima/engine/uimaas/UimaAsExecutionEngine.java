@@ -19,7 +19,7 @@ package de.tudarmstadt.ukp.dkpro.lab.uima.engine.uimaas;
 
 import static de.tudarmstadt.ukp.dkpro.lab.Util.getUrlAsFile;
 import static org.apache.uima.UIMAFramework.newDefaultResourceManager;
-import static org.uimafit.factory.ExternalResourceFactory.bindResource;
+import static org.apache.uima.fit.factory.ExternalResourceFactory.bindResource;
 
 import java.io.File;
 import java.io.IOException;

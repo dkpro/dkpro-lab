@@ -19,6 +19,8 @@ package de.tudarmstadt.ukp.dkpro.lab.engine.impl;
 
 import static de.tudarmstadt.ukp.dkpro.lab.Util.close;
 import static de.tudarmstadt.ukp.dkpro.lab.engine.impl.ImportUtil.extractConstraints;
+import static de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.CONTEXT_ID_SCHEME;
+import static de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.LATEST_CONTEXT_SCHEME;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,6 +29,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
+
 import org.springframework.dao.DataAccessResourceFailureException;
 
 import de.tudarmstadt.ukp.dkpro.lab.engine.LifeCycleManager;
@@ -35,14 +38,13 @@ import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContextFactory;
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskExecutionService;
 import de.tudarmstadt.ukp.dkpro.lab.logging.LoggingService;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService;
-import de.tudarmstadt.ukp.dkpro.lab.storage.StreamReader;
-import de.tudarmstadt.ukp.dkpro.lab.storage.StreamWriter;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.StorageKey;
+import de.tudarmstadt.ukp.dkpro.lab.storage.StreamReader;
+import de.tudarmstadt.ukp.dkpro.lab.storage.StreamWriter;
 import de.tudarmstadt.ukp.dkpro.lab.storage.TaskContextNotFoundException;
 import de.tudarmstadt.ukp.dkpro.lab.storage.UnresolvedImportException;
 import de.tudarmstadt.ukp.dkpro.lab.task.TaskContextMetadata;
-import static de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.*;
 
 public class DefaultTaskContext
 	implements TaskContext

@@ -17,8 +17,8 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.lab.groovy.task;
 
-import de.tudarmstadt.ukp.dkpro.lab.task.Discriminable;
 import groovy.lang.Closure;
+import de.tudarmstadt.ukp.dkpro.lab.task.Discriminable;
 
 public class DiscriminableClosure
 	extends AbstractClosureProxy

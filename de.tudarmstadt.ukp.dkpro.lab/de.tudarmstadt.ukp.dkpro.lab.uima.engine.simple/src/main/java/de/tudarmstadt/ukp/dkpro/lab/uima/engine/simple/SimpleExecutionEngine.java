@@ -17,8 +17,11 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.lab.uima.engine.simple;
 
-import static org.apache.uima.UIMAFramework.*;
-import static org.uimafit.factory.ExternalResourceFactory.bindResource;
+import static org.apache.uima.UIMAFramework.newConfigurationManager;
+import static org.apache.uima.UIMAFramework.newDefaultResourceManager;
+import static org.apache.uima.UIMAFramework.newUimaContext;
+import static org.apache.uima.UIMAFramework.produceCollectionReader;
+import static org.apache.uima.fit.factory.ExternalResourceFactory.bindResource;
 
 import java.util.ArrayList;
 import java.util.HashMap;

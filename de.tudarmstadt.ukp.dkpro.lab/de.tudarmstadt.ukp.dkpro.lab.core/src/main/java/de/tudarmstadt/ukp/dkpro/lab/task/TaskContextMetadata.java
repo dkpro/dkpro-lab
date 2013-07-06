@@ -22,9 +22,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
-import java.util.Map.Entry;
 
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContextFactory;
 import de.tudarmstadt.ukp.dkpro.lab.reporting.LabelFunction;

@@ -57,9 +57,10 @@ public class UimaLoggingAdapter
 	}
 
 	@Override
-	public void log(String aResourceBundleName, String aMessageKey, Object[] aArguments)
+	public void log(String aBundleName, String aMsgKey, Object[] aArguments)
 	{
-		// TODO Auto-generated method stub
+        taskContext.message(localizeMessage(aBundleName, aMsgKey, aArguments,
+                getExtensionClassLoader()));
 	}
 
 	@Override
@@ -162,4 +163,10 @@ public class UimaLoggingAdapter
 			return resMgr.getExtensionClassLoader();
 		}
 	}
+
+    @Override
+    public void log(String aWrapperFQCN, Level aLevel, String aMessage, Throwable aThrown)
+    {
+        taskContext.message(aMessage + ": " + aThrown.getMessage());
+    }
 }

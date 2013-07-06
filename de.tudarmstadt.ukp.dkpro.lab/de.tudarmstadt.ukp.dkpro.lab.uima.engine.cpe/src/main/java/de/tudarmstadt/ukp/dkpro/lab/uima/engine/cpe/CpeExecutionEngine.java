@@ -18,7 +18,7 @@
 package de.tudarmstadt.ukp.dkpro.lab.uima.engine.cpe;
 
 import static org.apache.uima.UIMAFramework.newDefaultResourceManager;
-import static org.uimafit.factory.ExternalResourceFactory.bindResource;
+import static org.apache.uima.fit.factory.ExternalResourceFactory.bindResource;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -30,8 +30,8 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.collection.CollectionProcessingEngine;
 import org.apache.uima.collection.EntityProcessStatus;
 import org.apache.uima.collection.StatusCallbackListener;
+import org.apache.uima.fit.cpe.CpeBuilder;
 import org.apache.uima.resource.ResourceManager;
-import org.uimafit.factory.CpeBuilder;
 
 import de.tudarmstadt.ukp.dkpro.lab.engine.ExecutionException;
 import de.tudarmstadt.ukp.dkpro.lab.engine.LifeCycleException;
@@ -86,7 +86,7 @@ public class CpeExecutionEngine
 			CpeBuilder mgr = new CpeBuilder();
 			ctx.message("CPE will be using " + Runtime.getRuntime().availableProcessors()
 					+ " parallel threads to optimally utilize your cpu cores");
-			mgr.setMaxProcessingUnitThreatCount(Runtime.getRuntime().availableProcessors());
+			mgr.setMaxProcessingUnitThreadCount(Runtime.getRuntime().availableProcessors());
 			mgr.setReader(configuration.getCollectionReaderDescription(ctx));
 			mgr.setAnalysisEngine(analysisDesc);
 			StatusCallbackListenerImpl status = new StatusCallbackListenerImpl(ctx);

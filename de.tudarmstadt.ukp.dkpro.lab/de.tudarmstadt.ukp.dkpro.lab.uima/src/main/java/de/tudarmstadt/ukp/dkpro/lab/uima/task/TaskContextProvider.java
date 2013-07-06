@@ -21,15 +21,15 @@ import java.util.Map;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UimaContextAdmin;
+import org.apache.uima.fit.component.initialize.ConfigurationParameterInitializer;
+import org.apache.uima.fit.descriptor.ConfigurationParameter;
+import org.apache.uima.fit.descriptor.ExternalResourceLocator;
 import org.apache.uima.resource.ConfigurationManager;
 import org.apache.uima.resource.CustomResourceSpecifier;
 import org.apache.uima.resource.Parameter;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.Resource_ImplBase;
-import org.uimafit.component.initialize.ConfigurationParameterInitializer;
-import org.uimafit.descriptor.ConfigurationParameter;
-import org.uimafit.descriptor.ExternalResourceLocator;
 
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContextFactory;
 import de.tudarmstadt.ukp.dkpro.lab.engine.impl.StaticContext;
