@@ -54,7 +54,7 @@
 		<module>de.tudarmstadt.ukp.dkpro.lab.uima</module>
 		<module>de.tudarmstadt.ukp.dkpro.lab.uima.engine.simple</module>
 		<module>de.tudarmstadt.ukp.dkpro.lab.uima.engine.cpe</module>
-		<module>de.tudarmstadt.ukp.dkpro.lab.uima.engine.uimaas</module>
+		<!-- <module>de.tudarmstadt.ukp.dkpro.lab.uima.engine.uimaas</module> -->
 		<module>de.tudarmstadt.ukp.dkpro.lab.support.slf4j</module>
 		<module>de.tudarmstadt.ukp.dkpro.lab.ml.example</module>
 	</modules>
@@ -283,11 +283,13 @@
 				<artifactId>de.tudarmstadt.ukp.dkpro.lab.uima.engine.simple</artifactId>
 				<version>0.10.0-SNAPSHOT</version>
 			</dependency>
+			<!--  
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
 				<artifactId>de.tudarmstadt.ukp.dkpro.lab.uima.engine.uimaas</artifactId>
 				<version>0.10.0-SNAPSHOT</version>
 			</dependency>
+			-->
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
 				<artifactId>de.tudarmstadt.ukp.dkpro.lab.groovy</artifactId>
