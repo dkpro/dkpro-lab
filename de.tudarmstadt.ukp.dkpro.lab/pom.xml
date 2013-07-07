@@ -69,6 +69,15 @@
 			<name>UKP Public Repository</name>
 			<url>http://zoidberg.ukp.informatik.tu-darmstadt.de/artifactory/repo/</url>
 		</repository>
+		<repository>
+			<!-- For uimaFIT 2.0.0-SNAPSHOT -->
+			<id>apache.snapshots</id>
+			<name>Apache Snapshot Repository</name>
+			<url>http://repository.apache.org/snapshots</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+		</repository>
 	</repositories>
 	<dependencyManagement>
 		<dependencies>
