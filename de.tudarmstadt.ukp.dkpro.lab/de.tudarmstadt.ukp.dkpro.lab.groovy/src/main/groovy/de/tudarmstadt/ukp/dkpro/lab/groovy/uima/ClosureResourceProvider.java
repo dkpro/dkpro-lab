@@ -33,7 +33,7 @@ public class ClosureResourceProvider
 extends Resource_ImplBase
 implements ExternalResourceLocator
 {
-	public static final String PARAM_CLOSURE_CLASS = "FactoryName";
+	public static final String PARAM_CLOSURE_CLASS = "closureClass";
 	@ConfigurationParameter(name = PARAM_CLOSURE_CLASS, mandatory = true)
 	private String closureClass;
 
