@@ -34,6 +34,12 @@ public class ParameterSpace implements Iterable<Map<String, Object>>
 	private Set<Constraint> constraints;
 	private int stepCount = 0;
 
+	public ParameterSpace()
+	{
+        dimensions = new Dimension[0];
+        constraints = new HashSet<Constraint>();
+	}
+	
 	public ParameterSpace(Dimension<?>... aDimensions)
 	{
 		dimensions = aDimensions;
@@ -47,6 +53,18 @@ public class ParameterSpace implements Iterable<Map<String, Object>>
 			d.rewind();
 		}
 	}
+	
+	public void setDimensions(Dimension<?>[] aDimensions)
+    {
+	    if (aDimensions == null) {
+	        dimensions = new Dimension[0];
+	    }
+	    else {
+            dimensions = new Dimension[aDimensions.length];
+            System.arraycopy(aDimensions, 0, dimensions, 0, dimensions.length);
+	    }
+	    reset();
+    }
 	
 	public Dimension<?>[] getDimensions()
 	{
@@ -81,6 +99,14 @@ public class ParameterSpace implements Iterable<Map<String, Object>>
 	{
 		constraints.remove(aConstraint);
 	}
+	
+	public void setConstraints(Set<Constraint> aConstraints)
+    {
+        constraints = new HashSet<Constraint>();
+	    if (aConstraints != null) {
+	        constraints.addAll(aConstraints);
+	    }
+    }
 	
 	/**
 	 * Get the constraints. If no constraints are set, all parameter combinations are executed. If
