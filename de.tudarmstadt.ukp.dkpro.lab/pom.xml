@@ -16,7 +16,8 @@
 	See the License for the specific language governing permissions and
 	limitations under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
@@ -42,7 +43,7 @@
 		</license>
 	</licenses>
 	<properties>
-		<uima.core.version>2.4.1-SNAPSHOT</uima.core.version>
+		<uima.core.version>2.4.2</uima.core.version>
 		<uima.as.version>2.4.1-SNAPSHOT</uima.as.version>
 		<uima.fit.version>2.0.0-SNAPSHOT</uima.fit.version>
 		<spring.version>3.1.4.RELEASE</spring.version>
@@ -93,7 +94,7 @@
 			</dependency>
 			<dependency>
 				<groupId>org.apache.uima</groupId>
-				<artifactId>uimafit</artifactId>
+				<artifactId>uimafit-core</artifactId>
 				<version>${uima.fit.version}</version>
 			</dependency>
 			<dependency>
@@ -283,12 +284,12 @@
 				<artifactId>de.tudarmstadt.ukp.dkpro.lab.uima.engine.simple</artifactId>
 				<version>0.10.0-SNAPSHOT</version>
 			</dependency>
-			<!--  
-			<dependency>
+			<!--
+				<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
 				<artifactId>de.tudarmstadt.ukp.dkpro.lab.uima.engine.uimaas</artifactId>
 				<version>0.10.0-SNAPSHOT</version>
-			</dependency>
+				</dependency>
 			-->
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
@@ -585,5 +586,44 @@
 				</plugins>
 			</build>
 		</profile>
+		<profile>
+			<id>m2e</id>
+			<activation>
+				<property>
+					<name>m2e.version</name>
+				</property>
+			</activation>
+			<build>
+				<pluginManagement>
+					<plugins>
+						<plugin>
+							<groupId>org.eclipse.m2e</groupId>
+							<artifactId>lifecycle-mapping</artifactId>
+							<version>1.0.0</version>
+							<configuration>
+								<lifecycleMappingMetadata>
+									<pluginExecutions>
+										<pluginExecution>
+											<pluginExecutionFilter>
+												<groupId>org.apache.maven.plugins</groupId>
+												<artifactId>maven-enforcer-plugin</artifactId>
+												<versionRange>[1,)</versionRange>
+												<goals>
+													<goal>enforce</goal>
+												</goals>
+											</pluginExecutionFilter>
+											<action>
+												<ignore />
+											</action>
+										</pluginExecution>
+									</pluginExecutions>
+								</lifecycleMappingMetadata>
+							</configuration>
+						</plugin>
+					</plugins>
+				</pluginManagement>
+			</build>
+		</profile>
+
 	</profiles>
 </project>
