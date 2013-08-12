@@ -50,31 +50,36 @@ public class UimaLoggingAdapter
 		return taskContext;
 	}
 
+    @Deprecated
 	@Override
 	public void log(String aMessage)
 	{
 		taskContext.message(aMessage);
 	}
 
-	@Override
+	@Deprecated
+    @Override
 	public void log(String aBundleName, String aMsgKey, Object[] aArguments)
 	{
         taskContext.message(localizeMessage(aBundleName, aMsgKey, aArguments,
                 getExtensionClassLoader()));
 	}
 
+    @Deprecated
 	@Override
 	public void logException(Exception aException)
 	{
 		taskContext.message(aException.getMessage());
 	}
 
+    @Deprecated
 	@Override
 	public void setOutputStream(PrintStream aStream)
 	{
 		// Do nothing
 	}
 
+    @Deprecated
 	@Override
 	public void setOutputStream(OutputStream aStream)
 	{

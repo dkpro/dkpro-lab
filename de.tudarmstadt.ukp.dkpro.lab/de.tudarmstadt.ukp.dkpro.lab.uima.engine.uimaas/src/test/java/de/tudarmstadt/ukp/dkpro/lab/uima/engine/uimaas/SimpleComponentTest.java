@@ -17,7 +17,7 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.lab.uima.engine.uimaas;
 
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitiveDescription;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.apache.uima.fit.factory.TypeSystemDescriptionFactory.createTypeSystemDescription;
 import static org.junit.Assert.assertEquals;
 
@@ -39,7 +39,7 @@ public class SimpleComponentTest
 	{
 		SimpleBroker broker = new SimpleBroker();
 		SimpleService service = new SimpleService("myAnalysisEngine",
-				createPrimitiveDescription(Annotator.class));
+		        createEngineDescription(Annotator.class));
 		SimpleClient client = new SimpleClient("myAnalysisEngine");
 
 		broker.start();

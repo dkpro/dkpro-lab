@@ -17,8 +17,8 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.lab.uima.engine.simple;
 
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitiveDescription;
-import static org.apache.uima.fit.factory.CollectionReaderFactory.createDescription;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
+import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription;
 import static org.apache.uima.fit.factory.TypeSystemDescriptionFactory.createTypeSystemDescription;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -81,13 +81,12 @@ public class SimpleExecutionEngineTest
 		assertNotNull(contextFactory);
 
 		TypeSystemDescription tsd = createTypeSystemDescription(new String[0]);
-		AnalysisEngineDescription desc = createPrimitiveDescription(
+		AnalysisEngineDescription desc = createEngineDescription(
 				DummyAE.class, tsd);
 
 		DefaultUimaTask cfg = new DefaultUimaTask();
-		cfg.setReaderDescription(createDescription(SingleTextReader.class,
-				tsd, SingleTextReader.PARAM_FILE_NAME,
-				"src/test/resources/text.txt"));
+        cfg.setReaderDescription(createReaderDescription(SingleTextReader.class, tsd,
+                SingleTextReader.PARAM_FILE_NAME, "src/test/resources/text.txt"));
 		cfg.setAnalysisEngineDescription(desc);
 
 		TaskExecutionEngine runner = executionService.createEngine(cfg);

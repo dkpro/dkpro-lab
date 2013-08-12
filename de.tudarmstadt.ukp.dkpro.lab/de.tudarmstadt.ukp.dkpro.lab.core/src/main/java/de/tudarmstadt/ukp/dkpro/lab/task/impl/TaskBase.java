@@ -190,6 +190,7 @@ public class TaskBase
 		return descs;
 	}
 
+	@Deprecated
 	@Override
 	public void addImport(String aKey, String aUri)
 	{
@@ -202,6 +203,7 @@ public class TaskBase
 		imports.put(aKey, aUri);
 	}
 
+	@Deprecated
 	@Override
 	public void addImportById(String aKey, String aUuid, String aSourceKey)
 	{
@@ -217,6 +219,7 @@ public class TaskBase
 		imports.put(aKey, CONTEXT_ID_SCHEME+"://"+aUuid+"/"+aSourceKey);
 	}
 
+	@Deprecated
 	@Override
 	public void addImportLatest(String aKey, String aSourceKey, String aType)
 	{
@@ -232,6 +235,7 @@ public class TaskBase
 		imports.put(aKey, LATEST_CONTEXT_SCHEME+"://"+aType+"/"+aSourceKey);
 	}
 
+	@Deprecated
 	@Override
 	public void addImportLatest(String aKey, String aSourceKey, String aType, String... aConstraints)
 	{
@@ -261,6 +265,7 @@ public class TaskBase
 		imports.put(aKey, ub.build().toString());
 	}
 
+	@Deprecated
 	@Override
 	public void addImportLatest(String aKey, String aSourceKey, String aType,
 			Map<String, String> aRestrictions)

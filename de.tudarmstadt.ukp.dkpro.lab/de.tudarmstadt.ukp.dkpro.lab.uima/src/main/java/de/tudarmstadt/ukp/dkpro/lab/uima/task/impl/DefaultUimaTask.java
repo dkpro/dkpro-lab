@@ -17,7 +17,7 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.lab.uima.task.impl;
 
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createAggregateDescription;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
@@ -53,7 +53,7 @@ public class DefaultUimaTask
 			setAnalysisEngineDescription(aAes[0]);
 		}
 		else {
-			setAnalysisEngineDescription(createAggregateDescription(aAes));
+			setAnalysisEngineDescription(createEngineDescription(aAes));
 		}
 	}
 

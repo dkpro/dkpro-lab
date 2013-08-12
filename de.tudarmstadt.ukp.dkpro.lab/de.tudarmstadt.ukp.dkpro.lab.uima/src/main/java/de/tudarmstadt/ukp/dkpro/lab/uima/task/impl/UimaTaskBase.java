@@ -17,9 +17,8 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.lab.uima.task.impl;
 
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createAggregateDescription;
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitiveDescription;
-import static org.apache.uima.fit.factory.CollectionReaderFactory.createDescription;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
+import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription;
 import static org.apache.uima.fit.factory.TypeSystemDescriptionFactory.createTypeSystemDescription;
 
 import java.io.IOException;
@@ -85,34 +84,34 @@ public abstract class UimaTaskBase extends TaskBase
 			Object... aConfigurationData)
 		throws ResourceInitializationException
 	{
-		return createPrimitiveDescription(aComponentClass, getCachedTypeSystem(), aConfigurationData);
+		return createEngineDescription(aComponentClass, getCachedTypeSystem(), aConfigurationData);
 	}
 
 	public AnalysisEngineDescription createEngine(Collection<AnalysisEngineDescription> aDescs)
 		throws ResourceInitializationException
 	{
-		return createAggregateDescription(aDescs.toArray(new AnalysisEngineDescription[aDescs
+		return createEngineDescription(aDescs.toArray(new AnalysisEngineDescription[aDescs
 				.size()]));
 	}
 
 	public AnalysisEngineDescription createEngine(AnalysisEngineDescription... aDescs)
 		throws ResourceInitializationException
 	{
-		return createAggregateDescription(aDescs);
+		return createEngineDescription(aDescs);
 	}
 
 	public CollectionReaderDescription createReader(Class<? extends CollectionReader> aReaderClass,
 			Object... aConfigurationData)
 		throws ResourceInitializationException
 	{
-		return createDescription(aReaderClass, getCachedTypeSystem(), aConfigurationData);
+		return createReaderDescription(aReaderClass, getCachedTypeSystem(), aConfigurationData);
 	}
 
 	public CollectionReaderDescription createReader(Class<? extends CollectionReader> aReaderClass,
 			TypePriorities aPriorities, Object... aConfigurationData)
 		throws ResourceInitializationException
 	{
-		return createDescription(aReaderClass, getCachedTypeSystem(), aPriorities, aConfigurationData);
+		return createReaderDescription(aReaderClass, getCachedTypeSystem(), aPriorities, aConfigurationData);
 	}
 
 	protected TypeSystemDescription getCachedTypeSystem()

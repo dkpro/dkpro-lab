@@ -17,8 +17,8 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.lab.uima.engine.uimaas;
 
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitiveDescription;
-import static org.apache.uima.fit.factory.CollectionReaderFactory.createDescription;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
+import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -97,10 +97,10 @@ public class UimaAsExecutionEngineTest
 		assertNotNull(executionService);
 		assertNotNull(contextFactory);
 
-		AnalysisEngineDescription desc = createPrimitiveDescription(DummyAE.class);
+		AnalysisEngineDescription desc = createEngineDescription(DummyAE.class);
 
 		DefaultUimaTask cfg = new DefaultUimaTask();
-		cfg.setReaderDescription(createDescription(SingleTextReader.class,
+		cfg.setReaderDescription(createReaderDescription(SingleTextReader.class,
 				SingleTextReader.PARAM_FILE_NAME, "src/test/resources/text.txt"));
 		cfg.setAnalysisEngineDescription(desc);
 
