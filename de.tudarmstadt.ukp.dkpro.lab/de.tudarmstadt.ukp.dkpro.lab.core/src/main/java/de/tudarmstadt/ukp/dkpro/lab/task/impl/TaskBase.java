@@ -104,7 +104,7 @@ public class TaskBase
 	}
 
 	@Override
-	public void setProperty(String aKey, String aValue)
+	public void setAttribute(String aKey, String aValue)
 	{
 		if (aKey == null) {
 			throw new IllegalArgumentException("Must specify a key");
@@ -118,13 +118,13 @@ public class TaskBase
 	}
 
 	@Override
-	public String getProperty(String aKey)
+	public String getAttribute(String aKey)
 	{
 		return properties.get(aKey);
 	}
 
 	@Override
-	public Map<String, String> getProperties()
+	public Map<String, String> getAttributes()
 	{
 		analyze(getClass(), Property.class, properties);
 		return properties;
@@ -343,7 +343,7 @@ public class TaskBase
 	public void persist(final TaskContext aContext)
 		throws IOException
 	{
-		aContext.storeBinary(PROPERTIES_KEY, new PropertiesAdapter(getProperties(), "Task properties"));
+		aContext.storeBinary(PROPERTIES_KEY, new PropertiesAdapter(getAttributes(), "Task properties"));
 
 		aContext.storeBinary(DISCRIMINATORS_KEY, new PropertiesAdapter(getResolvedDescriminators(aContext)));
 	}

@@ -224,7 +224,7 @@ public class BatchTask
 		}
 
 		// Set the subtask property and persist again, so the property is available to reports
-		setProperty(SUBTASKS_KEY, executedSubtasks.keySet().toString());
+		setAttribute(SUBTASKS_KEY, executedSubtasks.keySet().toString());
 		persist(aContext);
 	}
 

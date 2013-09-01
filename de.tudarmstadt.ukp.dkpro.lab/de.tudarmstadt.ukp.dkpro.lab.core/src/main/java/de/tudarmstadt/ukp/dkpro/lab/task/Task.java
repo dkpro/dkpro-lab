@@ -43,21 +43,20 @@ public interface Task
 	 * additional information depending on their needs.
 	 *
 	 * @param aContext a task context.
-	 * @throws IOException
 	 */
 	void persist(TaskContext aContext) throws IOException;
 
 	/**
-	 * Set a task context property.
+	 * Set a task context attribute.
 	 *
-	 * @param aKey the property name.
+	 * @param aKey the attribute name.
 	 * @param aValue the value.
 	 */
-	void setProperty(String aKey, String aValue);
+	void setAttribute(String aKey, String aValue);
 
-	String getProperty(String aKey);
+	String getAttribute(String aKey);
 
-	public Map<String, String> getProperties();
+	public Map<String, String> getAttributes();
 
 	/**
 	 * Set a task descriminator.
