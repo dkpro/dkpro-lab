@@ -20,7 +20,7 @@
 	<parent>
 		<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
 		<artifactId>de.tudarmstadt.ukp.dkpro.lab</artifactId>
-		<version>0.10.0-SNAPSHOT</version>
+		<version>0.10.0</version>
 	</parent>
 	<artifactId>de.tudarmstadt.ukp.dkpro.lab.support.slf4j</artifactId>
 	<name>DKPro Lab - SLF4J Support Package</name>
