@@ -22,8 +22,8 @@ import groovy.lang.Closure;
 class Constraint implements de.tudarmstadt.ukp.dkpro.lab.task.Constraint {
 	private Closure closure;
 
-	Constraint(lala) {
-		closure = lala;
+	public Constraint(aClosure) {
+		closure = aClosure;
 	}
 
 	public Constraint(Closure aClosure) {
