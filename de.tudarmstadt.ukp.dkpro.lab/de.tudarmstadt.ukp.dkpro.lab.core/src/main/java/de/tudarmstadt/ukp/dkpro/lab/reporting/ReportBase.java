@@ -161,9 +161,6 @@ public abstract class ReportBase
 		return result;
 	}
 
-	/**
-	 * @return
-	 */
 	protected String getContextLabel()
 	{
 		return getContextLabel(getContext().getId());

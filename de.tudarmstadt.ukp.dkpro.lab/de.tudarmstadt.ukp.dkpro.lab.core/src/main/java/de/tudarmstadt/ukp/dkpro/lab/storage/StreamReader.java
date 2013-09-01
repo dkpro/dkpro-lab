@@ -35,9 +35,6 @@ public interface StreamReader
 {
 	/**
 	 * Read all data from the given stream an close it.
-	 *
-	 * @param aInputStream
-	 * @throws IOException
 	 */
 	void read(InputStream aInputStream) throws IOException;
 }

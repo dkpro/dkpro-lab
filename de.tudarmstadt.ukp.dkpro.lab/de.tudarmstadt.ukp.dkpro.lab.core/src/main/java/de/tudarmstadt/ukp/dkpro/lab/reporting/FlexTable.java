@@ -95,7 +95,7 @@ public class FlexTable <V>
 	 * 
 	 * @param aFormatString a format string
 	 * 
-	 * @see {@link String#format(String, Object...)}
+	 * @see String#format(String, Object...)
 	 */
 	public void setFormatString(String aFormatString)
 	{

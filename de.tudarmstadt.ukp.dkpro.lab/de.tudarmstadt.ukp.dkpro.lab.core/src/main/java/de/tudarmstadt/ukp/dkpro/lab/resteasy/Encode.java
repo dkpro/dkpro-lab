@@ -267,9 +267,6 @@ public class Encode
 
    /**
     * Encode '%' if it is not an encoding sequence
-    *
-    * @param string
-    * @return
     */
    public static String encodeNonCodes(String string)
    {
@@ -303,10 +300,6 @@ public class Encode
 
    /**
     * Keep encoded values "%..." and template parameters intact i.e. "{x}"
-    *
-    * @param segment
-    * @param encoding
-    * @return
     */
    public static String encodeValue(String segment, String[] encoding)
    {
@@ -343,9 +336,6 @@ public class Encode
 
    /**
     * Keep any valid encodings from string i.e. keep "%2D" but don't keep "%p"
-    *
-    * @param segment
-    * @return
     */
    public static String encodePathSaveEncodings(String segment)
    {
@@ -356,9 +346,6 @@ public class Encode
 
    /**
     * Encodes everything of a query parameter name or value.
-    *
-    * @param nameOrValue
-    * @return
     */
    public static String encodeQueryParamAsIs(String nameOrValue)
    {
@@ -367,9 +354,6 @@ public class Encode
 
    /**
     * Keep any valid encodings from string i.e. keep "%2D" but don't keep "%p"
-    *
-    * @param segment
-    * @return
     */
    public static String encodeQueryParamSaveEncodings(String segment)
    {
@@ -452,9 +436,6 @@ public class Encode
 
    /**
     * decode an encoded map
-    *
-    * @param map
-    * @return
     */
    public static MultivaluedMap<String, String> decode(MultivaluedMap<String, String> map)
    {

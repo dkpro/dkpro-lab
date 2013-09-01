@@ -268,8 +268,6 @@ public class UimaAsExecutionEngine
 
 		/**
 		 * Called when the initialization is completed.
-		 *
-		 * @see org.apache.uima.collection.processing.StatusCallbackListener#initializationComplete()
 		 */
 		@Override
 		public void initializationComplete(EntityProcessStatus aStatus)
@@ -286,8 +284,6 @@ public class UimaAsExecutionEngine
 
 		/**
 		 * Called when the collection processing is completed.
-		 *
-		 * @see org.apache.uima.collection.processing.StatusCallbackListener#collectionProcessComplete()
 		 */
 		@Override
 		public void collectionProcessComplete(EntityProcessStatus aStatus)

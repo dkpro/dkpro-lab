@@ -115,7 +115,6 @@ public String toString()
     *
     * @param path encoded full path
     * @param decode whether or not to decode each segment
-    * @return
     */
    public static List<PathSegment> parseSegments(String path, boolean decode)
    {

@@ -29,8 +29,8 @@ import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
  * Simple UIMA task configuration which allows you to set pre-generated
  * {@link CollectionReaderDescription} and {@link AnalysisEngineDescription}s. In most cases you
  * would want to extend {@link UimaTaskBase} and just override
- * {@link UimaTaskBase#getCollectionReaderDescription()} and
- * {@link UimaTaskBase#getAnalysisEngineDescription()}.
+ * {@link UimaTaskBase#getCollectionReaderDescription(TaskContext)} and
+ * {@link UimaTaskBase#getAnalysisEngineDescription(TaskContext)}.
  *
  * @author Richard Eckart de Castilho
  */

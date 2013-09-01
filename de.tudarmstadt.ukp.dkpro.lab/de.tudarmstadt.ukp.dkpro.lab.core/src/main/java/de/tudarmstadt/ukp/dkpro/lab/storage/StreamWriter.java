@@ -33,5 +33,4 @@ import java.util.Properties;
 public interface StreamWriter
 {
 	void write(OutputStream aStream) throws Exception;
-//	InputStream openStream() throws IOException;
 }

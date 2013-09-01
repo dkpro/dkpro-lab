@@ -73,7 +73,7 @@ public interface Task
 	/**
 	 * Get the discriminators for the task. Discriminators are used to determine if a task has
 	 * already been executed for a particular parameter configuration. Normally the discriminators
-	 * are the set of all parameters that affets a task's output and their parameter values.
+	 * are the set of all parameters that affects a task's output and their parameter values.
 	 */
 	Map<String, String> getDescriminators();
 
