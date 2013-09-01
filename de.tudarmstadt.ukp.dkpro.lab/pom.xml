@@ -22,7 +22,7 @@
 	<parent>
 		<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
 		<artifactId>dkpro-parent-pom</artifactId>
-		<version>3</version>
+		<version>4</version>
 	</parent>
 	<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
 	<artifactId>de.tudarmstadt.ukp.dkpro.lab</artifactId>
@@ -44,8 +44,8 @@
 	</licenses>
 	<properties>
 		<uima.core.version>2.4.2</uima.core.version>
-		<uima.as.version>2.4.1-SNAPSHOT</uima.as.version>
-		<uima.fit.version>2.0.0-SNAPSHOT</uima.fit.version>
+		<uima.as.version>2.4.0</uima.as.version>
+		<uima.fit.version>2.0.0</uima.fit.version>
 		<spring.version>3.1.4.RELEASE</spring.version>
 		<activemq.version>5.4.2</activemq.version>
 	</properties>
@@ -578,6 +578,8 @@
 										<exclude>src/test/resources/**/*</exclude>
 										<!-- generated JCas wrappers -->
 										<exclude>src/main/java/**/type/**/*</exclude>
+										<!-- Eclipse meta data -->
+										<exclude>.springBeans</exclude>
 									</excludes>
 								</configuration>
 							</execution>
