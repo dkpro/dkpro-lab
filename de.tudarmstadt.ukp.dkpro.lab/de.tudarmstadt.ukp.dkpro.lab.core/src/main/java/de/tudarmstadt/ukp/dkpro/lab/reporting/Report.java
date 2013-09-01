@@ -19,6 +19,7 @@ package de.tudarmstadt.ukp.dkpro.lab.reporting;
 
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskExecutionEngine;
+import de.tudarmstadt.ukp.dkpro.lab.task.Task;
 
 /**
  * Reports can be attached to task configurations. They are  simple tasks that directly provide an
