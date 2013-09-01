@@ -25,7 +25,7 @@
 	</parent>
 	<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
 	<artifactId>de.tudarmstadt.ukp.dkpro.lab</artifactId>
-	<version>0.10.0</version>
+	<version>0.11.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>DKPro Lab</name>
 	<url>http://code.google.com/p/dkpro-lab/</url>
@@ -261,27 +261,27 @@
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
 				<artifactId>de.tudarmstadt.ukp.dkpro.lab.core</artifactId>
-				<version>0.10.0</version>
+				<version>0.11.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
 				<artifactId>de.tudarmstadt.ukp.dkpro.lab.ml.example</artifactId>
-				<version>0.10.0</version>
+				<version>0.11.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
 				<artifactId>de.tudarmstadt.ukp.dkpro.lab.uima</artifactId>
-				<version>0.10.0</version>
+				<version>0.11.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
 				<artifactId>de.tudarmstadt.ukp.dkpro.lab.uima.engine.cpe</artifactId>
-				<version>0.10.0</version>
+				<version>0.11.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
 				<artifactId>de.tudarmstadt.ukp.dkpro.lab.uima.engine.simple</artifactId>
-				<version>0.10.0</version>
+				<version>0.11.0-SNAPSHOT</version>
 			</dependency>
 			<!--
 				<dependency>
@@ -293,7 +293,7 @@
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
 				<artifactId>de.tudarmstadt.ukp.dkpro.lab.groovy</artifactId>
-				<version>0.10.0</version>
+				<version>0.11.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.codehaus.jackson</groupId>
@@ -391,7 +391,7 @@
 		<connection>scm:git:https://code.google.com/p/dkpro-lab/</connection>
 		<developerConnection>scm:git:https://code.google.com/p/dkpro-lab/</developerConnection>
 		<url>http://code.google.com/p/dkpro-lab/source/browse/</url>
-		<tag>de.tudarmstadt.ukp.dkpro.lab-0.10.0</tag>
+		<tag>HEAD</tag>
 	</scm>
 	<build>
 		<plugins>
