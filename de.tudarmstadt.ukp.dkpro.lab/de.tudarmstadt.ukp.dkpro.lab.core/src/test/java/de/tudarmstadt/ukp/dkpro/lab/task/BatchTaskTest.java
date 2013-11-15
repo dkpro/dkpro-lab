@@ -29,7 +29,6 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 
 import de.tudarmstadt.ukp.dkpro.lab.Lab;
-import de.tudarmstadt.ukp.dkpro.lab.engine.ExecutionException;
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.storage.impl.PropertiesAdapter;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask;
@@ -37,151 +36,159 @@ import de.tudarmstadt.ukp.dkpro.lab.task.impl.ExecutableTaskBase;
 
 public class BatchTaskTest
 {
-	@Before
-	public void setup()
-	{
+    @Before
+    public void setup()
+    {
         File path = new File("target/repository/" + getClass().getSimpleName() + "/"
                 + name.getMethodName());
         System.setProperty("DKPRO_HOME", path.getAbsolutePath());
         FileUtils.deleteQuietly(path);
-	}
+    }
 
-	@Test(expected=ExecutionException.class)
-	public void importTest() throws Exception
-	{
-		Task producer = new ExecutableTaskBase()
-		{
-			@Override
-			public void execute(TaskContext aContext)
-				throws Exception
-			{
-				System.out.println("Running producer");
-				
-				Properties data = new Properties();
-				data.setProperty("key", "value");
-				
-				aContext.storeBinary("DATA", new PropertiesAdapter(data));
-			}
-		};
-
-		Task consumer = new ExecutableTaskBase()
-		{
-			@Override
-			public void execute(TaskContext aContext)
-				throws Exception
-			{
-				System.out.println("Running consumer");
-				
-				Properties data = new Properties();
-				aContext.retrieveBinary("DATA", new PropertiesAdapter(data));
-				Assert.assertEquals(data.getProperty("key"), "value");
-			}
-		};
-		
-		consumer.addImport(producer, "DATA1", "DATA");
-		
-		BatchTask batch = new BatchTask();
-		batch.addTask(producer);
-		batch.addTask(consumer);
-		
-		Lab.getInstance().run(batch);
-	}
-	
-	@Test
-	public void testNested() throws Exception
-	{		
-		Dimension innerDim = Dimension.create("inner", "1", "2", "3");
-		ParameterSpace innerPSpace = new ParameterSpace(innerDim);
-		BatchTask innerTask = new BatchTask() {
-			@Override
-			public void setConfiguration(Map<String, Object> aConfig)
-			{
-				super.setConfiguration(aConfig);
-				System.out.printf("A %10d %s %s%n", this.hashCode(), getType(), aConfig);
-			}
-		};
-		innerTask.setParameterSpace(innerPSpace);
-		innerTask.addTask(new ConfigDumperTask1());
-		
-		Dimension outerDim = Dimension.create("outer", "1", "2", "3");
-		ParameterSpace outerPSpace = new ParameterSpace(outerDim);
-		BatchTask outerTask = new BatchTask() {
-			@Override
-			public void setConfiguration(Map<String, Object> aConfig)
-			{
-				super.setConfiguration(aConfig);
-				System.out.printf("B %10d %s %s%n", this.hashCode(), getType(), aConfig);
-			}
-		};
-		outerTask.setParameterSpace(outerPSpace);
-		outerTask.addTask(innerTask);
-		outerTask.addTask(new ConfigDumperTask2());
-		
-		Lab.getInstance().run(outerTask);
-	}
-
-	@Test
-	public void testNested2() throws Exception
-	{
-		BatchTask innerTask = new BatchTask() {
-			@Discriminator
-			private Integer outer;
-			
-			@Override
-			public void execute(TaskContext aContext)
-				throws Exception
-			{
-				// Dynamically configure parameter space of nested batch task
-				Integer[] values = new Integer[outer];
-				for (int i = 0; i < outer; i++) {
-					values[i] = i;
-				}
-				Dimension<Integer> innerDim = Dimension.create("inner", values);
-				ParameterSpace innerPSpace = new ParameterSpace(innerDim);
-				setParameterSpace(innerPSpace);
-				
-				// Execute the batch task
-				super.execute(aContext);
-			}
-			
-			@Override
-			public void setConfiguration(Map<String, Object> aConfig)
-			{
-				super.setConfiguration(aConfig);
-				System.out.printf("A %10d %s %s%n", this.hashCode(), getType(), aConfig);
-			}
-		};
-		innerTask.addTask(new ConfigDumperTask1());
-		
-		Dimension<Integer> outerDim = Dimension.create("outer", 1, 2, 3);
-		ParameterSpace outerPSpace = new ParameterSpace(outerDim);
-		BatchTask outerTask = new BatchTask() {
-			@Override
-			public void setConfiguration(Map<String, Object> aConfig)
-			{
-				super.setConfiguration(aConfig);
-				System.out.printf("B %10d %s %s%n", this.hashCode(), getType(), aConfig);
-			}
-		};
-		outerTask.setParameterSpace(outerPSpace);
-		outerTask.addTask(innerTask);
-		outerTask.addTask(new ConfigDumperTask2());
-		
-		Lab.getInstance().run(outerTask);
-	}
-	
-    @Test(expected=ExecutionException.class)
-	public void testUnresolvable() throws Exception
-	{
-	    Dimension<String> dim = Dimension.create("param", "1", "2", "3");
-	    
-	    ParameterSpace pSpace = new ParameterSpace(dim);
-	    
-	    Task task1 = new ExecutableTaskBase()
+    @Test(expected = RuntimeException.class)
+    public void importTest()
+        throws Exception
+    {
+        Task producer = new ExecutableTaskBase()
         {
-	        @Discriminator
-	        private String param;
-	        
+            @Override
+            public void execute(TaskContext aContext)
+                throws Exception
+            {
+                System.out.println("Running producer");
+
+                Properties data = new Properties();
+                data.setProperty("key", "value");
+
+                aContext.storeBinary("DATA", new PropertiesAdapter(data));
+            }
+        };
+
+        Task consumer = new ExecutableTaskBase()
+        {
+            @Override
+            public void execute(TaskContext aContext)
+                throws Exception
+            {
+                System.out.println("Running consumer");
+
+                Properties data = new Properties();
+                aContext.retrieveBinary("DATA", new PropertiesAdapter(data));
+                Assert.assertEquals(data.getProperty("key"), "value");
+            }
+        };
+
+        consumer.addImport(producer, "DATA1", "DATA");
+
+        BatchTask batch = new BatchTask();
+        batch.addTask(producer);
+        batch.addTask(consumer);
+
+        Lab.getInstance().run(batch);
+    }
+
+    @Test
+    public void testNested()
+        throws Exception
+    {
+        Dimension innerDim = Dimension.create("inner", "1", "2", "3");
+        ParameterSpace innerPSpace = new ParameterSpace(innerDim);
+        BatchTask innerTask = new BatchTask()
+        {
+            @Override
+            public void setConfiguration(Map<String, Object> aConfig)
+            {
+                super.setConfiguration(aConfig);
+                System.out.printf("A %10d %s %s%n", this.hashCode(), getType(), aConfig);
+            }
+        };
+        innerTask.setParameterSpace(innerPSpace);
+        innerTask.addTask(new ConfigDumperTask1());
+
+        Dimension outerDim = Dimension.create("outer", "1", "2", "3");
+        ParameterSpace outerPSpace = new ParameterSpace(outerDim);
+        BatchTask outerTask = new BatchTask()
+        {
+            @Override
+            public void setConfiguration(Map<String, Object> aConfig)
+            {
+                super.setConfiguration(aConfig);
+                System.out.printf("B %10d %s %s%n", this.hashCode(), getType(), aConfig);
+            }
+        };
+        outerTask.setParameterSpace(outerPSpace);
+        outerTask.addTask(innerTask);
+        outerTask.addTask(new ConfigDumperTask2());
+
+        Lab.getInstance().run(outerTask);
+    }
+
+    @Test
+    public void testNested2()
+        throws Exception
+    {
+        BatchTask innerTask = new BatchTask()
+        {
+            @Discriminator
+            private Integer outer;
+
+            @Override
+            public void execute(TaskContext aContext)
+                throws Exception
+            {
+                // Dynamically configure parameter space of nested batch task
+                Integer[] values = new Integer[outer];
+                for (int i = 0; i < outer; i++) {
+                    values[i] = i;
+                }
+                Dimension<Integer> innerDim = Dimension.create("inner", values);
+                ParameterSpace innerPSpace = new ParameterSpace(innerDim);
+                setParameterSpace(innerPSpace);
+
+                // Execute the batch task
+                super.execute(aContext);
+            }
+
+            @Override
+            public void setConfiguration(Map<String, Object> aConfig)
+            {
+                super.setConfiguration(aConfig);
+                System.out.printf("A %10d %s %s%n", this.hashCode(), getType(), aConfig);
+            }
+        };
+        innerTask.addTask(new ConfigDumperTask1());
+
+        Dimension<Integer> outerDim = Dimension.create("outer", 1, 2, 3);
+        ParameterSpace outerPSpace = new ParameterSpace(outerDim);
+        BatchTask outerTask = new BatchTask()
+        {
+            @Override
+            public void setConfiguration(Map<String, Object> aConfig)
+            {
+                super.setConfiguration(aConfig);
+                System.out.printf("B %10d %s %s%n", this.hashCode(), getType(), aConfig);
+            }
+        };
+        outerTask.setParameterSpace(outerPSpace);
+        outerTask.addTask(innerTask);
+        outerTask.addTask(new ConfigDumperTask2());
+
+        Lab.getInstance().run(outerTask);
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testUnresolvable()
+        throws Exception
+    {
+        Dimension<String> dim = Dimension.create("param", "1", "2", "3");
+
+        ParameterSpace pSpace = new ParameterSpace(dim);
+
+        Task task1 = new ExecutableTaskBase()
+        {
+            @Discriminator
+            private String param;
+
             @Override
             public void execute(TaskContext aContext)
                 throws Exception
@@ -189,12 +196,12 @@ public class BatchTaskTest
                 // Nothing to do
             }
         };
-	    
+
         Task task2 = new ExecutableTaskBase()
         {
             @Discriminator
             private String param;
-            
+
             @Override
             public void execute(TaskContext aContext)
                 throws Exception
@@ -202,67 +209,70 @@ public class BatchTaskTest
                 // Nothing to do
             }
         };
-        
+
         task2.addImport(task1, "DUMMY");
         task1.addImport(task2, "DUMMY");
-        
+
         BatchTask batchTask = new BatchTask();
         batchTask.setParameterSpace(pSpace);
         batchTask.addTask(task1);
         batchTask.addTask(task2);
 
         Lab.getInstance().run(batchTask);
-	}
+    }
 
-	public static class ConfigDumperTask1 extends ExecutableTaskBase implements ConfigurationAware
-	{
-		@Discriminator
-		private String inner;
-		
-		private Map<String, Object> config;
-		
-		@Override
-		public void execute(TaskContext aContext)
-			throws Exception
-		{
-			System.out.printf("C %10d %s %s%n", this.hashCode(), getType(), config);
-		}
+    public static class ConfigDumperTask1
+        extends ExecutableTaskBase
+        implements ConfigurationAware
+    {
+        @Discriminator
+        private String inner;
 
-		@Override
-		public void setConfiguration(Map<String, Object> aConfig)
-		{
-			config = aConfig;
-		}
-	}
+        private Map<String, Object> config;
 
-	public static class ConfigDumperTask2 extends ExecutableTaskBase implements ConfigurationAware
-	{
-		@Discriminator
-		private String outer;
-		
-		private Map<String, Object> config;
-		
-		@Override
-		public void execute(TaskContext aContext)
-			throws Exception
-		{
-			System.out.printf("D %10d %s %s%n", this.hashCode(), getType(), config);
-		}
+        @Override
+        public void execute(TaskContext aContext)
+            throws Exception
+        {
+            System.out.printf("C %10d %s %s%n", this.hashCode(), getType(), config);
+        }
 
-		@Override
-		public void setConfiguration(Map<String, Object> aConfig)
-		{
-			config = aConfig;
-		}
-	}
+        @Override
+        public void setConfiguration(Map<String, Object> aConfig)
+        {
+            config = aConfig;
+        }
+    }
 
+    public static class ConfigDumperTask2
+        extends ExecutableTaskBase
+        implements ConfigurationAware
+    {
+        @Discriminator
+        private String outer;
 
-	@Rule
-	public TestName name = new TestName();
+        private Map<String, Object> config;
 
-	@Before
-	public void printSeparator()
-	{
-		System.out.println("\n=== " + name.getMethodName() + " =====================");
-	}
+        @Override
+        public void execute(TaskContext aContext)
+            throws Exception
+        {
+            System.out.printf("D %10d %s %s%n", this.hashCode(), getType(), config);
+        }
+
+        @Override
+        public void setConfiguration(Map<String, Object> aConfig)
+        {
+            config = aConfig;
+        }
+    }
+
+    @Rule
+    public TestName name = new TestName();
+
+    @Before
+    public void printSeparator()
+    {
+        System.out.println("\n=== " + name.getMethodName() + " =====================");
+    }
 }
