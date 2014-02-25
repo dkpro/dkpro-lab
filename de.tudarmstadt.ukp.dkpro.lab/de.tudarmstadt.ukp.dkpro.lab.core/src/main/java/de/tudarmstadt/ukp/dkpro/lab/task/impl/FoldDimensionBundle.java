@@ -117,6 +117,15 @@ public class FoldDimensionBundle<T> extends DimensionBundle<Collection<T>> imple
 						+ "] values. There must be at least as many values as folds.");
 			}
 		}
+		String foldsAndSizes = "";
+		for(int bucket=0;bucket<buckets.length;bucket++){
+			foldsAndSizes = foldsAndSizes + " fold " + bucket + ": size " + buckets[bucket].size() + ".  ";
+			if(buckets[bucket].size() == 0){
+				throw new IllegalStateException("Detected an empty fold: " + bucket + ". " + 
+			"Maybe your fold control is causing all of your instances to be put in very few buckets?  " + 
+						"Previous folds and buckets: " + foldsAndSizes);
+			}
+		}
 	}
     private void addToBucket(T newItem, int bucket){
 		if (buckets[bucket] == null) {
