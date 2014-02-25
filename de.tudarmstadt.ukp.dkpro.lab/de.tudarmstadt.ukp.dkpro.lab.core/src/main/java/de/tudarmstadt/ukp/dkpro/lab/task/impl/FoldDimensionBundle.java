@@ -57,6 +57,7 @@ public class FoldDimensionBundle<T> extends DimensionBundle<Collection<T>> imple
 		// Capture all data from the dimension into buckets, one per fold
 		foldedDimension.rewind();
 		
+		//User controls instances across folds
 		if(comparator != null){
 		
 	        while (foldedDimension.hasNext()) {
@@ -94,7 +95,8 @@ public class FoldDimensionBundle<T> extends DimensionBundle<Collection<T>> imple
 	                addToBucket(newItem, smallestBucket);
 	            }
 	        }
-		
+
+		//Default instance division across folds
 		}else{
 		
 			int i = 0;
