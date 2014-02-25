@@ -19,6 +19,7 @@ package de.tudarmstadt.ukp.dkpro.lab.task.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,37 +32,97 @@ public class FoldDimensionBundle<T> extends DimensionBundle<Collection<T>> imple
 	private List<T>[] buckets;
 	private int validationBucket = -1;
 	private int folds;
+	private Comparator<T> comparator;
 	
+    public FoldDimensionBundle(String aName, Dimension<T> aFoldedDimension, int aFolds, Comparator<T> aComparator)
+    {
+        this(aName, aFoldedDimension, aFolds);
+        comparator = aComparator;
+    }
 	public FoldDimensionBundle(String aName, Dimension<T> aFoldedDimension, int aFolds)
 	{
 		super(aName, new Object[0] );
 		foldedDimension = aFoldedDimension;
 		folds = aFolds;
+		comparator = null;
 	}
 	
 	private void init()
 	{
 		buckets = new List[folds];
+		for(int bucket=0;bucket<buckets.length;bucket++){
+			buckets[bucket] = new ArrayList<T>();
+		}
 		
 		// Capture all data from the dimension into buckets, one per fold
 		foldedDimension.rewind();
-		int i = 0;
-		while (foldedDimension.hasNext()) {
-			int bucket = i % folds;
-			
-			if (buckets[bucket] == null) {
-				buckets[bucket] = new ArrayList<T>();
-			}
-			
-			buckets[bucket].add(foldedDimension.next());
-			i++;
-		}
 		
-		if (i < folds) {
-			throw new IllegalStateException("Requested [" + folds + "] folds, but only got [" + i
-					+ "] values. There must be at least as many values as folds.");
+		if(comparator != null){
+		
+	        while (foldedDimension.hasNext()) {
+	            T newItem = foldedDimension.next();
+	            
+	            // Check every bucket if the current object belongs there
+	            boolean found = false;
+	            for(int bucket=0;bucket<buckets.length;bucket++){
+	                for (int j=0;j<buckets[bucket].size();j++) {
+	                	T item = buckets[bucket].get(j);
+	                    if (comparator.compare(item, newItem) == 0) {
+	                        // has to go into this bucket!
+	                        found = true;
+	                        addToBucket(newItem, bucket);
+	                        break;
+	                    }
+	                }
+	                if(found == true){
+	                	break;
+	                }
+	            	
+	            }
+	            
+	            // There is no bucket where the current item has to go into, just use the next one.
+	            if (!found) {
+	            	//put it in the smallest bucket
+	            	int smallestBucket = 0;
+	                int smallestBucketSize = buckets[smallestBucket].size();
+	                for(int bucket=0;bucket<buckets.length;bucket++){
+	                	if(buckets[bucket].size() < smallestBucketSize){
+	                		smallestBucket = bucket;
+	                		smallestBucketSize = buckets[smallestBucket].size();
+	                	}
+	                }
+	                addToBucket(newItem, smallestBucket);
+	            }
+	        }
+		
+		}else{
+		
+			int i = 0;
+			while (foldedDimension.hasNext()) {
+				int bucket = i % folds;
+				
+				if (buckets[bucket] == null) {
+					buckets[bucket] = new ArrayList<T>();
+				}
+				
+				buckets[bucket].add(foldedDimension.next());
+				i++;
+			}
+		
+		
+			if (i < folds) {
+				throw new IllegalStateException("Requested [" + folds + "] folds, but only got [" + i
+						+ "] values. There must be at least as many values as folds.");
+			}
 		}
 	}
+    private void addToBucket(T newItem, int bucket){
+		if (buckets[bucket] == null) {
+			buckets[bucket] = new ArrayList<T>();
+		}
+		
+		buckets[bucket].add(newItem);
+    }
 
 	@Override
 	public boolean hasNext()

@@ -32,7 +32,7 @@ public class UnresolvedImportException
     private static final long serialVersionUID = -6316793159383062743L;
 
     private TaskContext context;
-    
+
     public UnresolvedImportException(TaskContext aContext, String aImport, String aReason)
     {
         super("Unable to resolve import of task [" + aContext.getMetadata().getType()
@@ -62,7 +62,12 @@ public class UnresolvedImportException
                 + "] pointing to [" + aImport + "]", aCause);
         context = aContext;
     }
-    
+
+    public UnresolvedImportException(UnresolvedImportException aChainedException, String aDetails)
+    {
+        super(aDetails, aChainedException);
+    }
+
     public TaskContext getContext()
     {
         return context;

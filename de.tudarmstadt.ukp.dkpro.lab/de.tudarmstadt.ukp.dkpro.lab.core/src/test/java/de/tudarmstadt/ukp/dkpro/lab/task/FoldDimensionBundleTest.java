@@ -21,6 +21,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
@@ -100,6 +101,53 @@ public class FoldDimensionBundleTest
 		assertEquals(3, pSpace.getStepCount());
 		assertEquals(expected, actual.toString());
 	}
+	
+    @Test
+    public void testComparator()
+    {
+            Dimension<String> baseData = Dimension.create("base", "aa/1.txt", "aa/2.txt", "aa/3.txt", 
+            				"bb/4.txt", "bb/5.txt", "bb/6.txt", "cc/7.txt",
+            				"cc/8.txt", "cc/9.txt", "cc/10.txt");
+            
+            Comparator<String> comp = new Comparator<String>(){
+
+    			@Override
+    			public int compare(String filename1, String filename2)
+    			{
+    				File file1 = new File(filename1);
+    				File file2 = new File(filename2);
+    				String folder1 = file1.getParentFile().getName();
+    				String folder2 = file2.getParentFile().getName();
+    				
+            		if(folder1.equals(folder2)){
+            			return 0;
+            		}
+            		return 1;
+    			}
+        	};
+           
+            FoldDimensionBundle<String> foldBundle = new FoldDimensionBundle<String>("fold", baseData, 3, comp);
+           
+            String expected =
+                            "0 - [aa/1.txt, aa/2.txt, aa/3.txt] [bb/4.txt, bb/5.txt, bb/6.txt, cc/7.txt, cc/8.txt, cc/9.txt, cc/10.txt]\n" + 
+                            "1 - [bb/4.txt, bb/5.txt, bb/6.txt] [aa/1.txt, aa/2.txt, aa/3.txt, cc/7.txt, cc/8.txt, cc/9.txt, cc/10.txt]\n" + 
+                            "2 - [cc/7.txt, cc/8.txt, cc/9.txt, cc/10.txt] [aa/1.txt, aa/2.txt, aa/3.txt, bb/4.txt, bb/5.txt, bb/6.txt]\n";
+            
+
+            StringBuilder actual = new StringBuilder();
+
+            int n = 0;
+            ParameterSpace pSpace = new ParameterSpace(foldBundle);
+            for (Map<String, Object> config : pSpace) {
+                    actual.append(String.format("%d - %s %s%n", n, config.get("fold_validation"),
+                                    config.get("fold_training")));
+                    n++;
+            }
+           
+            assertEquals(3 , n);
+            assertEquals(3, pSpace.getStepCount());
+            assertEquals(expected, actual.toString());
+    }
 	
 	
 	@Test
