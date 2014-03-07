@@ -26,6 +26,7 @@ import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
@@ -45,7 +46,7 @@ public class FoldDimensionBundleTest
 		String path = "target/repository/"+getClass().getSimpleName()+"/"+name.getMethodName();
 		System.setProperty("DKPRO_HOME", new File(path).getAbsolutePath());
 	}
-	
+
 	@Test
 	public void testSimpleFold()
 	{
@@ -73,7 +74,7 @@ public class FoldDimensionBundleTest
 		assertEquals(3, pSpace.getStepCount());
 		assertEquals(expected, actual.toString());
 	}
-	
+
 	@Test
 	public void testFileFold()
 	{
@@ -102,6 +103,9 @@ public class FoldDimensionBundleTest
 		assertEquals(expected, actual.toString());
 	}
 	
+	/**
+	 * Tests that instances in the same cluster (here, parent folder) go into a fold together.
+	 */
     @Test
     public void testComparator()
     {
@@ -148,7 +152,57 @@ public class FoldDimensionBundleTest
             assertEquals(3, pSpace.getStepCount());
             assertEquals(expected, actual.toString());
     }
-	
+    
+	/**
+	 * Tests to see that instances are evenly distributed across folds.
+	 */
+    @Test
+    public void testFoldDistribution()
+    {
+            Dimension<String> baseData = Dimension.create("base", "aa/1.txt", "aa/2.txt", "bb/3.txt", 
+            				"cc/4.txt", "dd/5.txt", "dd/6.txt", "ee/7.txt",
+            				"ff/8.txt", "gg/9.txt", "gg/10.txt");
+            
+            Comparator<String> comp = new Comparator<String>(){
+
+    			@Override
+    			public int compare(String filename1, String filename2)
+    			{
+    				File file1 = new File(filename1);
+    				File file2 = new File(filename2);
+    				String folder1 = file1.getParentFile().getName();
+    				String folder2 = file2.getParentFile().getName();
+    				
+            		if(folder1.equals(folder2)){
+            			return 0;
+            		}
+            		return 1;
+    			}
+        	};
+           
+            FoldDimensionBundle<String> foldBundle = new FoldDimensionBundle<String>("fold", baseData, 3, comp);
+           
+            String expected =
+                            "0 - [aa/1.txt, aa/2.txt, ff/8.txt] [bb/3.txt, dd/5.txt, dd/6.txt, cc/4.txt, ee/7.txt, gg/9.txt, gg/10.txt]\n" + 
+                            "1 - [bb/3.txt, dd/5.txt, dd/6.txt] [aa/1.txt, aa/2.txt, ff/8.txt, cc/4.txt, ee/7.txt, gg/9.txt, gg/10.txt]\n" + 
+                            "2 - [cc/4.txt, ee/7.txt, gg/9.txt, gg/10.txt] [aa/1.txt, aa/2.txt, ff/8.txt, bb/3.txt, dd/5.txt, dd/6.txt]\n";
+            
+
+            StringBuilder actual = new StringBuilder();
+
+            int n = 0;
+            ParameterSpace pSpace = new ParameterSpace(foldBundle);
+            for (Map<String, Object> config : pSpace) {
+                    actual.append(String.format("%d - %s %s%n", n, config.get("fold_validation"),
+                                    config.get("fold_training")));
+                    n++;
+            }
+//            System.out.println(actual.toString());
+           
+            assertEquals(3 , n);
+            assertEquals(3, pSpace.getStepCount());
+            assertEquals(expected, actual.toString());
+    }
 	
 	@Test
 	public void testFoldInjection() throws Exception
