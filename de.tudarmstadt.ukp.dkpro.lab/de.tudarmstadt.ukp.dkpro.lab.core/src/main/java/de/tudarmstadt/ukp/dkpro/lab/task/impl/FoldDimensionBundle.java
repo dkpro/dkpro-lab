@@ -57,6 +57,7 @@ public class FoldDimensionBundle<T> extends DimensionBundle<Collection<T>> imple
 		// Capture all data from the dimension into buckets, one per fold
 		foldedDimension.rewind();
 		
+		//User controls instances across folds
 		if(comparator != null){
 		
 	        while (foldedDimension.hasNext()) {
@@ -94,7 +95,8 @@ public class FoldDimensionBundle<T> extends DimensionBundle<Collection<T>> imple
 	                addToBucket(newItem, smallestBucket);
 	            }
 	        }
-		
+
+		//Default instance division across folds
 		}else{
 		
 			int i = 0;
@@ -113,6 +115,15 @@ public class FoldDimensionBundle<T> extends DimensionBundle<Collection<T>> imple
 			if (i < folds) {
 				throw new IllegalStateException("Requested [" + folds + "] folds, but only got [" + i
 						+ "] values. There must be at least as many values as folds.");
+			}
+		}
+		String foldsAndSizes = "";
+		for(int bucket=0;bucket<buckets.length;bucket++){
+			foldsAndSizes = foldsAndSizes + " fold " + bucket + ": size " + buckets[bucket].size() + ".  ";
+			if(buckets[bucket].size() == 0){
+				throw new IllegalStateException("Detected an empty fold: " + bucket + ". " + 
+			"Maybe your fold control is causing all of your instances to be put in very few buckets?  " + 
+						"Previous folds and buckets: " + foldsAndSizes);
 			}
 		}
 	}
