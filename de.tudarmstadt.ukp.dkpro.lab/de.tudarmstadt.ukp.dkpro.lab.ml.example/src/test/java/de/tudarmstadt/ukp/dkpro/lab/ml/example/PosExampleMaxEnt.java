@@ -17,9 +17,9 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.lab.ml.example;
 
-import static org.uimafit.factory.AnalysisEngineFactory.createPrimitiveDescription;
-import static org.uimafit.factory.CollectionReaderFactory.createDescription;
-import static org.uimafit.util.JCasUtil.select;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
+import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription;
+import static org.apache.uima.fit.util.JCasUtil.select;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,8 +36,9 @@ import org.cleartk.classifier.jar.JarClassifierBuilder;
 import org.cleartk.classifier.opennlp.DefaultMaxentDataWriterFactory;
 import org.cleartk.classifier.viterbi.ViterbiDataWriterFactory;
 import org.junit.Test;
-import org.uimafit.component.JCasAnnotator_ImplBase;
+import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
 
+import de.tudarmstadt.ukp.dkpro.core.api.resources.CompressionMethod;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import de.tudarmstadt.ukp.dkpro.core.io.imscwb.ImsCwbWriter;
 import de.tudarmstadt.ukp.dkpro.core.io.negra.NegraExportReader;
@@ -80,7 +81,7 @@ public class PosExampleMaxEnt
 				throws ResourceInitializationException, IOException
 			{
 				return createReader(NegraExportReader.class,
-						NegraExportReader.PARAM_INPUT_FILE, corpusPath,
+						NegraExportReader.PARAM_SOURCE_LOCATION, corpusPath,
 						NegraExportReader.PARAM_LANGUAGE, "de");
 			}
 
@@ -92,8 +93,8 @@ public class PosExampleMaxEnt
 				return createEngine(
 						createEngine(SnowballStemmer.class),
 						createEngine(XmiWriter.class,
-								XmiWriter.PARAM_PATH, xmiDir.getAbsolutePath(),
-								XmiWriter.PARAM_COMPRESS, true));
+								XmiWriter.PARAM_TARGET_LOCATION, xmiDir.getAbsolutePath(),
+								XmiWriter.PARAM_COMPRESSION, CompressionMethod.GZIP));
 			}
 		};
 
@@ -108,7 +109,7 @@ public class PosExampleMaxEnt
 				File xmiDir = aContext.getStorageLocation("XMI", AccessMode.READONLY);
 				xmiDir.mkdirs();
 				return createReader(XmiReader.class,
-						XmiReader.PARAM_PATH, xmiDir.getAbsolutePath(),
+						XmiReader.PARAM_SOURCE_LOCATION, xmiDir.getAbsolutePath(),
 						XmiReader.PARAM_PATTERNS, new String[] { "[+]**/*.xmi.gz" });
 			}
 
@@ -119,7 +120,7 @@ public class PosExampleMaxEnt
 				File modelDir = aContext.getStorageLocation("MODEL", AccessMode.READWRITE);
 				modelDir.mkdirs();
 				return createEngine(
-						createPrimitiveDescription(
+						createEngineDescription(
 								ExamplePosAnnotator.class,
 						        ExamplePosAnnotator.PARAM_DATA_WRITER_FACTORY_CLASS_NAME, ViterbiDataWriterFactory.class.getName(),
 						        ViterbiDataWriterFactory.PARAM_OUTPUT_DIRECTORY, modelDir.getAbsolutePath(),
@@ -155,9 +156,8 @@ public class PosExampleMaxEnt
 			public CollectionReaderDescription getCollectionReaderDescription(TaskContext aContext)
 				throws ResourceInitializationException, IOException
 			{
-				return createDescription(TextReader.class,
-						TextReader.PARAM_PATH, "src/test/resources/text",
-						TextReader.PARAM_PATTERNS, new String[] { "[+]**/*.txt" },
+				return createReaderDescription(TextReader.class,
+						TextReader.PARAM_SOURCE_LOCATION, "src/test/resources/text/**/*.txt",
 						TextReader.PARAM_LANGUAGE, "de");
 			}
 
@@ -168,12 +168,12 @@ public class PosExampleMaxEnt
 				File model = new File(aContext.getStorageLocation("MODEL", AccessMode.READONLY), "model.jar");
 				File tsv = new File(aContext.getStorageLocation("TSV", AccessMode.READWRITE), "output.tsv");
 				return createEngine(
-						createPrimitiveDescription(BreakIteratorSegmenter.class),
-				        createPrimitiveDescription(SnowballStemmer.class),
-				        createPrimitiveDescription(ExamplePosAnnotator.class,
+						createEngineDescription(BreakIteratorSegmenter.class),
+						createEngineDescription(SnowballStemmer.class),
+						createEngineDescription(ExamplePosAnnotator.class,
 				        		GenericJarClassifierFactory.PARAM_CLASSIFIER_JAR_PATH, model.getAbsolutePath()),
-		        		createPrimitiveDescription(ImsCwbWriter.class,
-		        				ImsCwbWriter.PARAM_OUTPUT_FILE, tsv.getAbsolutePath()));
+				        		createEngineDescription(ImsCwbWriter.class,
+		        				ImsCwbWriter.PARAM_TARGET_LOCATION, tsv));
 			}
 		};
 
@@ -204,6 +204,7 @@ public class PosExampleMaxEnt
 	public void clean()
 		throws Exception
 	{
+        System.setProperty("DKPRO_HOME", new File("target").getAbsolutePath());
 		File repo = new File("target/repository");
 		FileUtils.deleteDirectory(repo);
 		repo.mkdirs();

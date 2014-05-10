@@ -19,8 +19,8 @@ package de.tudarmstadt.ukp.dkpro.lab.ml.example;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
-import static org.uimafit.util.JCasUtil.select;
-import static org.uimafit.util.JCasUtil.selectCovered;
+import static org.apache.uima.fit.util.JCasUtil.select;
+import static org.apache.uima.fit.util.JCasUtil.selectCovered;
 
 import java.util.ArrayList;
 import java.util.Collection;

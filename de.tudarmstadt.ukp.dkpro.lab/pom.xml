@@ -60,16 +60,6 @@
 	</modules>
 	<repositories>
 		<repository>
-			<id>cleartk</id>
-			<name>ClearTK Maven Repository</name>
-			<url>http://cleartk.googlecode.com/svn/repo/</url>
-		</repository>
-		<repository>
-			<id>ukp-oss</id>
-			<name>UKP Public Repository</name>
-			<url>http://zoidberg.ukp.informatik.tu-darmstadt.de/artifactory/repo/</url>
-		</repository>
-		<repository>
 			<!-- For uimaFIT 2.0.0-SNAPSHOT -->
 			<id>apache.snapshots</id>
 			<name>Apache Snapshot Repository</name>
@@ -94,6 +84,11 @@
 			<dependency>
 				<groupId>org.apache.uima</groupId>
 				<artifactId>uimafit-core</artifactId>
+				<version>${uima.fit.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.uima</groupId>
+				<artifactId>uimafit-legacy-support</artifactId>
 				<version>${uima.fit.version}</version>
 			</dependency>
 			<dependency>
