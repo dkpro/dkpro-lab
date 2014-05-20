@@ -19,7 +19,6 @@ package de.tudarmstadt.ukp.dkpro.lab.storage.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 
 import org.apache.commons.io.IOUtils;
@@ -63,7 +62,7 @@ public class StringAdapter
 	public void write(OutputStream aStream)
 		throws Exception
 	{
-	    new ObjectOutputStream(aStream).writeObject(object);
+	    IOUtils.write(object, aStream, encoding);
 	}
 
 	public void setString(String aString)
