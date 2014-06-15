@@ -37,7 +37,7 @@ public class StringAdapter
 
     public StringAdapter()
     {
-        this("UTF-8");
+        setEncoding("UTF-8");
     }
     
 	public StringAdapter(String aString)
