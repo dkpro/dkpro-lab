@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -78,9 +78,12 @@ public class BatchTask
         USE_EXISTING, ASK_EXISTING, RUN_AGAIN
     }
 
+    /**
+     * The subtask context IDs produced by this batch task in the order of their production.
+     */
     public static final String SUBTASKS_KEY = "Subtasks";
 
-    private Set<Task> tasks = new HashSet<Task>();
+    private Set<Task> tasks = new LinkedHashSet<Task>();
     private ParameterSpace parameterSpace;
     private ExecutionPolicy executionPolicy = ExecutionPolicy.RUN_AGAIN;
     private Map<String, Object> inheritedConfig;
@@ -101,6 +104,17 @@ public class BatchTask
         executionPolicy = aPolicy;
     }
 
+    /**
+     * Add a subtask to the batch. Unless otherwise mandated by data dependencies (imports) between
+     * the subtasks, the added tasks are executed in the order they are added. This effect can be
+     * used e.g. to execute a specific task before all other tasks even though the other tasks have
+     * no data dependencies on the first task. Whenever a task needs to access data produced by
+     * another tasks, you <b>must</b> import that data. The batch task will still try to execute
+     * the tasks in the order they were added, but in case a data dependency for a task is not yet
+     * available, the task is moved to the end of the queue.
+     * 
+     * @param aTask the task to be added.
+     */
     public void addTask(Task aTask)
     {
         tasks.add(aTask);
@@ -111,9 +125,13 @@ public class BatchTask
         return Collections.unmodifiableSet(tasks);
     }
 
+    /**
+     * Set the subtasks of this batch. If you depend on a specific exeuction order, you have to 
+     * provide a set with a fixed iteration order here, e.g. an {@code LinkedHashSet}.
+     */
     public void setTasks(Set<Task> aTasks)
     {
-        tasks = new HashSet<Task>(aTasks);
+        tasks = new LinkedHashSet<Task>(aTasks);
     }
 
     @Override
@@ -144,7 +162,7 @@ public class BatchTask
         }
 
         // A subtask execution may apply to multiple parameter space coordinates!
-        Set<String> executedSubtasks = Collections.newSetFromMap(new LinkedHashMap<String, Boolean>());
+        Set<String> executedSubtasks = new LinkedHashSet<String>();
         
         ProgressMeter progress = new ProgressMeter(estimatedSize);
         for (Map<String, Object> config : parameterSpace) {
