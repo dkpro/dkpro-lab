@@ -44,6 +44,8 @@ import org.springframework.dao.DataAccessResourceFailureException;
 
 import de.tudarmstadt.ukp.dkpro.lab.ProgressMeter;
 import de.tudarmstadt.ukp.dkpro.lab.Util;
+import de.tudarmstadt.ukp.dkpro.lab.engine.ExecutionException;
+import de.tudarmstadt.ukp.dkpro.lab.engine.LifeCycleException;
 import de.tudarmstadt.ukp.dkpro.lab.engine.LifeCycleManager;
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContextFactory;
@@ -140,9 +142,11 @@ public class BatchTask
                 }
             }
         }
-        ProgressMeter progress = new ProgressMeter(estimatedSize);
 
-        Map<String, Object> executedSubtasks = new LinkedHashMap<String, Object>();
+        // A subtask execution may apply to multiple parameter space coordinates!
+        Set<String> executedSubtasks = Collections.newSetFromMap(new LinkedHashMap<String, Boolean>());
+        
+        ProgressMeter progress = new ProgressMeter(estimatedSize);
         for (Map<String, Object> config : parameterSpace) {
             if (inheritedConfig != null) {
                 for (Entry<String, Object> e : inheritedConfig.entrySet()) {
@@ -151,7 +155,7 @@ public class BatchTask
                     }
                 }
             }
-
+            
             log.info("== Running new configuration [" + aContext.getId() + "] ==");
             List<String> keys = new ArrayList<String>(config.keySet());
             for (String key : keys) {
@@ -159,86 +163,114 @@ public class BatchTask
                         + StringUtils.abbreviateMiddle(Util.toString(config.get(key)), "…", 150)
                         + "]");
             }
-
-            if (log.isTraceEnabled()) {
-                for (String est : executedSubtasks.keySet()) {
-                    log.trace("-- Already executed: " + est);
-                }
-            }
-
-            Set<String> scope = new HashSet<String>();
-            if (inheritedScope != null) {
-                scope.addAll(inheritedScope);
-            }
-
-            configureTasks(aContext, config, scope);
-
-            Queue<Task> queue = new LinkedList<Task>(tasks);
-            Set<Task> loopDetection = new HashSet<Task>();
-
-            List<UnresolvedImportException> deferralReasons = new ArrayList<UnresolvedImportException>();
-            while (!queue.isEmpty()) {
-                Task task = queue.poll();
-
-                // set scope here so that the inherited scopes are considered 
-                if (task instanceof BatchTask) {
-                    ((BatchTask) task).setScope(scope);
-                }
-
-                TaskExecutionService execService = aContext.getExecutionService();
-
-                // Check if the task was already executed
-                TaskContextMetadata existing = getExistingExecution(aContext, task, config,
-                        executedSubtasks.keySet());
-                if (existing != null) {
-                    log.debug("Using existing execution [" + existing.getId() + "]");
-                    executedSubtasks.put(existing.getId(), "");
-                    scope.add(existing.getId());
-                    loopDetection.clear();
-                    deferralReasons.clear();
-                    continue;
-                }
-
-                try {
-                    log.info("Executing task [" + task.getType() + "]");
-                    TaskExecutionEngine engine = execService.createEngine(task);
-                    engine.setContextFactory(new ScopedTaskContextFactory(execService
-                            .getContextFactory(), config, scope));
-                    String uuid = engine.run(task);
-                    executedSubtasks.put(uuid, "");
-                    scope.add(uuid);
-                    loopDetection.clear();
-                    deferralReasons.clear();
-                }
-                catch (UnresolvedImportException e) {
-                    log.debug("Deferring execution of task [" + task.getType() + "]: "
-                            + e.getMessage());
-                    queue.add(task);
-                    if (loopDetection.contains(task)) {
-                        StringBuilder details = new StringBuilder();
-                        for (UnresolvedImportException r : deferralReasons) {
-                            details.append("\n -");
-                            details.append(r.getMessage());
-                        }
-
-                        // throw an UnresolvedImportException in case there is an outer BatchTask which needs to be executed first 
-                        throw new UnresolvedImportException(e, details.toString());
-                    }
-                    deferralReasons.add(e);
-                    loopDetection.add(task);
-                    continue;
-                }
-            }
+            
+            executeConfiguration(aContext, config, executedSubtasks);
 
             progress.next();
             log.info("Completed configuration " + progress);
         }
 
         // Set the subtask property and persist again, so the property is available to reports
-        setAttribute(SUBTASKS_KEY, executedSubtasks.keySet().toString());
+        setAttribute(SUBTASKS_KEY, executedSubtasks.toString());
         persist(aContext);
     }
+    
+    /**
+     * Locate the latest task execution compatible with the given task configuration.
+     * 
+     * @param aContext
+     *            the context of the current batch task.
+     * @param aConfig
+     *            the current parameter configuration.
+     * @param aExecutedSubtasks
+     *            already executed subtasks.
+     */
+    private void executeConfiguration(TaskContext aContext, Map<String, Object> aConfig,
+            Set<String> aExecutedSubtasks)
+        throws ExecutionException, LifeCycleException
+    {
+        if (log.isTraceEnabled()) {
+            // Show all subtasks executed so far
+            for (String est : aExecutedSubtasks) {
+                log.trace("-- Already executed: " + est);
+            }
+        }
 
+        // Set up initial scope used by sub-batch-tasks using the inherited scope. The scope is
+        // extended as the subtasks of this batch are executed with the present configuration.
+        // FIXME: That means that sub-batch-tasks in two different configurations cannot see
+        // each other. Is that intended? Mind that the "executedSubtasks" set is intentionally
+        // maintained *across* configurations, so maybe the scope should also be maintained
+        // *across* configurations? - REC 2014-06-15
+        Set<String> scope = new HashSet<String>();
+        if (inheritedScope != null) {
+            scope.addAll(inheritedScope);
+        }
+
+        // Configure subtasks
+        for (Task task : tasks) {
+            TaskFactory.configureTask(task, aConfig);
+        }
+
+        Queue<Task> queue = new LinkedList<Task>(tasks);
+        Set<Task> loopDetection = new HashSet<Task>();
+
+        List<UnresolvedImportException> deferralReasons = new ArrayList<UnresolvedImportException>();
+        while (!queue.isEmpty()) {
+            Task task = queue.poll();
+
+            try {
+                // Check if a subtask execution compatible with the present configuration has
+                // does already exist ...
+                TaskContextMetadata execution = getExistingExecution(aContext, task, aConfig,
+                        aExecutedSubtasks);
+                if (execution == null) {
+                    // ... otherwise execute it with the present configuration
+                    log.info("Executing task [" + task.getType() + "]");
+                    
+                    // set scope here so that the inherited scopes are considered 
+                    // set scope here so that tasks added to scope in this loop are considered
+                    if (task instanceof BatchTask) {
+                        ((BatchTask) task).setScope(scope);
+                    }
+                    
+                    execution = runNewExecution(aContext, task, aConfig, aExecutedSubtasks);
+                }                    
+                else {
+                    log.debug("Using existing execution [" + execution.getId() + "]");
+                }
+                
+                // Record new/existing execution
+                aExecutedSubtasks.add(execution.getId());
+                scope.add(execution.getId());
+                loopDetection.clear();
+                deferralReasons.clear();
+            }
+            catch (UnresolvedImportException e) {
+                // Add task back to queue
+                log.debug("Deferring execution of task [" + task.getType() + "]: "
+                        + e.getMessage());
+                queue.add(task);
+                
+                // Detect endless loop
+                if (loopDetection.contains(task)) {
+                    StringBuilder details = new StringBuilder();
+                    for (UnresolvedImportException r : deferralReasons) {
+                        details.append("\n -");
+                        details.append(r.getMessage());
+                    }
+
+                    // throw an UnresolvedImportException in case there is an outer BatchTask which needs to be executed first 
+                    throw new UnresolvedImportException(e, details.toString());
+                }
+                
+                // Record failed execution
+                loopDetection.add(task);
+                deferralReasons.add(e);
+            }
+        }
+    }
+    
     /**
      * Locate the latest task execution compatible with the given task configuration.
      * 
@@ -278,6 +310,29 @@ public class BatchTask
 
     }
 
+    /**
+     * Execute the given task with the given task configuration.
+     * 
+     * @param aContext
+     *            the context of the current batch task.
+     * @param aTask
+     *            the the task whose task to be executed.
+     * @param aConfig
+     *            the current parameter configuration.
+     * @return the context meta data.
+     */
+    private TaskContextMetadata runNewExecution(TaskContext aContext, Task aTask, Map<String, Object> aConfig,
+            Set<String> aScope)
+        throws ExecutionException, LifeCycleException
+    {
+        TaskExecutionService execService = aContext.getExecutionService();
+        TaskExecutionEngine engine = execService.createEngine(aTask);
+        engine.setContextFactory(new ScopedTaskContextFactory(execService
+                .getContextFactory(), aConfig, aScope));
+        String uuid = engine.run(aTask);
+        return aContext.getStorageService().getContext(uuid);
+    }
+    
     /**
      * Locate the latest task execution compatible with the given task configuration.
      * 
@@ -361,7 +416,7 @@ public class BatchTask
         }
     }
 
-    private void configureTasks(TaskContext aContext, Map<String, Object> aConfig,
+    private void configureSubtasks(TaskContext aContext, Map<String, Object> aConfig,
             Set<String> aScope)
     {
         for (Task task : tasks) {
