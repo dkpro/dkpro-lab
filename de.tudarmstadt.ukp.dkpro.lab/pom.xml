@@ -42,7 +42,7 @@
 		</license>
 	</licenses>
 	<properties>
-		<uima.core.version>2.4.2</uima.core.version>
+		<uima.core.version>2.6.0</uima.core.version>
 		<uima.as.version>2.4.0</uima.as.version>
 		<uima.fit.version>2.0.0</uima.fit.version>
 		<spring.version>3.1.2.RELEASE</spring.version>
