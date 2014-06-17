@@ -77,6 +77,39 @@
 	  -->
 	<dependencyManagement>
 		<dependencies>
+			<!-- MODULES -->
+			<dependency>
+				<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
+				<artifactId>de.tudarmstadt.ukp.dkpro.lab.core</artifactId>
+				<version>0.11.0-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
+				<artifactId>de.tudarmstadt.ukp.dkpro.lab.groovy</artifactId>
+				<version>0.11.0-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
+				<artifactId>de.tudarmstadt.ukp.dkpro.lab.ml.example</artifactId>
+				<version>0.11.0-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
+				<artifactId>de.tudarmstadt.ukp.dkpro.lab.uima</artifactId>
+				<version>0.11.0-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
+				<artifactId>de.tudarmstadt.ukp.dkpro.lab.uima.engine.cpe</artifactId>
+				<version>0.11.0-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
+				<artifactId>de.tudarmstadt.ukp.dkpro.lab.uima.engine.simple</artifactId>
+				<version>0.11.0-SNAPSHOT</version>
+			</dependency>
+			
+			<!-- UIMA -->
 			<dependency>
 				<groupId>org.apache.uima</groupId>
 				<artifactId>uimaj-core</artifactId>
@@ -102,6 +135,8 @@
 				<artifactId>uimafit-cpe</artifactId>
 				<version>${uima.fit.version}</version>
 			</dependency>
+			
+			<!-- LOGGING -->
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-log4j12</artifactId>
@@ -140,11 +175,8 @@
 					</exclusion>
 				</exclusions>
 			</dependency>
-			<dependency>
-				<groupId>org.springmodules</groupId>
-				<artifactId>spring-modules-jcr</artifactId>
-				<version>0.9</version>
-			</dependency>
+			
+			<!-- SPRING FRAMEWORK -->
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-core</artifactId>
@@ -195,16 +227,52 @@
 				<artifactId>spring-web</artifactId>
 				<version>${spring.version}</version>
 			</dependency>
+			
+			<!-- PDF RENDERING -->
 			<dependency>
-				<groupId>dom4j</groupId>
-				<artifactId>dom4j</artifactId>
-				<version>1.6.1</version>
+				<groupId>org.apache.xmlgraphics</groupId>
+				<artifactId>batik-svggen</artifactId>
+				<version>${batik.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.apache.mahout.commons</groupId>
-				<artifactId>commons-cli</artifactId>
-				<version>2.0-mahout</version>
+				<groupId>org.apache.xmlgraphics</groupId>
+				<artifactId>batik-dom</artifactId>
+				<version>${batik.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>org.apache.xmlgraphics</groupId>
+				<artifactId>batik-gvt</artifactId>
+				<version>${batik.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.xmlgraphics</groupId>
+				<artifactId>fop</artifactId>
+				<version>0.95</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.avalon.framework</groupId>
+				<artifactId>avalon-framework-impl</artifactId>
+				<version>4.3.1</version>
+			</dependency>
+			
+			<!-- XML -->
+			<dependency>
+				<groupId>xalan</groupId>
+				<artifactId>xalan</artifactId>
+				<version>${xalan.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>xalan</groupId>
+				<artifactId>serializer</artifactId>
+				<version>${xalan.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>xerces</groupId>
+				<artifactId>xercesImpl</artifactId>
+				<version>${xerces.version}</version>
+			</dependency>
+			
+			<!-- MISC -->
 			<dependency>
 				<groupId>commons-lang</groupId>
 				<artifactId>commons-lang</artifactId>
@@ -220,76 +288,6 @@
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
 				<version>4.10</version>
-			</dependency>
-			<dependency>
-				<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
-				<artifactId>de.tudarmstadt.ukp.dkpro.lab.core</artifactId>
-				<version>0.11.0-SNAPSHOT</version>
-			</dependency>
-			<dependency>
-				<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
-				<artifactId>de.tudarmstadt.ukp.dkpro.lab.ml.example</artifactId>
-				<version>0.11.0-SNAPSHOT</version>
-			</dependency>
-			<dependency>
-				<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
-				<artifactId>de.tudarmstadt.ukp.dkpro.lab.uima</artifactId>
-				<version>0.11.0-SNAPSHOT</version>
-			</dependency>
-			<dependency>
-				<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
-				<artifactId>de.tudarmstadt.ukp.dkpro.lab.uima.engine.cpe</artifactId>
-				<version>0.11.0-SNAPSHOT</version>
-			</dependency>
-			<dependency>
-				<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
-				<artifactId>de.tudarmstadt.ukp.dkpro.lab.uima.engine.simple</artifactId>
-				<version>0.11.0-SNAPSHOT</version>
-			</dependency>
-			<dependency>
-				<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
-				<artifactId>de.tudarmstadt.ukp.dkpro.lab.groovy</artifactId>
-				<version>0.11.0-SNAPSHOT</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.xmlgraphics</groupId>
-				<artifactId>batik-svggen</artifactId>
-				<version>${batik.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.xmlgraphics</groupId>
-				<artifactId>batik-dom</artifactId>
-				<version>${batik.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.xmlgraphics</groupId>
-				<artifactId>fop</artifactId>
-				<version>0.95</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.avalon.framework</groupId>
-				<artifactId>avalon-framework-impl</artifactId>
-				<version>4.3.1</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.xmlgraphics</groupId>
-				<artifactId>batik-gvt</artifactId>
-				<version>${batik.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>xalan</groupId>
-				<artifactId>xalan</artifactId>
-				<version>${xalan.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>xalan</groupId>
-				<artifactId>serializer</artifactId>
-				<version>${xalan.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>xerces</groupId>
-				<artifactId>xercesImpl</artifactId>
-				<version>${xerces.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.commons</groupId>
@@ -348,6 +346,13 @@
 				</exclusions>
 			</dependency>
 			
+			<dependency>
+				<groupId>dom4j</groupId>
+				<artifactId>dom4j</artifactId>
+				<version>1.6.1</version>
+			</dependency>
+
+
 			<dependency>
 				<groupId>org.apache.activemq</groupId>
 				<artifactId>activemq-all</artifactId>
@@ -417,10 +422,12 @@
 							<title>Internal APIs - not for public use</title>
 							<packages>de.tudarmstadt.ukp.dkpro.lab.engine.impl*:de.tudarmstadt.ukp.dkpro.lab.logging.impl*:de.tudarmstadt.ukp.dkpro.lab.resteasy*:de.tudarmstadt.ukp.dkpro.lab.storage.filesystem*</packages>
 						</group>
+						<!-- 
 						<group>
 							<title>EXPERIMENTAL - may not be useful at all</title>
 							<packages>de.tudarmstadt.ukp.dkpro.lab.uima.engine.uimaas*</packages>
 						</group>
+						-->
 					</groups>
 				</configuration>
 			</plugin>
@@ -649,6 +656,5 @@
 				</pluginManagement>
 			</build>
 		</profile>
-
 	</profiles>
 </project>
