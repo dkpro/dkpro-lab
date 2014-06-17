@@ -25,7 +25,7 @@
 	</parent>
 	<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
 	<artifactId>dkpro-lab</artifactId>
-	<version>0.11.0-SNAPSHOT</version>
+	<version>0.12.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>DKPro Lab</name>
 	<url>http://code.google.com/p/dkpro-lab/</url>
@@ -81,37 +81,37 @@
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
 				<artifactId>dkpro-lab-core</artifactId>
-				<version>0.11.0-SNAPSHOT</version>
+				<version>0.12.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
 				<artifactId>dkpro-lab-groovy</artifactId>
-				<version>0.11.0-SNAPSHOT</version>
+				<version>0.12.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
 				<artifactId>dkpro-lab-ml-example</artifactId>
-				<version>0.11.0-SNAPSHOT</version>
+				<version>0.12.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
 				<artifactId>dkpro-lab-support-slf4j</artifactId>
-				<version>0.11.0-SNAPSHOT</version>
+				<version>0.12.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
 				<artifactId>dkpro-lab-uima</artifactId>
-				<version>0.11.0-SNAPSHOT</version>
+				<version>0.12.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
 				<artifactId>dkpro-lab-uima-engine-cpe</artifactId>
-				<version>0.11.0-SNAPSHOT</version>
+				<version>0.12.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
 				<artifactId>dkpro-lab-uima-engine-simple</artifactId>
-				<version>0.11.0-SNAPSHOT</version>
+				<version>0.12.0-SNAPSHOT</version>
 			</dependency>
 			
 			<!-- UIMA/UIMAFIT -->
