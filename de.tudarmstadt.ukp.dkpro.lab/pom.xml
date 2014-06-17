@@ -95,6 +95,11 @@
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
+				<artifactId>de.tudarmstadt.ukp.dkpro.lab.support.slf4j</artifactId>
+				<version>0.11.0-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
 				<artifactId>de.tudarmstadt.ukp.dkpro.lab.uima</artifactId>
 				<version>0.11.0-SNAPSHOT</version>
 			</dependency>
