@@ -19,10 +19,10 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
-		<artifactId>de.tudarmstadt.ukp.dkpro.lab</artifactId>
+		<artifactId>dkpro-lab</artifactId>
 		<version>0.11.0-SNAPSHOT</version>
 	</parent>
-	<artifactId>de.tudarmstadt.ukp.dkpro.lab.support.slf4j</artifactId>
+	<artifactId>dkpro-lab-support-slf4j</artifactId>
 	<name>DKPro Lab - SLF4J Support Package</name>
 	<dependencies>
 		<dependency>

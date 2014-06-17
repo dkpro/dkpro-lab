@@ -19,28 +19,19 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
-		<artifactId>de.tudarmstadt.ukp.dkpro.lab</artifactId>
+		<artifactId>dkpro-lab</artifactId>
 		<version>0.11.0-SNAPSHOT</version>
 	</parent>
-	<artifactId>de.tudarmstadt.ukp.dkpro.lab.uima.engine.cpe</artifactId>
-	<name>DKPro Lab - UIMA CPE Execution Engine</name>
+	<artifactId>dkpro-lab-uima</artifactId>
+	<name>DKPro Lab - UIMA Support</name>
 	<dependencies>
 		<dependency>
 			<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
-			<artifactId>de.tudarmstadt.ukp.dkpro.lab.uima</artifactId>
+			<artifactId>dkpro-lab-core</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.uima</groupId>
 			<artifactId>uimafit-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.uima</groupId>
-			<artifactId>uimafit-cpe</artifactId>
-		</dependency>
-		<!-- To to work around https://issues.apache.org/jira/browse/UIMA-2155  -->
-		<dependency>
-			<groupId>xalan</groupId>
-			<artifactId>xalan</artifactId>
 		</dependency>
 	</dependencies>
 </project>

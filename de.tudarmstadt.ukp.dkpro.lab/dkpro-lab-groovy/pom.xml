@@ -19,10 +19,10 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
-		<artifactId>de.tudarmstadt.ukp.dkpro.lab</artifactId>
+		<artifactId>dkpro-lab</artifactId>
 		<version>0.11.0-SNAPSHOT</version>
 	</parent>
-	<artifactId>de.tudarmstadt.ukp.dkpro.lab.groovy</artifactId>
+	<artifactId>dkpro-lab-groovy</artifactId>
 	<name>DKPro Lab - Groovy Support</name>
 	<dependencies>
 		<dependency>
@@ -32,7 +32,7 @@
 		</dependency>
 		<dependency>
 			<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
-			<artifactId>de.tudarmstadt.ukp.dkpro.lab.core</artifactId>
+			<artifactId>dkpro-lab-core</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.uima</groupId>

@@ -24,7 +24,7 @@
 		<version>7</version>
 	</parent>
 	<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
-	<artifactId>de.tudarmstadt.ukp.dkpro.lab</artifactId>
+	<artifactId>dkpro-lab</artifactId>
 	<version>0.11.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>DKPro Lab</name>
@@ -53,14 +53,14 @@
 		<xerces.version>2.9.1</xerces.version>
 	</properties>
 	<modules>
-		<module>de.tudarmstadt.ukp.dkpro.lab.core</module>
-		<module>de.tudarmstadt.ukp.dkpro.lab.groovy</module>
-		<module>de.tudarmstadt.ukp.dkpro.lab.uima</module>
-		<module>de.tudarmstadt.ukp.dkpro.lab.uima.engine.simple</module>
-		<module>de.tudarmstadt.ukp.dkpro.lab.uima.engine.cpe</module>
-		<!-- <module>de.tudarmstadt.ukp.dkpro.lab.uima.engine.uimaas</module> -->
-		<module>de.tudarmstadt.ukp.dkpro.lab.support.slf4j</module>
-		<module>de.tudarmstadt.ukp.dkpro.lab.ml.example</module>
+		<module>dkpro-lab-core</module>
+		<module>dkpro-lab-groovy</module>
+		<module>dkpro-lab-ml-example</module>
+		<module>dkpro-lab-support-slf4j</module>
+		<module>dkpro-lab-uima</module>
+		<module>dkpro-lab-uima-engine-simple</module>
+		<module>dkpro-lab-uima-engine-cpe</module>
+   <!-- <module>dkpro-lab-uima-engine-uimaas</module> -->
 	</modules>
 	<!-- 
 	  - For uimaFIT snapshots
@@ -80,41 +80,41 @@
 			<!-- MODULES -->
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
-				<artifactId>de.tudarmstadt.ukp.dkpro.lab.core</artifactId>
+				<artifactId>dkpro-lab-core</artifactId>
 				<version>0.11.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
-				<artifactId>de.tudarmstadt.ukp.dkpro.lab.groovy</artifactId>
+				<artifactId>dkpro-lab-groovy</artifactId>
 				<version>0.11.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
-				<artifactId>de.tudarmstadt.ukp.dkpro.lab.ml.example</artifactId>
+				<artifactId>dkpro-lab-ml-example</artifactId>
 				<version>0.11.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
-				<artifactId>de.tudarmstadt.ukp.dkpro.lab.support.slf4j</artifactId>
+				<artifactId>dkpro-lab-support-slf4j</artifactId>
 				<version>0.11.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
-				<artifactId>de.tudarmstadt.ukp.dkpro.lab.uima</artifactId>
+				<artifactId>dkpro-lab-uima</artifactId>
 				<version>0.11.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
-				<artifactId>de.tudarmstadt.ukp.dkpro.lab.uima.engine.cpe</artifactId>
+				<artifactId>dkpro-lab-uima-engine-cpe</artifactId>
 				<version>0.11.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
-				<artifactId>de.tudarmstadt.ukp.dkpro.lab.uima.engine.simple</artifactId>
+				<artifactId>dkpro-lab-uima-engine-simple</artifactId>
 				<version>0.11.0-SNAPSHOT</version>
 			</dependency>
 			
-			<!-- UIMA -->
+			<!-- UIMA/UIMAFIT -->
 			<dependency>
 				<groupId>org.apache.uima</groupId>
 				<artifactId>uimaj-core</artifactId>
@@ -313,7 +313,7 @@
 			  - UIMA-AS module does currently not work
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
-				<artifactId>de.tudarmstadt.ukp.dkpro.lab.uima.engine.uimaas</artifactId>
+				<artifactId>dkpro-lab-uima-engine-uimaas</artifactId>
 				<version>0.10.0-SNAPSHOT</version>
 			</dependency>
 			

@@ -18,42 +18,25 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<artifactId>de.tudarmstadt.ukp.dkpro.lab</artifactId>
 		<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
-		<version>0.10.0-SNAPSHOT</version>
+		<artifactId>dkpro-lab</artifactId>
+		<version>0.11.0-SNAPSHOT</version>
 	</parent>
-	<artifactId>de.tudarmstadt.ukp.dkpro.lab.uima.engine.uimaas</artifactId>
-	<name>DKPro Lab - UIMA AS Execution Engine (experimental)</name>
+	<artifactId>dkpro-lab-uima-engine-simple</artifactId>
+	<name>DKPro Lab - Simple UIMA Execution Engine</name>
 	<dependencies>
 		<dependency>
 			<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
-			<artifactId>de.tudarmstadt.ukp.dkpro.lab.uima</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-jms</artifactId>
+			<artifactId>dkpro-lab-uima</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.uima</groupId>
-			<artifactId>uimaj-as-core</artifactId>
+			<artifactId>uimafit-core</artifactId>
 		</dependency>
+		<!-- To to work around https://issues.apache.org/jira/browse/UIMA-2155  -->
 		<dependency>
-			<groupId>org.apache.uima</groupId>
-			<artifactId>uimaj-as-jms</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.uima</groupId>
-			<artifactId>uimaj-as-activemq</artifactId>
-			<exclusions>
-				<exclusion>
-					<artifactId>activemq-optional</artifactId>
-					<groupId>org.apache.activemq</groupId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>dom4j</groupId>
-			<artifactId>dom4j</artifactId>
+			<groupId>xalan</groupId>
+			<artifactId>xalan</artifactId>
 		</dependency>
 	</dependencies>
 </project>
