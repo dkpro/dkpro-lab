@@ -20,7 +20,7 @@
 	<parent>
 		<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
 		<artifactId>dkpro-lab</artifactId>
-		<version>0.11.0-SNAPSHOT</version>
+		<version>0.11.0</version>
 	</parent>
 	<artifactId>dkpro-lab-uima-engine-simple</artifactId>
 	<name>DKPro Lab - Simple UIMA Execution Engine</name>
