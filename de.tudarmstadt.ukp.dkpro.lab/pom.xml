@@ -103,39 +103,6 @@
 				<version>${uima.fit.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.apache.uima</groupId>
-				<artifactId>uimaj-as-core</artifactId>
-				<version>${uima.as.version}</version>
-				<exclusions>
-					<exclusion>
-						<artifactId>spring</artifactId>
-						<groupId>org.springframework</groupId>
-					</exclusion>
-				</exclusions>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.uima</groupId>
-				<artifactId>uimaj-as-jms</artifactId>
-				<version>${uima.as.version}</version>
-				<exclusions>
-					<exclusion>
-						<artifactId>spring</artifactId>
-						<groupId>org.springframework</groupId>
-					</exclusion>
-				</exclusions>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.uima</groupId>
-				<artifactId>uimaj-as-activemq</artifactId>
-				<version>${uima.as.version}</version>
-				<exclusions>
-					<exclusion>
-						<artifactId>spring</artifactId>
-						<groupId>org.springframework</groupId>
-					</exclusion>
-				</exclusions>
-			</dependency>
-			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-log4j12</artifactId>
 				<version>${slf4j.version}</version>
@@ -234,11 +201,6 @@
 				<version>1.6.1</version>
 			</dependency>
 			<dependency>
-				<groupId>org.json</groupId>
-				<artifactId>json</artifactId>
-				<version>20090211</version>
-			</dependency>
-			<dependency>
 				<groupId>org.apache.mahout.commons</groupId>
 				<artifactId>commons-cli</artifactId>
 				<version>2.0-mahout</version>
@@ -284,22 +246,10 @@
 				<artifactId>de.tudarmstadt.ukp.dkpro.lab.uima.engine.simple</artifactId>
 				<version>0.11.0-SNAPSHOT</version>
 			</dependency>
-			<!--
-				<dependency>
-				<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
-				<artifactId>de.tudarmstadt.ukp.dkpro.lab.uima.engine.uimaas</artifactId>
-				<version>0.10.0-SNAPSHOT</version>
-				</dependency>
-			-->
 			<dependency>
 				<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
 				<artifactId>de.tudarmstadt.ukp.dkpro.lab.groovy</artifactId>
 				<version>0.11.0-SNAPSHOT</version>
-			</dependency>
-			<dependency>
-				<groupId>org.codehaus.jackson</groupId>
-				<artifactId>jackson-jaxrs</artifactId>
-				<version>1.4.2</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.xmlgraphics</groupId>
@@ -352,6 +302,53 @@
 				<version>2.1</version>
 			</dependency>
 			<dependency>
+				<groupId>org.codehaus.groovy</groupId>
+				<artifactId>groovy</artifactId>
+				<version>2.2.2</version>
+			</dependency>
+			<!--  
+			  - UIMA-AS module does currently not work
+			<dependency>
+				<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
+				<artifactId>de.tudarmstadt.ukp.dkpro.lab.uima.engine.uimaas</artifactId>
+				<version>0.10.0-SNAPSHOT</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>org.apache.uima</groupId>
+				<artifactId>uimaj-as-core</artifactId>
+				<version>${uima.as.version}</version>
+				<exclusions>
+					<exclusion>
+						<artifactId>spring</artifactId>
+						<groupId>org.springframework</groupId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.uima</groupId>
+				<artifactId>uimaj-as-jms</artifactId>
+				<version>${uima.as.version}</version>
+				<exclusions>
+					<exclusion>
+						<artifactId>spring</artifactId>
+						<groupId>org.springframework</groupId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.uima</groupId>
+				<artifactId>uimaj-as-activemq</artifactId>
+				<version>${uima.as.version}</version>
+				<exclusions>
+					<exclusion>
+						<artifactId>spring</artifactId>
+						<groupId>org.springframework</groupId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			
+			<dependency>
 				<groupId>org.apache.activemq</groupId>
 				<artifactId>activemq-all</artifactId>
 				<version>${activemq.version}</version>
@@ -381,11 +378,7 @@
 				<artifactId>kahadb</artifactId>
 				<version>${activemq.version}</version>
 			</dependency>
-			<dependency>
-				<groupId>org.codehaus.groovy</groupId>
-				<artifactId>groovy</artifactId>
-				<version>2.2.2</version>
-			</dependency>
+			-->
 		</dependencies>
 	</dependencyManagement>
 	<scm>
