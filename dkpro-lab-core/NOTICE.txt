@@ -1,0 +1,9 @@
+== Package: de.tudarmstadt.ukp.dkpro.lab.resteasy ==
+
+Classes in this package are taken from 
+
+http://resteasy.svn.sourceforge.net/viewvc/resteasy/tags/RESTEASY_JAXRS_2_2_3_GA/resteasy-jaxrs
+
+The original file does not contain a license statement. The license file in the projects
+top-level directory states the files are under the Apache License 2.0. A respective header has
+been added.
