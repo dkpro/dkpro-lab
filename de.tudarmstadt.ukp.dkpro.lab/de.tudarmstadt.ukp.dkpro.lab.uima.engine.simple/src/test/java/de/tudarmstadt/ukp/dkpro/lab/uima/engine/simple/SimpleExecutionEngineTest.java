@@ -35,10 +35,14 @@ import javax.annotation.Resource;
 import org.apache.commons.io.FileUtils;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
+import org.apache.uima.cas.CAS;
+import org.apache.uima.collection.CollectionException;
+import org.apache.uima.fit.component.CasCollectionReader_ImplBase;
 import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
 import org.apache.uima.fit.descriptor.ExternalResource;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
+import org.apache.uima.util.Progress;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -85,8 +89,7 @@ public class SimpleExecutionEngineTest
 				DummyAE.class, tsd);
 
 		DefaultUimaTask cfg = new DefaultUimaTask();
-        cfg.setReaderDescription(createReaderDescription(SingleTextReader.class, tsd,
-                SingleTextReader.PARAM_FILE_NAME, "src/test/resources/text.txt"));
+        cfg.setReaderDescription(createReaderDescription(TestReader.class, tsd));
 		cfg.setAnalysisEngineDescription(desc);
 
 		TaskExecutionEngine runner = executionService.createEngine(cfg);
@@ -114,25 +117,52 @@ public class SimpleExecutionEngineTest
 		assertEquals("works", sb.toString());
 
 	}
+	
+    public static final class TestReader
+        extends CasCollectionReader_ImplBase
+    {
+        private boolean read = false;
+        
+        @Override
+        public void getNext(CAS aCAS)
+            throws IOException, CollectionException
+        {
+            read = true;
+            aCAS.setDocumentText("This is a text.");
+        }
 
-	public static final class DummyAE
-	extends JCasAnnotator_ImplBase
-	{
-		@ExternalResource(api=TaskContextProvider.class)
-		TaskContext ctx;
+        @Override
+        public boolean hasNext()
+            throws IOException, CollectionException
+        {
+            return !read;
+        }
 
-		@Override
-		public void process(JCas aJCas)
-			throws AnalysisEngineProcessException
-		{
-			try {
-				ctx.message("Processing");
-				ctx.getStorageService().storeBinary(ctx.getId(), "test",
-						new ByteArrayInputStream("works".getBytes("UTF-8")));
-			}
-			catch (Exception e) {
-				throw new AnalysisEngineProcessException(e);
-			}
-		}
-	}
+        @Override
+        public Progress[] getProgress()
+        {
+            return null;
+        }
+    }
+
+    public static final class DummyAE
+        extends JCasAnnotator_ImplBase
+    {
+        @ExternalResource(api = TaskContextProvider.class)
+        TaskContext ctx;
+
+        @Override
+        public void process(JCas aJCas)
+            throws AnalysisEngineProcessException
+        {
+            try {
+                ctx.message("Processing");
+                ctx.getStorageService().storeBinary(ctx.getId(), "test",
+                        new ByteArrayInputStream("works".getBytes("UTF-8")));
+            }
+            catch (Exception e) {
+                throw new AnalysisEngineProcessException(e);
+            }
+        }
+    }
 }
