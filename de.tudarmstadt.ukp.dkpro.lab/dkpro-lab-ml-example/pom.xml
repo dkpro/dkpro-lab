@@ -54,12 +54,6 @@
 			<artifactId>cleartk-ml-mallet</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>net.sf.trove4j</groupId>
-			<artifactId>trove4j</artifactId>
-			<!-- 2.0.2 required by mallet - DKPro Core 1.6.0 manages to 3.0.2 -->
-			<version>2.0.2</version>
-		</dependency>
-		<dependency>
 			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
 			<artifactId>de.tudarmstadt.ukp.dkpro.core.api.segmentation-asl</artifactId>
 		</dependency>

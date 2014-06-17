@@ -127,6 +127,11 @@
 			</dependency>
 			<dependency>
 				<groupId>org.apache.uima</groupId>
+				<artifactId>uimaj-tools</artifactId>
+				<version>${uima.core.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.uima</groupId>
 				<artifactId>uimafit-core</artifactId>
 				<version>${uima.fit.version}</version>
 			</dependency>
