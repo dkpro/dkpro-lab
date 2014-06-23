@@ -209,23 +209,31 @@ public class FileSystemStorageService
 	@Override
 	public void storeBinary(String aContextId, String aKey, StreamWriter aProducer)
 	{
+	    File context = getContextFolder(aContextId, false);
+        File tmpFile = new File(context, aKey+".tmp");
+        File finalFile = new File(context, aKey);
+        
 		OutputStream os = null;
 		try {
-			File f = new File(getContextFolder(aContextId, false), aKey);
-			f.getParentFile().mkdirs(); // Necessary if the key addresses a sub-directory
-			log.debug("Storing to: " + f);
-			os = new FileOutputStream(f);
+		    tmpFile.getParentFile().mkdirs(); // Necessary if the key addresses a sub-directory
+			log.debug("Storing to: " + finalFile);
+			os = new FileOutputStream(tmpFile);
 			if (aKey.endsWith(".gz")) {
 				os = new GZIPOutputStream(os);
 			}
 			aProducer.write(os);
 		}
 		catch (Exception e) {
+		    tmpFile.delete();
 			throw new DataAccessResourceFailureException(e.getMessage(), e);
 		}
 		finally {
 			Util.close(os);
 		}
+		
+        // Make sure the file is only visible under the final name after all data has been
+        // written into it.
+        tmpFile.renameTo(finalFile);
 	}
 
 	@Override
