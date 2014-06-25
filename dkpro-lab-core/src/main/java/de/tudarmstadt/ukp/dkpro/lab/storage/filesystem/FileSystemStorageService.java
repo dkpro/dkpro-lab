@@ -231,9 +231,23 @@ public class FileSystemStorageService
 			Util.close(os);
 		}
 		
+		// On some platforms, it is not possible to rename a file to another one which already
+		// exists. So try to delete the target file before renaming.
+		if (finalFile.exists()) {
+		    boolean deleteSuccess = finalFile.delete();
+	        if (!deleteSuccess) {
+                throw new DataAccessResourceFailureException("Unable to delete [" + finalFile
+                        + "] in order to replace it with an updated version.");
+	        }
+		}
+		
         // Make sure the file is only visible under the final name after all data has been
         // written into it.
-        tmpFile.renameTo(finalFile);
+		boolean renameSuccess = tmpFile.renameTo(finalFile);
+		if (!renameSuccess) {
+            throw new DataAccessResourceFailureException("Unable to rename [" + tmpFile + "] to ["
+                    + finalFile + "]");
+		}
 	}
 
 	@Override
