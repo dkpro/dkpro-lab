@@ -58,6 +58,9 @@ public class FileSystemStorageService
 	implements StorageService
 {
 	private final Log log = LogFactory.getLog(getClass());
+	
+	private static final int MAX_RETRIES = 100;
+	private static final long SLEEP_TIME = 1000;
 
 	private File storageRoot;
 
@@ -185,25 +188,45 @@ public class FileSystemStorageService
 	public <T extends StreamReader> T retrieveBinary(String aContextId, String aKey, T aConsumer)
 	{
 		InputStream is = null;
-		try {
-			is = new FileInputStream(new File(getContextFolder(aContextId, true), aKey));
-			if (aKey.endsWith(".gz")) {
-				is = new GZIPInputStream(is);
+		int currentTry = 1;
+		IOException lastException = null;
+		
+		while (currentTry <= MAX_RETRIES) {
+			try {
+				is = new FileInputStream(new File(getContextFolder(aContextId, true), aKey));
+				if (aKey.endsWith(".gz")) {
+					is = new GZIPInputStream(is);
+				}
+				aConsumer.read(is);
+				return aConsumer;
 			}
-			aConsumer.read(is);
-			return aConsumer;
+			catch (IOException e) {
+			    // https://code.google.com/p/dkpro-lab/issues/detail?id=64
+				//may be related to a concurrent access so try again after some time
+				lastException = e;
+				
+				currentTry++;
+				log.debug(currentTry + ". try accessing "  + aKey + " in context " + aContextId);
+
+                try {
+                    Thread.sleep(SLEEP_TIME);
+                }
+                catch (InterruptedException e1) {
+                    // we should probably abort the whole thing
+                    currentTry = MAX_RETRIES;
+                }
+			}
+	        catch (Throwable e) {
+	            throw new DataAccessResourceFailureException("Unable to load [" + aKey
+	                    + "] from context [" + aContextId + "]", e);
+	        }
+			finally {
+				Util.close(is);
+			}
 		}
-		catch (IOException e) {
-            throw new DataAccessResourceFailureException("Unable to access [" + aKey
-                    + "] in context [" + aContextId + "]", e);
-		}
-        catch (Throwable e) {
-            throw new DataAccessResourceFailureException("Unable to load [" + aKey
-                    + "] from context [" + aContextId + "]", e);
-        }
-		finally {
-			Util.close(is);
-		}
+		
+        throw new DataAccessResourceFailureException("Unable to access [" + aKey
+                + "] in context [" + aContextId + "]", lastException);
 	}
 
 	@Override
@@ -212,7 +235,7 @@ public class FileSystemStorageService
 	    File context = getContextFolder(aContextId, false);
         File tmpFile = new File(context, aKey+".tmp");
         File finalFile = new File(context, aKey);
-        
+             
 		OutputStream os = null;
 		try {
 		    tmpFile.getParentFile().mkdirs(); // Necessary if the key addresses a sub-directory
