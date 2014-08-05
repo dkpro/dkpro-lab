@@ -2,13 +2,13 @@
  * Copyright 2011
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
- *   
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *   
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- *   
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -58,7 +58,7 @@ public class FileSystemStorageService
 	implements StorageService
 {
 	private final Log log = LogFactory.getLog(getClass());
-	
+
 	private static final int MAX_RETRIES = 100;
 	private static final long SLEEP_TIME = 1000;
 
@@ -111,7 +111,7 @@ public class FileSystemStorageService
 				contexts.add(retrieveBinary(child.getName(), METADATA_KEY, new TaskContextMetadata()));
 			}
 		}
-		
+
 		Collections.sort(contexts, new Comparator<TaskContextMetadata>()
 		{
 			@Override
@@ -120,7 +120,7 @@ public class FileSystemStorageService
 				return Long.signum(aO2.getEnd() - aO1.getEnd());
 			}
 		});
-		
+
 		return contexts;
 	}
 
@@ -190,7 +190,7 @@ public class FileSystemStorageService
 		InputStream is = null;
 		int currentTry = 1;
 		IOException lastException = null;
-		
+
 		while (currentTry <= MAX_RETRIES) {
 			try {
 				is = new FileInputStream(new File(getContextFolder(aContextId, true), aKey));
@@ -204,7 +204,7 @@ public class FileSystemStorageService
 			    // https://code.google.com/p/dkpro-lab/issues/detail?id=64
 				//may be related to a concurrent access so try again after some time
 				lastException = e;
-				
+
 				currentTry++;
 				log.debug(currentTry + ". try accessing "  + aKey + " in context " + aContextId);
 
@@ -224,7 +224,7 @@ public class FileSystemStorageService
 				Util.close(is);
 			}
 		}
-		
+
         throw new DataAccessResourceFailureException("Unable to access [" + aKey
                 + "] in context [" + aContextId + "]", lastException);
 	}
@@ -235,7 +235,7 @@ public class FileSystemStorageService
 	    File context = getContextFolder(aContextId, false);
         File tmpFile = new File(context, aKey+".tmp");
         File finalFile = new File(context, aKey);
-             
+
 		OutputStream os = null;
 		try {
 		    tmpFile.getParentFile().mkdirs(); // Necessary if the key addresses a sub-directory
@@ -253,7 +253,7 @@ public class FileSystemStorageService
 		finally {
 			Util.close(os);
 		}
-		
+
 		// On some platforms, it is not possible to rename a file to another one which already
 		// exists. So try to delete the target file before renaming.
 		if (finalFile.exists()) {
@@ -263,7 +263,7 @@ public class FileSystemStorageService
                         + "] in order to replace it with an updated version.");
 	        }
 		}
-		
+
         // Make sure the file is only visible under the final name after all data has been
         // written into it.
 		boolean renameSuccess = tmpFile.renameTo(finalFile);
@@ -324,7 +324,7 @@ public class FileSystemStorageService
 			try {
 				File source = new File(getContextFolder(key.contextId, false), key.key);
 				File target = new File(getContextFolder(aContextId, false), aKey);
-				
+
 				if (Util.isSymlinkSupported() && aMode == AccessMode.ADD_ONLY) {
 					log.info("Write access to imported storage folder [" + aKey
 							+ "] was requested. Linking to current context");
@@ -339,7 +339,7 @@ public class FileSystemStorageService
 			catch (IOException e) {
 				throw new DataAccessResourceFailureException(e.getMessage(), e);
 			}
-			
+
 			// Key should point to the local context now
 			key = new StorageKey(aContextId, aKey);
 		}
@@ -354,7 +354,7 @@ public class FileSystemStorageService
 		return folder;
 	}
 
-	private boolean isStorageFolder(String aContextId, String aKey)
+	protected boolean isStorageFolder(String aContextId, String aKey)
 	{
 		return new File(getContextFolder(aContextId, false), aKey).isDirectory();
 	}
