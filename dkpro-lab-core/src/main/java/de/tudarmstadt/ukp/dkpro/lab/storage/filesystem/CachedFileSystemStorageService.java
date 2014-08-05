@@ -17,9 +17,9 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.lab.storage.filesystem;
 
-import static de.tudarmstadt.ukp.dkpro.lab.engine.impl.ImportUtil.matchConstraints;
+import static de.tudarmstadt.ukp.dkpro.lab.task.Task.DISCRIMINATORS_KEY;
+import static de.tudarmstadt.ukp.dkpro.lab.task.TaskContextMetadata.METADATA_KEY;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -31,7 +31,6 @@ import java.util.Properties;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StreamReader;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StreamWriter;
 import de.tudarmstadt.ukp.dkpro.lab.storage.impl.PropertiesAdapter;
-import de.tudarmstadt.ukp.dkpro.lab.task.Task;
 import de.tudarmstadt.ukp.dkpro.lab.task.TaskContextMetadata;
 
 /**
@@ -50,6 +49,15 @@ public class CachedFileSystemStorageService
 	{
 		contexts = new HashMap<String, TaskContextMetadata>();
 		discriminators = new HashMap<String, Map<String, String>>();
+
+		// If we are using a "recycled" run, we need to have all the context metadata available. To
+		// avoid pulling these from the FS every time we need the list, we fetch them once at
+		// instantion.
+		// If new contexts are added, it is ensured by storeBinary that those are put into the
+		// cache.
+		for (TaskContextMetadata meta : super.getContexts()) {
+			contexts.put(meta.getId(), meta);
+		}
 	}
 
 	@Override
@@ -59,12 +67,6 @@ public class CachedFileSystemStorageService
 
 		contexts.remove(aContextId);
 		discriminators.remove(aContextId);
-	}
-
-	@Override
-	public TaskContextMetadata getContext(String aContextId)
-	{
-		return contexts.get(aContextId);
 	}
 
 	@Override
@@ -84,65 +86,45 @@ public class CachedFileSystemStorageService
 	}
 
 	@Override
-	public List<TaskContextMetadata> getContexts(String aTaskType, Map<String, String> aConstraints)
-	{
-		List<TaskContextMetadata> contextList = new ArrayList<TaskContextMetadata>();
-
-		nextContext: for (TaskContextMetadata meta : getContexts()) {
-			// Ignore those that do not match the type
-			if (!aTaskType.equals(meta.getType())) {
-				continue;
-			}
-
-			// Check the constraints if there are any
-			if (aConstraints.size() > 0) {
-				Map<String, String> properties = getDiscriminators(meta.getId());
-				if (!matchConstraints(properties, aConstraints, true)) {
-					continue nextContext;
-				}
-			}
-			contextList.add(meta);
-		}
-
-		return contextList;
-	}
-
-	@Override
 	public boolean containsContext(String aContextId)
 	{
-		return contexts.containsKey(aContextId);
+		return contexts.containsKey(aContextId) || super.containsContext(aContextId);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T extends StreamReader> T retrieveBinary(String aContextId, String aKey, T aConsumer)
 	{
-		if (aConsumer instanceof TaskContextMetadata
-		        && aKey.equals(TaskContextMetadata.METADATA_KEY)) {
-			return (T) getContext(aContextId);
+		T consumer = null;
+		// Get the consumer from cache if it is a TaskContextMetadata or PropertiesAdapter.
+		if (aConsumer instanceof TaskContextMetadata && aKey.equals(METADATA_KEY)) {
+			consumer = (T) contexts.get(aContextId);
 		}
-		else if (aConsumer instanceof PropertiesAdapter && aKey.equals(Task.DISCRIMINATORS_KEY)) {
+		else if (aConsumer instanceof PropertiesAdapter && aKey.equals(DISCRIMINATORS_KEY)) {
 			Properties props = new Properties();
-			props.putAll(getDiscriminators(aContextId));
-			((PropertiesAdapter) aConsumer).setProperties(props);
-			return aConsumer;
+			Map<String, String> discs = discriminators.get(aContextId);
+			if (discs != null) {
+				props.putAll(discs);
+				((PropertiesAdapter) aConsumer).setProperties(props);
+				consumer = aConsumer;
+			}
 		}
 
-		return super.retrieveBinary(aContextId, aKey, aConsumer);
+		// If the consumer is not a TaskContextMetadata/PropertiesAdapter or is not cached, retrieve
+		// it from file and store it in the cache.
+		if (consumer == null) {
+			consumer = super.retrieveBinary(aContextId, aKey, aConsumer);
+			storeInCache(aContextId, aKey, consumer);
+		}
+
+		return consumer;
 	}
 
 	@Override
 	public void storeBinary(String aContextId, String aKey, StreamWriter aProducer)
 	{
 		super.storeBinary(aContextId, aKey, aProducer);
-
-		if (aProducer instanceof TaskContextMetadata
-		        && aKey.equals(TaskContextMetadata.METADATA_KEY)) {
-			contexts.put(aContextId, (TaskContextMetadata) aProducer);
-		}
-		else if (aProducer instanceof PropertiesAdapter && aKey.equals(Task.DISCRIMINATORS_KEY)) {
-			discriminators.put(aContextId, ((PropertiesAdapter) aProducer).getMap());
-		}
+		storeInCache(aContextId, aKey, aProducer);
 	}
 
 	@Override
@@ -151,33 +133,37 @@ public class CachedFileSystemStorageService
 		super.copy(aContextId, aKey, aResolvedKey, aMode);
 
 		if (isStorageFolder(aResolvedKey.contextId, aResolvedKey.key)) {
-			if (aResolvedKey.key.equals(TaskContextMetadata.METADATA_KEY)
-			        && aKey.equals(TaskContextMetadata.METADATA_KEY)) {
+			if (aResolvedKey.key.equals(METADATA_KEY) && aKey.equals(METADATA_KEY)) {
 				contexts.put(aContextId, getContext(aResolvedKey.contextId));
 			}
-			else if (aResolvedKey.key.equals(Task.DISCRIMINATORS_KEY)
-			        && aKey.equals(Task.DISCRIMINATORS_KEY)) {
+			else if (aResolvedKey.key.equals(DISCRIMINATORS_KEY) && aKey.equals(DISCRIMINATORS_KEY)) {
 				discriminators.put(aContextId, getDiscriminators(aResolvedKey.contextId));
 			}
 		}
 	}
 
-	private File getContextFolder(String aContextId, boolean create)
+	/**
+	 * Stores a TaskContextMetadata or the contents of a PropertiesAdapter in cache.
+	 *
+	 * @param aContextId
+	 *            the id of the context to which this aMeta belongs.
+	 * @param aKey
+	 *            the key of the object.
+	 * @param aMeta
+	 *            the TaskContextMetadata or the PropertiesAdapter that should be cached.
+	 */
+	private void storeInCache(String aContextId, String aKey, Object aMeta)
 	{
-		File folder = new File(getStorageRoot(), aContextId);
-		if (create) {
-			folder.mkdirs();
+		if (aMeta instanceof TaskContextMetadata && aKey.equals(METADATA_KEY)) {
+			contexts.put(aContextId, (TaskContextMetadata) aMeta);
 		}
-		return folder;
-	}
-
-	private boolean isStorageFolder(String aContextId, String aKey)
-	{
-		return new File(getContextFolder(aContextId, false), aKey).isDirectory();
+		else if (aMeta instanceof PropertiesAdapter && aKey.equals(DISCRIMINATORS_KEY)) {
+			discriminators.put(aContextId, ((PropertiesAdapter) aMeta).getMap());
+		}
 	}
 
 	private Map<String, String> getDiscriminators(String aContextId)
 	{
-		return discriminators.get(aContextId);
+		return retrieveBinary(aContextId, DISCRIMINATORS_KEY, new PropertiesAdapter()).getMap();
 	}
 }
