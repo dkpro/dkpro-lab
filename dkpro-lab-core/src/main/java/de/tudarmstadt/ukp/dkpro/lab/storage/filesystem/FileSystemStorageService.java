@@ -2,13 +2,13 @@
  * Copyright 2011
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
- *   
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *   
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- *   
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -55,10 +55,10 @@ import de.tudarmstadt.ukp.dkpro.lab.task.TaskContextMetadata;
  * @author Richard Eckart de Castilho
  */
 public class FileSystemStorageService
-	implements StorageService
+    implements StorageService
 {
 	private final Log log = LogFactory.getLog(getClass());
-	
+
 	private static final int MAX_RETRIES = 100;
 	private static final long SLEEP_TIME = 1000;
 
@@ -108,10 +108,11 @@ public class FileSystemStorageService
 		List<TaskContextMetadata> contexts = new ArrayList<TaskContextMetadata>();
 		for (File child : storageRoot.listFiles()) {
 			if (new File(child, METADATA_KEY).exists()) {
-				contexts.add(retrieveBinary(child.getName(), METADATA_KEY, new TaskContextMetadata()));
+				contexts.add(retrieveBinary(child.getName(), METADATA_KEY,
+				        new TaskContextMetadata()));
 			}
 		}
-		
+
 		Collections.sort(contexts, new Comparator<TaskContextMetadata>()
 		{
 			@Override
@@ -120,7 +121,7 @@ public class FileSystemStorageService
 				return Long.signum(aO2.getEnd() - aO1.getEnd());
 			}
 		});
-		
+
 		return contexts;
 	}
 
@@ -137,8 +138,8 @@ public class FileSystemStorageService
 
 			// Check the constraints if there are any
 			if (aConstraints.size() > 0) {
-				final Map<String, String> properties = retrieveBinary(e.getId(), Task.DISCRIMINATORS_KEY,
-						new PropertiesAdapter()).getMap();
+				final Map<String, String> properties = retrieveBinary(e.getId(),
+				        Task.DISCRIMINATORS_KEY, new PropertiesAdapter()).getMap();
 
 				if (!matchConstraints(properties, aConstraints, true)) {
 					continue nextContext;
@@ -190,7 +191,7 @@ public class FileSystemStorageService
 		InputStream is = null;
 		int currentTry = 1;
 		IOException lastException = null;
-		
+
 		while (currentTry <= MAX_RETRIES) {
 			try {
 				is = new FileInputStream(new File(getContextFolder(aContextId, true), aKey));
@@ -201,44 +202,44 @@ public class FileSystemStorageService
 				return aConsumer;
 			}
 			catch (IOException e) {
-			    // https://code.google.com/p/dkpro-lab/issues/detail?id=64
-				//may be related to a concurrent access so try again after some time
+				// https://code.google.com/p/dkpro-lab/issues/detail?id=64
+				// may be related to a concurrent access so try again after some time
 				lastException = e;
-				
-				currentTry++;
-				log.debug(currentTry + ". try accessing "  + aKey + " in context " + aContextId);
 
-                try {
-                    Thread.sleep(SLEEP_TIME);
-                }
-                catch (InterruptedException e1) {
-                    // we should probably abort the whole thing
-                    currentTry = MAX_RETRIES;
-                }
+				currentTry++;
+				log.debug(currentTry + ". try accessing " + aKey + " in context " + aContextId);
+
+				try {
+					Thread.sleep(SLEEP_TIME);
+				}
+				catch (InterruptedException e1) {
+					// we should probably abort the whole thing
+					currentTry = MAX_RETRIES;
+				}
 			}
-	        catch (Throwable e) {
-	            throw new DataAccessResourceFailureException("Unable to load [" + aKey
-	                    + "] from context [" + aContextId + "]", e);
-	        }
+			catch (Throwable e) {
+				throw new DataAccessResourceFailureException("Unable to load [" + aKey
+				        + "] from context [" + aContextId + "]", e);
+			}
 			finally {
 				Util.close(is);
 			}
 		}
-		
-        throw new DataAccessResourceFailureException("Unable to access [" + aKey
-                + "] in context [" + aContextId + "]", lastException);
+
+		throw new DataAccessResourceFailureException("Unable to access [" + aKey + "] in context ["
+		        + aContextId + "]", lastException);
 	}
 
 	@Override
 	public void storeBinary(String aContextId, String aKey, StreamWriter aProducer)
 	{
-	    File context = getContextFolder(aContextId, false);
-        File tmpFile = new File(context, aKey+".tmp");
-        File finalFile = new File(context, aKey);
-             
+		File context = getContextFolder(aContextId, false);
+		File tmpFile = new File(context, aKey + ".tmp");
+		File finalFile = new File(context, aKey);
+
 		OutputStream os = null;
 		try {
-		    tmpFile.getParentFile().mkdirs(); // Necessary if the key addresses a sub-directory
+			tmpFile.getParentFile().mkdirs(); // Necessary if the key addresses a sub-directory
 			log.debug("Storing to: " + finalFile);
 			os = new FileOutputStream(tmpFile);
 			if (aKey.endsWith(".gz")) {
@@ -247,29 +248,29 @@ public class FileSystemStorageService
 			aProducer.write(os);
 		}
 		catch (Exception e) {
-		    tmpFile.delete();
+			tmpFile.delete();
 			throw new DataAccessResourceFailureException(e.getMessage(), e);
 		}
 		finally {
 			Util.close(os);
 		}
-		
+
 		// On some platforms, it is not possible to rename a file to another one which already
 		// exists. So try to delete the target file before renaming.
 		if (finalFile.exists()) {
-		    boolean deleteSuccess = finalFile.delete();
-	        if (!deleteSuccess) {
-                throw new DataAccessResourceFailureException("Unable to delete [" + finalFile
-                        + "] in order to replace it with an updated version.");
-	        }
+			boolean deleteSuccess = finalFile.delete();
+			if (!deleteSuccess) {
+				throw new DataAccessResourceFailureException("Unable to delete [" + finalFile
+				        + "] in order to replace it with an updated version.");
+			}
 		}
-		
-        // Make sure the file is only visible under the final name after all data has been
-        // written into it.
+
+		// Make sure the file is only visible under the final name after all data has been
+		// written into it.
 		boolean renameSuccess = tmpFile.renameTo(finalFile);
 		if (!renameSuccess) {
-            throw new DataAccessResourceFailureException("Unable to rename [" + tmpFile + "] to ["
-                    + finalFile + "]");
+			throw new DataAccessResourceFailureException("Unable to rename [" + tmpFile + "] to ["
+			        + finalFile + "]");
 		}
 	}
 
@@ -281,7 +282,7 @@ public class FileSystemStorageService
 			{
 				@Override
 				public void write(OutputStream aOs)
-					throws Exception
+				    throws Exception
 				{
 					Util.shoveAndClose(aStream, aOs);
 				}
@@ -320,26 +321,27 @@ public class FileSystemStorageService
 		// If the resource is imported from another context and will be modified and it is a
 		// folder, we have to copy it to the current context now, since we cannot do a
 		// copy-on-write strategy as for streams.
-		if (isStorageFolder(key.contextId, key.key) && (aMode == AccessMode.READWRITE || aMode == AccessMode.ADD_ONLY)) {
+		if (isStorageFolder(key.contextId, key.key)
+		        && (aMode == AccessMode.READWRITE || aMode == AccessMode.ADD_ONLY)) {
 			try {
 				File source = new File(getContextFolder(key.contextId, false), key.key);
 				File target = new File(getContextFolder(aContextId, false), aKey);
-				
+
 				if (Util.isSymlinkSupported() && aMode == AccessMode.ADD_ONLY) {
 					log.info("Write access to imported storage folder [" + aKey
-							+ "] was requested. Linking to current context");
+					        + "] was requested. Linking to current context");
 					Util.copy(source, target, true);
 				}
 				else {
 					log.info("Write access to imported storage folder [" + aKey
-							+ "] was requested. Copying to current context");
+					        + "] was requested. Copying to current context");
 					Util.copy(source, target, false);
 				}
 			}
 			catch (IOException e) {
 				throw new DataAccessResourceFailureException(e.getMessage(), e);
 			}
-			
+
 			// Key should point to the local context now
 			key = new StorageKey(aContextId, aKey);
 		}
@@ -354,7 +356,7 @@ public class FileSystemStorageService
 		return folder;
 	}
 
-	private boolean isStorageFolder(String aContextId, String aKey)
+	protected boolean isStorageFolder(String aContextId, String aKey)
 	{
 		return new File(getContextFolder(aContextId, false), aKey).isDirectory();
 	}
