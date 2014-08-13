@@ -44,20 +44,12 @@ public class CachedFileSystemStorageService
 {
 	private Map<String, TaskContextMetadata> contexts;
 	private Map<String, Map<String, String>> discriminators;
+	private boolean scannedFiles = false;
 
 	public CachedFileSystemStorageService()
 	{
 		contexts = new HashMap<String, TaskContextMetadata>();
 		discriminators = new HashMap<String, Map<String, String>>();
-
-		// If we are using a "recycled" run, we need to have all the context metadata available. To
-		// avoid pulling these from the FS every time we need the list, we fetch them once at
-		// instantion.
-		// If new contexts are added, it is ensured by storeBinary that those are put into the
-		// cache.
-		for (TaskContextMetadata meta : super.getContexts()) {
-			contexts.put(meta.getId(), meta);
-		}
 	}
 
 	@Override
@@ -72,6 +64,17 @@ public class CachedFileSystemStorageService
 	@Override
 	public List<TaskContextMetadata> getContexts()
 	{
+		if (!scannedFiles) {
+			// If we are using an existing run, we need to have all the context metadata available.
+			// To avoid pulling these from the FS every time we need the list, we fetch them once.
+			// If new contexts are added, it is ensured by storeBinary that those are put into the
+			// cache.
+			for (TaskContextMetadata meta : super.getContexts()) {
+				contexts.put(meta.getId(), meta);
+			}
+			scannedFiles = true;
+		}
+
 		List<TaskContextMetadata> contextList = new ArrayList<TaskContextMetadata>(
 		        contexts.values());
 		Collections.sort(contextList, new Comparator<TaskContextMetadata>()
