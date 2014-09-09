@@ -319,6 +319,9 @@ public class TaskBase
 	@Override
 	public void addReport(Class<? extends Report> aReport)
 	{
+		if (aReport == null) {
+			throw new IllegalArgumentException("Report class cannot be null.");
+		}
 		reports.add(aReport);
 	}
 
