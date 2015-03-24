@@ -183,48 +183,117 @@ public class DefaultTaskContext
 		return metadata;
 	}
 
-	@Override
+	@Deprecated
+    @Override
 	public File getStorageLocation(String aKey, AccessMode aMode)
 	{
-		StorageKey key;
+	    return getFolder(aKey, aMode);
+	}
+	
+	@Override
+	public File getFile(String aKey, AccessMode aMode)
+	{
+        StorageKey key;
 
-		StorageService storage = getStorageService();
-		Map<String, String> imports = getMetadata().getImports();
+        StorageService storage = getStorageService();
+        Map<String, String> imports = getMetadata().getImports();
 
-		if (storage.containsKey(getId(), aKey)) {
-			// If the context contains the key, we do nothing. Locally available data always
-			// supersedes imported data.
-			key = new StorageKey(getId(), aKey);
-		}
-		else if (imports.containsKey(aKey)) {
-			URI uri;
-			try {
-				uri = new URI(imports.get(aKey));
-			}
-			catch (URISyntaxException e) {
-				throw new DataAccessResourceFailureException("Imported key [" + aKey
-						+ "] resolves to illegal URL [" + imports.get(aKey) + "]", e);
-			}
+        if (storage.containsKey(getId(), aKey)) {
+            // If the context contains the key, we do nothing. Locally available data always
+            // supersedes imported data.
+            key = new StorageKey(getId(), aKey);
+        }
+        else if (imports.containsKey(aKey)) {
+            URI uri;
+            try {
+                uri = new URI(imports.get(aKey));
+            }
+            catch (URISyntaxException e) {
+                throw new DataAccessResourceFailureException("Imported key [" + aKey
+                        + "] resolves to illegal URL [" + imports.get(aKey) + "]", e);
+            }
 
-			if ("file".equals(uri.getScheme()) && new File(uri).isDirectory()) {
-				if (aMode == AccessMode.READONLY) {
-					return new File(uri);
-				}
-				else {
-					// Here we should probably just copy the imported folder into the context
-					throw new DataAccessResourceFailureException("READWRITE access of imported " +
-							"folders is not implemented yet.");
-				}
-			}
-			else {
-				key = resolve(aKey, aMode, true);
-			}
-		}
-		else {
-			key = resolve(aKey, aMode, true);
-		}
+            if ("file".equals(uri.getScheme()) && new File(uri).isFile()) {
+                if (aMode == AccessMode.READONLY) {
+                    return new File(uri);
+                }
+                else {
+                    // Here we should probably just copy the imported file into the context
+                    throw new DataAccessResourceFailureException("READWRITE access of imported " +
+                            "files is not implemented yet.");
+                }
+            }
+            else {
+                key = resolve(aKey, aMode, true);
+            }
+        }
+        else {
+            key = resolve(aKey, aMode, true);
+        }
 
-		return getStorageService().getStorageFolder(key.contextId, key.key);
+        File file = getStorageService().locateKey(key.contextId, key.key);
+        
+        if (file.exists() && !file.isFile()) {
+            throw new DataAccessResourceFailureException("Key [" + aKey
+                    + "] resolves to [" + file + "] which is not a file."); 
+        }
+        
+        return file;
+    }
+	
+	@Override
+	public File getFolder(String aKey, AccessMode aMode)
+	{
+        StorageKey key;
+
+        StorageService storage = getStorageService();
+        Map<String, String> imports = getMetadata().getImports();
+
+        if (storage.containsKey(getId(), aKey)) {
+            // If the context contains the key, we do nothing. Locally available data always
+            // supersedes imported data.
+            key = new StorageKey(getId(), aKey);
+        }
+        else if (imports.containsKey(aKey)) {
+            URI uri;
+            try {
+                uri = new URI(imports.get(aKey));
+            }
+            catch (URISyntaxException e) {
+                throw new DataAccessResourceFailureException("Imported key [" + aKey
+                        + "] resolves to illegal URL [" + imports.get(aKey) + "]", e);
+            }
+
+            if ("file".equals(uri.getScheme()) && new File(uri).isDirectory()) {
+                if (aMode == AccessMode.READONLY) {
+                    return new File(uri);
+                }
+                else {
+                    // Here we should probably just copy the imported folder into the context
+                    throw new DataAccessResourceFailureException("READWRITE access of imported " +
+                            "folders is not implemented yet.");
+                }
+            }
+            else {
+                key = resolve(aKey, aMode, true);
+            }
+        }
+        else {
+            key = resolve(aKey, aMode, true);
+        }
+
+        File folder = getStorageService().locateKey(key.contextId, key.key);
+        
+        if (!folder.exists()) {
+            folder.mkdirs();
+        }
+        
+        if (!folder.isDirectory()) {
+            throw new DataAccessResourceFailureException("Key [" + aKey
+                    + "] resolves to [" + folder + "] which is not a folder."); 
+        }
+        
+        return folder;
 	}
 
 	@Override

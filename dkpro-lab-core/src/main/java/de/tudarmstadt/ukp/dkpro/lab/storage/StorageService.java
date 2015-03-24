@@ -144,14 +144,28 @@ public interface StorageService
 	/**
 	 * Sometimes data cannot be conveniently stored via a stream, e.g. when using Lucene, it
 	 * has to be provided with a location where it can store its data. This method allows to get
-	 * a storage location identified by a storage key within the specified context.
+	 * a storage location identified by a storage key within the specified context. If the specified
+	 * key does not exist, a new folder with the name of the key is created and returned.
 	 *
 	 * @param aContextId a context ID.
 	 * @param aKey a storage key.
 	 * @return a location.
 	 * @since 0.2.0
+	 * @deprecated Use {@link #locateKey(String, String)} instead.
 	 */
-	File getStorageFolder(String aContextId, String aKey);
+	@Deprecated
+    File getStorageFolder(String aContextId, String aKey);
+
+    /**
+     * Sometimes data cannot be conveniently stored via a stream, e.g. when using Lucene, it
+     * has to be provided with a location where it can store its data. This method allows to get
+     * a storage location identified by a storage key within the specified context.
+     *
+     * @param aContextId a context ID.
+     * @param aKey a storage key.
+     * @return a location.
+     */
+    File locateKey(String aContextId, String aKey);
 
 	/**
 	 * Read a binary stream. If the path ends in ".gz" the stream is uncompressed upon reading.

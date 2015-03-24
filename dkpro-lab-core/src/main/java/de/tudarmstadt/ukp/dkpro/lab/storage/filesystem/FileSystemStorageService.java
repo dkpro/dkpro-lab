@@ -293,6 +293,12 @@ public class FileSystemStorageService
 		}
 	}
 
+    @Override
+    public File locateKey(String aContextId, String aKey)
+    {
+        return new File(getContextFolder(aContextId, false), aKey);
+    }
+	
 	@Override
 	public File getStorageFolder(String aContextId, String aKey)
 	{

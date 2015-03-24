@@ -95,9 +95,31 @@ public interface TaskContext
 	 * If the key does not exist in the current context and is not imported from another context,
 	 * then a new folder is created in the current context and returned (see 
 	 * {@link StorageService#getStorageFolder(String, String)}).
+	 * 
+	 * @deprecated Use {@link #getFolder(String, AccessMode)} or {@link #getFile(String, AccessMode)}
 	 */
+	@Deprecated
 	File getStorageLocation(String aKey, AccessMode aMode);
 
+    /**
+     * Get the location of the specified key as a folder. If the key is imported, the {@link AccessMode}
+     * controls if the data is left in the original context (READONLY) or copied to the current
+     * context (READWRITE). 
+     * <p>
+     * If the key does not exist in the current context and is not imported from another context,
+     * then a new folder is created in the current context and returned. 
+     * 
+     * @see StorageService#getStorageFolder(String, String)
+     */
+	File getFolder(String aKey, AccessMode aMode);
+	
+    /**
+     * Get the location of the specified key as a file. If the key is imported, the {@link AccessMode}
+     * controls if the data is left in the original context (READONLY) or copied to the current
+     * context (READWRITE). 
+     */
+	File getFile(String aKey, AccessMode aMode);
+	
 	boolean containsKey(String aKey);
 
 	/**

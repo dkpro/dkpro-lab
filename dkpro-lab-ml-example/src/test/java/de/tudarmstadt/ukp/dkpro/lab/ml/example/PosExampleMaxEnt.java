@@ -29,6 +29,7 @@ import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.collection.CollectionReaderDescription;
+import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.cleartk.classifier.jar.GenericJarClassifierFactory;
@@ -36,7 +37,6 @@ import org.cleartk.classifier.jar.JarClassifierBuilder;
 import org.cleartk.classifier.opennlp.DefaultMaxentDataWriterFactory;
 import org.cleartk.classifier.viterbi.ViterbiDataWriterFactory;
 import org.junit.Test;
-import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
 
 import de.tudarmstadt.ukp.dkpro.core.api.resources.CompressionMethod;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
@@ -68,6 +68,9 @@ public class PosExampleMaxEnt
 	public void run()
 		throws Exception
 	{
+        // Route logging through log4j
+        System.setProperty("org.apache.uima.logger.class", "org.apache.uima.util.impl.Log4jLogger_impl");        
+	    
 		clean();
 
 		Task preprocessingTask = new UimaTaskBase() {
@@ -89,7 +92,7 @@ public class PosExampleMaxEnt
 			public AnalysisEngineDescription getAnalysisEngineDescription(TaskContext aContext)
 				throws ResourceInitializationException, IOException
 			{
-				File xmiDir = aContext.getStorageLocation("XMI", AccessMode.READWRITE);
+				File xmiDir = aContext.getFolder("XMI", AccessMode.READWRITE);
 				return createEngine(
 						createEngine(SnowballStemmer.class),
 						createEngine(XmiWriter.class,
@@ -106,8 +109,7 @@ public class PosExampleMaxEnt
 			public CollectionReaderDescription getCollectionReaderDescription(TaskContext aContext)
 				throws ResourceInitializationException, IOException
 			{
-				File xmiDir = aContext.getStorageLocation("XMI", AccessMode.READONLY);
-				xmiDir.mkdirs();
+				File xmiDir = aContext.getFolder("XMI", AccessMode.READONLY);
 				return createReader(XmiReader.class,
 						XmiReader.PARAM_SOURCE_LOCATION, xmiDir.getAbsolutePath(),
 						XmiReader.PARAM_PATTERNS, new String[] { "[+]**/*.xmi.gz" });
@@ -117,8 +119,7 @@ public class PosExampleMaxEnt
 			public AnalysisEngineDescription getAnalysisEngineDescription(TaskContext aContext)
 				throws ResourceInitializationException, IOException
 			{
-				File modelDir = aContext.getStorageLocation("MODEL", AccessMode.READWRITE);
-				modelDir.mkdirs();
+				File modelDir = aContext.getFolder("MODEL", AccessMode.READWRITE);
 				return createEngine(
 						createEngineDescription(
 								ExamplePosAnnotator.class,
@@ -140,7 +141,7 @@ public class PosExampleMaxEnt
 			public void execute(TaskContext aContext)
 				throws Exception
 			{
-				File dir = aContext.getStorageLocation("MODEL", AccessMode.READWRITE);
+				File dir = aContext.getFolder("MODEL", AccessMode.READWRITE);
 			    JarClassifierBuilder<?> classifierBuilder = JarClassifierBuilder.fromTrainingDirectory(dir);
 			    classifierBuilder.trainClassifier(dir, new String[] { String.valueOf(iterations),
 			    		String.valueOf(cutoff)});
@@ -165,8 +166,8 @@ public class PosExampleMaxEnt
 			public AnalysisEngineDescription getAnalysisEngineDescription(TaskContext aContext)
 				throws ResourceInitializationException, IOException
 			{
-				File model = new File(aContext.getStorageLocation("MODEL", AccessMode.READONLY), "model.jar");
-				File tsv = new File(aContext.getStorageLocation("TSV", AccessMode.READWRITE), "output.tsv");
+				File model = new File(aContext.getFolder("MODEL", AccessMode.READONLY), "model.jar");
+				File tsv = new File(aContext.getFolder("TSV", AccessMode.READWRITE), "output.tsv");
 				return createEngine(
 						createEngineDescription(BreakIteratorSegmenter.class),
 						createEngineDescription(SnowballStemmer.class),
