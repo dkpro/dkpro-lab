@@ -83,11 +83,11 @@ public class BatchTask
      */
     public static final String SUBTASKS_KEY = "Subtasks";
 
-    private Set<Task> tasks = new LinkedHashSet<Task>();
+    protected Set<Task> tasks = new LinkedHashSet<Task>();
     private ParameterSpace parameterSpace;
     private ExecutionPolicy executionPolicy = ExecutionPolicy.RUN_AGAIN;
     private Map<String, Object> inheritedConfig;
-    private Set<String> inheritedScope;
+    protected Set<String> inheritedScope;
 
     {
         // Just to make sure there is one run if no parameter space is set.
@@ -203,7 +203,7 @@ public class BatchTask
      * @param aExecutedSubtasks
      *            already executed subtasks.
      */
-    private void executeConfiguration(TaskContext aContext, Map<String, Object> aConfig,
+    protected void executeConfiguration(TaskContext aContext, Map<String, Object> aConfig,
             Set<String> aExecutedSubtasks)
         throws ExecutionException, LifeCycleException
     {
@@ -339,7 +339,7 @@ public class BatchTask
      *            the current parameter configuration.
      * @return the context meta data.
      */
-    private TaskContextMetadata runNewExecution(TaskContext aContext, Task aTask, Map<String, Object> aConfig,
+    protected TaskContextMetadata runNewExecution(TaskContext aContext, Task aTask, Map<String, Object> aConfig,
             Set<String> aScope)
         throws ExecutionException, LifeCycleException
     {
@@ -362,7 +362,7 @@ public class BatchTask
      *            the current parameter configuration.
      * @return {@code null} if the context could not be found.
      */
-    private TaskContextMetadata getExistingExecution(TaskContext aContext, Task aTask,
+    protected TaskContextMetadata getExistingExecution(TaskContext aContext, Task aTask,
             Map<String, Object> aConfig, Set<String> aScope)
     {
         // Batch tasks are always run again since we do not store discriminators for them
@@ -442,7 +442,7 @@ public class BatchTask
         }
     }
 
-    private class ScopedTaskContextFactory
+    protected class ScopedTaskContextFactory
         extends DefaultTaskContextFactory
     {
         private final DefaultTaskContextFactory contextFactory;
