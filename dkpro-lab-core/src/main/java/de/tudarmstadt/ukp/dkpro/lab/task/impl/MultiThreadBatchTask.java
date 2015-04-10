@@ -19,9 +19,11 @@ package de.tudarmstadt.ukp.dkpro.lab.task.impl;
 
 import de.tudarmstadt.ukp.dkpro.lab.engine.*;
 import de.tudarmstadt.ukp.dkpro.lab.engine.ExecutionException;
+import de.tudarmstadt.ukp.dkpro.lab.storage.UnresolvedImportException;
 import de.tudarmstadt.ukp.dkpro.lab.task.Task;
 import de.tudarmstadt.ukp.dkpro.lab.task.TaskContextMetadata;
 import de.tudarmstadt.ukp.dkpro.lab.task.TaskFactory;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.scheduling.concurrent.ThreadPoolExecutorFactoryBean;
@@ -179,8 +181,8 @@ public class MultiThreadBatchTask
 
             }
 
-            // empty the queue
-            queue.clear();
+            // empty the queue -- it's already empty!!
+            // queue.clear();
 
             System.out.println("All threads finished");
 
@@ -193,6 +195,9 @@ public class MultiThreadBatchTask
                 // probably failed
                 if (execution == null) {
                     Throwable exception = exceptionsFromCurrentLoop.get(task);
+                    if(!(exception instanceof UnresolvedImportException)){
+                    	throw new RuntimeException(exception);
+                    }
                     exceptionsFromCurrentLoop.put(task, exception);
 
                     // put it to the queue
