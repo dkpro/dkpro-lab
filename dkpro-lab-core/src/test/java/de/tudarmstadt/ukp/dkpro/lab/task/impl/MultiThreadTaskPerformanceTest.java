@@ -48,37 +48,7 @@ public class MultiThreadTaskPerformanceTest
             data.setProperty("key", "value");
 
             aContext.storeBinary("DATA", new PropertiesAdapter(data));
-
-            //            Random random = new Random(System.currentTimeMillis());
-            //            int sleepTime = random.nextInt(500);
-            // and "work"
-            //            Thread.sleep(sleepTime);
         }
-    }
-
-    @Test
-    public void testSerialLaunch()
-            throws Exception
-    {
-        // some params...
-        Dimension<String> dim = Dimension.create("param", "1", "2", "3");
-        ParameterSpace pSpace = new ParameterSpace(dim);
-
-        Task taskA = new DummyTask();
-        Task taskB = new DummyTask();
-        Task taskC = new DummyTask();
-        Task taskD = new DummyTask();
-
-        taskB.addImport(taskA, "empty");
-        taskD.addImport(taskB, "empty");
-        taskC.addImport(taskA, "empty");
-
-        batchTask.addTask(taskA);
-        batchTask.addTask(taskB);
-        batchTask.addTask(taskC);
-        batchTask.addTask(taskD);
-
-        Lab.getInstance().run(batchTask);
     }
 
     @Test
@@ -128,14 +98,9 @@ public class MultiThreadTaskPerformanceTest
         }
         Collections.shuffle(allTasksShuffled);
 
-        System.out.println(allTasksShuffled.size());
-
         for (Task t : allTasksShuffled) {
             batchTask.addTask(t);
         }
-
-        System.out.println("Tasks:");
-        System.out.println(batchTask.getTasks());
 
         Lab.getInstance().run(batchTask);
     }
