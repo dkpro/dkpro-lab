@@ -123,6 +123,7 @@ public class MultiThreadBatchTask
                     // TODO xxx
                                         thread.start();
 //                    executor.execute(thread);
+//                    factory.createThread(thread)
 
                     //                    // Record new/existing execution
                     //                    aExecutedSubtasks.add(execution.getId());
