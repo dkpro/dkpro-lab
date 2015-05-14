@@ -1,0 +1,1 @@
+Configure Maven for **full access to the UKP Maven Repository** as documented [here](http://code.google.com/p/dkpro-core-asl/wiki/UkpMavenRepository).
