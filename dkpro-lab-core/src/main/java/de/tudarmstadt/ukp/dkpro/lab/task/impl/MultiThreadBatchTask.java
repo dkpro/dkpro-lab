@@ -17,16 +17,14 @@
  */
 package de.tudarmstadt.ukp.dkpro.lab.task.impl;
 
-import de.tudarmstadt.ukp.dkpro.lab.engine.*;
 import de.tudarmstadt.ukp.dkpro.lab.engine.ExecutionException;
+import de.tudarmstadt.ukp.dkpro.lab.engine.*;
 import de.tudarmstadt.ukp.dkpro.lab.storage.UnresolvedImportException;
 import de.tudarmstadt.ukp.dkpro.lab.task.Task;
 import de.tudarmstadt.ukp.dkpro.lab.task.TaskContextMetadata;
 import de.tudarmstadt.ukp.dkpro.lab.task.TaskFactory;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.scheduling.concurrent.ThreadPoolExecutorFactoryBean;
 
 import java.util.*;
 import java.util.concurrent.*;
@@ -73,14 +71,14 @@ public class MultiThreadBatchTask
         ConcurrentMap<Task, Throwable> exceptionsFromLastLoop;
         ConcurrentMap<Task, Throwable> exceptionsFromCurrentLoop = new ConcurrentHashMap<>();
 
-        ThreadPoolExecutorFactoryBean factory = new ThreadPoolExecutorFactoryBean();
-        factory.setCorePoolSize(4);
+        //        ThreadPoolExecutorFactoryBean factory = new ThreadPoolExecutorFactoryBean();
+        //        factory.setCorePoolSize(4);
 
         // main loop
         do {
             Map<Task, ExecutionThread> threads = new HashMap<>();
 
-//            ExecutorService executor = Executors.newFixedThreadPool(2);
+            ExecutorService executor = Executors.newFixedThreadPool(2);
 
             // set the exceptions from the last loop
             exceptionsFromLastLoop = new ConcurrentHashMap<>(exceptionsFromCurrentLoop);
@@ -107,23 +105,34 @@ public class MultiThreadBatchTask
                     //                    try {
                     //                    execution = runNewExecution(aContext, task, aConfig, aExecutedSubtasks);
 
-
-//                    ExecutionThread thread = (ExecutionThread) factory.newThread(new ExecutionThread(aContext, task, aConfig,
-//                            aExecutedSubtasks));
+                    //                    ExecutionThread thread = (ExecutionThread) factory.newThread(new ExecutionThread(aContext, task, aConfig,
+                    //                            aExecutedSubtasks));
 
                     ExecutionThread thread = new ExecutionThread(aContext, task, aConfig,
                             aExecutedSubtasks);
 
-                    TaskUncaughtExceptionHandler exceptionHandler = new TaskUncaughtExceptionHandler(
-                            exceptionsFromCurrentLoop, task);
-                    thread.setUncaughtExceptionHandler(exceptionHandler);
+                    //                    TaskUncaughtExceptionHandler exceptionHandler = new TaskUncaughtExceptionHandler(
+                    //                            exceptionsFromCurrentLoop, task);
+                    //                    thread.setUncaughtExceptionHandler(exceptionHandler);
 
                     threads.put(task, thread);
 
                     // TODO xxx
-                                        thread.start();
-//                    executor.execute(thread);
-//                    factory.createThread(thread)
+                    //                                        thread.start();
+                    //                    executor.execute(thread);
+                    //                    factory.createThread(thread)
+                    Future<?> future = executor.submit(thread);
+
+                    // and run it
+                    try {
+                        future.get();
+                    }
+                    catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                    catch (java.util.concurrent.ExecutionException e) {
+                        exceptionsFromCurrentLoop.putIfAbsent(task, e.getCause());
+                    }
 
                     //                    // Record new/existing execution
                     //                    aExecutedSubtasks.add(execution.getId());
@@ -164,23 +173,30 @@ public class MultiThreadBatchTask
                 }
             }
 
-
             // TODO xxx
-//            executor.shutdown();
-//            while (!executor.isTerminated()) {
-//                empty
-//            }
+
+            //            executor.shutdown();
+            //            while (!executor.isTerminated()) {
+            //                empty
+            //            }
 
             // wait for completing all threads
-            for (ExecutionThread thread : threads.values()) {
-                try {
-                    thread.join();
-                }
-                catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-
-            }
+            //            for (ExecutionThread thread : threads.values()) {
+            //                try {
+            //                    thread.join();
+            //                }
+            //                catch (InterruptedException e) {
+            //                    throw new RuntimeException(e);
+            //                }
+            //
+            //            }
+//            try {
+                System.out.println("Calling shutdown");
+                executor.shutdown();
+//            }
+//            catch (InterruptedException e) {
+//                throw new RuntimeException(e);
+//            }
 
             // empty the queue -- it's already empty!!
             // queue.clear();
@@ -196,8 +212,8 @@ public class MultiThreadBatchTask
                 // probably failed
                 if (execution == null) {
                     Throwable exception = exceptionsFromCurrentLoop.get(task);
-                    if(!(exception instanceof UnresolvedImportException)){
-                    	throw new RuntimeException(exception);
+                    if (!(exception instanceof UnresolvedImportException)) {
+                        throw new RuntimeException(exception);
                     }
                     exceptionsFromCurrentLoop.put(task, exception);
 
