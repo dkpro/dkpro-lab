@@ -17,17 +17,30 @@
  */
 package de.tudarmstadt.ukp.dkpro.lab.task.impl;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import de.tudarmstadt.ukp.dkpro.lab.engine.ExecutionException;
-import de.tudarmstadt.ukp.dkpro.lab.engine.*;
+import de.tudarmstadt.ukp.dkpro.lab.engine.LifeCycleException;
+import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
+import de.tudarmstadt.ukp.dkpro.lab.engine.TaskExecutionEngine;
+import de.tudarmstadt.ukp.dkpro.lab.engine.TaskExecutionService;
 import de.tudarmstadt.ukp.dkpro.lab.storage.UnresolvedImportException;
 import de.tudarmstadt.ukp.dkpro.lab.task.Task;
 import de.tudarmstadt.ukp.dkpro.lab.task.TaskContextMetadata;
 import de.tudarmstadt.ukp.dkpro.lab.task.TaskFactory;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import java.util.*;
-import java.util.concurrent.*;
 
 /**
  * @author Ivan Habernal
@@ -37,7 +50,8 @@ public class MultiThreadBatchTask
 {
     private final Log log = LogFactory.getLog(getClass());
 
-    protected void executeConfiguration(TaskContext aContext, Map<String, Object> aConfig,
+    @Override
+	protected void executeConfiguration(TaskContext aContext, Map<String, Object> aConfig,
             Set<String> aExecutedSubtasks)
             throws ExecutionException, LifeCycleException
     {
@@ -83,6 +97,9 @@ public class MultiThreadBatchTask
             // set the exceptions from the last loop
             exceptionsFromLastLoop = new ConcurrentHashMap<>(exceptionsFromCurrentLoop);
 
+            // Fix MW: Clear exceptionFromCurrentLoop; otherwise the loop with run at most twice.
+            exceptionsFromCurrentLoop.clear();
+            
             // process all tasks from the queue
             while (!queue.isEmpty()) {
                 Task task = queue.poll();
