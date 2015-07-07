@@ -1,21 +1,21 @@
 /*******************************************************************************
- * Copyright 2011
+ * Copyright 2015
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
- *
+ *   
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ *   
  *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ *   
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package de.tudarmstadt.ukp.dkpro.lab.task.impl;
+package de.tudarmstadt.ukp.dkpro.lab.engine.impl;
 
 import static de.tudarmstadt.ukp.dkpro.lab.engine.impl.ImportUtil.extractConstraints;
 import static de.tudarmstadt.ukp.dkpro.lab.storage.StorageService.CONTEXT_ID_SCHEME;
@@ -26,7 +26,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -51,15 +50,12 @@ import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContextFactory;
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskExecutionEngine;
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskExecutionService;
-import de.tudarmstadt.ukp.dkpro.lab.engine.impl.DefaultTaskContext;
-import de.tudarmstadt.ukp.dkpro.lab.engine.impl.DefaultTaskContextFactory;
-import de.tudarmstadt.ukp.dkpro.lab.engine.impl.ImportUtil;
 import de.tudarmstadt.ukp.dkpro.lab.logging.LoggingService;
 import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService;
 import de.tudarmstadt.ukp.dkpro.lab.storage.TaskContextNotFoundException;
 import de.tudarmstadt.ukp.dkpro.lab.storage.UnresolvedImportException;
 import de.tudarmstadt.ukp.dkpro.lab.storage.impl.PropertiesAdapter;
-import de.tudarmstadt.ukp.dkpro.lab.task.ConfigurationAware;
+import de.tudarmstadt.ukp.dkpro.lab.task.BatchTask;
 import de.tudarmstadt.ukp.dkpro.lab.task.Dimension;
 import de.tudarmstadt.ukp.dkpro.lab.task.FixedSizeDimension;
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
@@ -67,130 +63,114 @@ import de.tudarmstadt.ukp.dkpro.lab.task.Task;
 import de.tudarmstadt.ukp.dkpro.lab.task.TaskContextMetadata;
 import de.tudarmstadt.ukp.dkpro.lab.task.TaskFactory;
 
-public class BatchTask
-    extends ExecutableTaskBase
-    implements ConfigurationAware
-{
-    private final Log log = LogFactory.getLog(getClass());
+public class BatchTaskEngine
+    implements TaskExecutionEngine
+{    
+    private TaskContextFactory contextFactory;
 
-    public static enum ExecutionPolicy
-    {
-        USE_EXISTING, ASK_EXISTING, RUN_AGAIN
-    }
+    private final Log log = LogFactory.getLog(getClass());
 
     /**
      * The subtask context IDs produced by this batch task in the order of their production.
      */
     public static final String SUBTASKS_KEY = "Subtasks";
 
-    protected Set<Task> tasks = new LinkedHashSet<Task>();
-    private ParameterSpace parameterSpace;
-    private ExecutionPolicy executionPolicy = ExecutionPolicy.RUN_AGAIN;
-    private Map<String, Object> inheritedConfig;
-    protected Set<String> inheritedScope;
-
-    {
-        // Just to make sure there is one run if no parameter space is set.
-        parameterSpace = new ParameterSpace(Dimension.create("__DUMMY__", 1));
-    }
-
-    public void setParameterSpace(ParameterSpace aParameterSpace)
-    {
-        parameterSpace = aParameterSpace;
-    }
-
-    public void setExecutionPolicy(ExecutionPolicy aPolicy)
-    {
-        executionPolicy = aPolicy;
-    }
-
-    /**
-     * Add a subtask to the batch. Unless otherwise mandated by data dependencies (imports) between
-     * the subtasks, the added tasks are executed in the order they are added. This effect can be
-     * used e.g. to execute a specific task before all other tasks even though the other tasks have
-     * no data dependencies on the first task. Whenever a task needs to access data produced by
-     * another tasks, you <b>must</b> import that data. The batch task will still try to execute
-     * the tasks in the order they were added, but in case a data dependency for a task is not yet
-     * available, the task is moved to the end of the queue.
-     * 
-     * @param aTask the task to be added.
-     */
-    public void addTask(Task aTask)
-    {
-        tasks.add(aTask);
-    }
-
-    public Set<Task> getTasks()
-    {
-        return Collections.unmodifiableSet(tasks);
-    }
-
-    /**
-     * Set the subtasks of this batch. If you depend on a specific exeuction order, you have to 
-     * provide a set with a fixed iteration order here, e.g. an {@code LinkedHashSet}.
-     */
-    public void setTasks(Set<Task> aTasks)
-    {
-        tasks = new LinkedHashSet<Task>(aTasks);
-    }
-
     @Override
-    public void setConfiguration(Map<String, Object> aConfig)
+    public String run(Task aConfiguration)
+        throws ExecutionException, LifeCycleException
     {
-        parameterSpace.reset();
-        inheritedConfig = aConfig;
-    }
-
-    public void setScope(Set<String> aScope)
-    {
-        inheritedScope = aScope;
-    }
-
-    @Override
-    public void execute(TaskContext aContext)
-        throws Exception
-    {
-        // Try to calculate the parameter space size.
-        int estimatedSize = 1;
-        for (Dimension<?> d : parameterSpace.getDimensions()) {
-            if (d instanceof FixedSizeDimension) {
-                FixedSizeDimension fsd = (FixedSizeDimension) d;
-                if (fsd.size() > 0) {
-                    estimatedSize *= fsd.size();
-                }
-            }
+        if (!(aConfiguration instanceof BatchTask)) {
+            throw new ExecutionException("This engine can only execute ["
+                    + BatchTask.class.getName() + "]");
         }
 
-        // A subtask execution may apply to multiple parameter space coordinates!
-        Set<String> executedSubtasks = new LinkedHashSet<String>();
-        
-        ProgressMeter progress = new ProgressMeter(estimatedSize);
-        for (Map<String, Object> config : parameterSpace) {
-            if (inheritedConfig != null) {
-                for (Entry<String, Object> e : inheritedConfig.entrySet()) {
-                    if (!config.containsKey(e.getKey())) {
-                        config.put(e.getKey(), e.getValue());
+        // Create persistence service for injection into analysis components
+        TaskContext ctx = null;
+        try {
+            ctx = contextFactory.createContext(aConfiguration);
+
+            // Now the setup is complete
+            ctx.getLifeCycleManager().initialize(ctx, aConfiguration);
+
+            // Start recording
+            ctx.getLifeCycleManager().begin(ctx, aConfiguration);
+
+            try {
+                BatchTask cfg = (BatchTask) aConfiguration;
+                ParameterSpace parameterSpace = cfg.getParameterSpace();
+                
+                // Try to calculate the parameter space size.
+                int estimatedSize = 1;
+                for (Dimension<?> d : parameterSpace.getDimensions()) {
+                    if (d instanceof FixedSizeDimension) {
+                        FixedSizeDimension fsd = (FixedSizeDimension) d;
+                        if (fsd.size() > 0) {
+                            estimatedSize *= fsd.size();
+                        }
                     }
                 }
-            }
-            
-            log.info("== Running new configuration [" + aContext.getId() + "] ==");
-            List<String> keys = new ArrayList<String>(config.keySet());
-            for (String key : keys) {
-                log.info("[" + key + "]: ["
-                        + StringUtils.abbreviateMiddle(Util.toString(config.get(key)), "…", 150)
-                        + "]");
-            }
-            
-            executeConfiguration(aContext, config, executedSubtasks);
 
-            progress.next();
-            log.info("Completed configuration " + progress);
+                // A subtask execution may apply to multiple parameter space coordinates!
+                Set<String> executedSubtasks = new LinkedHashSet<String>();
+                
+                ProgressMeter progress = new ProgressMeter(estimatedSize);
+                for (Map<String, Object> config : parameterSpace) {
+                    if (cfg.getConfiguration() != null) {
+                        for (Entry<String, Object> e : cfg.getConfiguration().entrySet()) {
+                            if (!config.containsKey(e.getKey())) {
+                                config.put(e.getKey(), e.getValue());
+                            }
+                        }
+                    }
+                    
+                    log.info("== Running new configuration [" + ctx.getId() + "] ==");
+                    List<String> keys = new ArrayList<String>(config.keySet());
+                    for (String key : keys) {
+                        log.info("[" + key + "]: ["
+                                + StringUtils.abbreviateMiddle(Util.toString(config.get(key)), "…", 150)
+                                + "]");
+                    }
+                    
+                    executeConfiguration(cfg, ctx, config, executedSubtasks);
+
+                    progress.next();
+                    log.info("Completed configuration " + progress);
+                }
+
+                // Set the subtask property and persist again, so the property is available to reports
+                cfg.setAttribute(SUBTASKS_KEY, executedSubtasks.toString());
+                cfg.persist(ctx);
+            }
+            catch (LifeCycleException e) {
+                ctx.getLifeCycleManager().fail(ctx, aConfiguration, e);
+                throw e;
+            }
+            catch (UnresolvedImportException e) {
+                // HACK - pass unresolved import exceptions up to the outer batch task
+                ctx.getLifeCycleManager().fail(ctx, aConfiguration, e);
+                throw e;
+            }
+            catch (Throwable e) {
+                ctx.getLifeCycleManager().fail(ctx, aConfiguration, e);
+                throw new ExecutionException(e);
+            }
+
+            // End recording (here the reports will nbe done)
+            ctx.getLifeCycleManager().complete(ctx, aConfiguration);
+
+            return ctx.getId();
         }
-
-        // Set the subtask property and persist again, so the property is available to reports
-        setAttribute(SUBTASKS_KEY, executedSubtasks.toString());
-        persist(aContext);
+        finally {
+            if (ctx != null) {
+                ctx.destroy();
+            }
+        }
+    }
+    
+    @Override
+    public void setContextFactory(TaskContextFactory aContextFactory)
+    {
+        contextFactory = aContextFactory;
     }
     
     /**
@@ -203,8 +183,8 @@ public class BatchTask
      * @param aExecutedSubtasks
      *            already executed subtasks.
      */
-    protected void executeConfiguration(TaskContext aContext, Map<String, Object> aConfig,
-            Set<String> aExecutedSubtasks)
+    protected void executeConfiguration(BatchTask aConfiguration, TaskContext aContext,
+            Map<String, Object> aConfig, Set<String> aExecutedSubtasks)
         throws ExecutionException, LifeCycleException
     {
         if (log.isTraceEnabled()) {
@@ -221,16 +201,16 @@ public class BatchTask
         // maintained *across* configurations, so maybe the scope should also be maintained
         // *across* configurations? - REC 2014-06-15
         Set<String> scope = new HashSet<String>();
-        if (inheritedScope != null) {
-            scope.addAll(inheritedScope);
+        if (aConfiguration.getScope() != null) {
+            scope.addAll(aConfiguration.getScope());
         }
 
         // Configure subtasks
-        for (Task task : tasks) {
+        for (Task task : aConfiguration.getTasks()) {
             TaskFactory.configureTask(task, aConfig);
         }
 
-        Queue<Task> queue = new LinkedList<Task>(tasks);
+        Queue<Task> queue = new LinkedList<Task>(aConfiguration.getTasks());
         Set<Task> loopDetection = new HashSet<Task>();
 
         List<UnresolvedImportException> deferralReasons = new ArrayList<UnresolvedImportException>();
@@ -240,8 +220,8 @@ public class BatchTask
             try {
                 // Check if a subtask execution compatible with the present configuration has
                 // does already exist ...
-                TaskContextMetadata execution = getExistingExecution(aContext, task, aConfig,
-                        aExecutedSubtasks);
+                TaskContextMetadata execution = getExistingExecution(aConfiguration, aContext,
+                        task, aConfig, aExecutedSubtasks);
                 if (execution == null) {
                     // ... otherwise execute it with the present configuration
                     log.info("Executing task [" + task.getType() + "]");
@@ -317,7 +297,7 @@ public class BatchTask
         List<TaskContextMetadata> metas = storage.getContexts(aType, aDiscriminators);
         for (TaskContextMetadata meta : metas) {
             Map<String, String> discriminators = storage.retrieveBinary(meta.getId(),
-                    DISCRIMINATORS_KEY, new PropertiesAdapter()).getMap();
+                    Task.DISCRIMINATORS_KEY, new PropertiesAdapter()).getMap();
             // Check if the task is compatible with the current configuration. To do this, we
             // interpret the discriminators as constraints on the current configuration.
             if (ImportUtil.matchConstraints(discriminators, config, false)) {
@@ -362,8 +342,8 @@ public class BatchTask
      *            the current parameter configuration.
      * @return {@code null} if the context could not be found.
      */
-    protected TaskContextMetadata getExistingExecution(TaskContext aContext, Task aTask,
-            Map<String, Object> aConfig, Set<String> aScope)
+    protected TaskContextMetadata getExistingExecution(BatchTask aConfiguration,
+            TaskContext aContext, Task aTask, Map<String, Object> aConfig, Set<String> aScope)
     {
         // Batch tasks are always run again since we do not store discriminators for them
         if (aTask instanceof BatchTask) {
@@ -381,7 +361,7 @@ public class BatchTask
                 return meta;
             }
 
-            switch (executionPolicy) {
+            switch (aConfiguration.getExecutionPolicy()) {
             case RUN_AGAIN:
                 // Always run the task again
                 return null;
@@ -398,7 +378,8 @@ public class BatchTask
                     return meta;
                 }
             default:
-                throw new IllegalStateException("Unknown executionPolicy [" + executionPolicy + "]");
+                throw new IllegalStateException("Unknown executionPolicy ["
+                        + aConfiguration.getExecutionPolicy() + "]");
             }
         }
         catch (TaskContextNotFoundException e) {
@@ -431,14 +412,6 @@ public class BatchTask
         }
         catch (IOException e) {
             throw new RuntimeException(e);
-        }
-    }
-
-    private void configureSubtasks(TaskContext aContext, Map<String, Object> aConfig,
-            Set<String> aScope)
-    {
-        for (Task task : tasks) {
-            TaskFactory.configureTask(task, aConfig);
         }
     }
 

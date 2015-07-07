@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.tudarmstadt.ukp.dkpro.lab.task.impl;
+package de.tudarmstadt.ukp.dkpro.lab.engine.impl;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -38,6 +38,7 @@ import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskExecutionEngine;
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskExecutionService;
 import de.tudarmstadt.ukp.dkpro.lab.storage.UnresolvedImportException;
+import de.tudarmstadt.ukp.dkpro.lab.task.BatchTask;
 import de.tudarmstadt.ukp.dkpro.lab.task.Task;
 import de.tudarmstadt.ukp.dkpro.lab.task.TaskContextMetadata;
 import de.tudarmstadt.ukp.dkpro.lab.task.TaskFactory;
@@ -45,15 +46,15 @@ import de.tudarmstadt.ukp.dkpro.lab.task.TaskFactory;
 /**
  * @author Ivan Habernal
  */
-public class MultiThreadBatchTask
-        extends BatchTask
+public class MultiThreadBatchTaskEngine
+    extends BatchTaskEngine
 {
     private final Log log = LogFactory.getLog(getClass());
 
     @Override
-	protected void executeConfiguration(TaskContext aContext, Map<String, Object> aConfig,
-            Set<String> aExecutedSubtasks)
-            throws ExecutionException, LifeCycleException
+    protected void executeConfiguration(BatchTask aConfiguration, TaskContext aContext,
+            Map<String, Object> aConfig, Set<String> aExecutedSubtasks)
+        throws ExecutionException, LifeCycleException
     {
         if (log.isTraceEnabled()) {
             // Show all subtasks executed so far
@@ -69,16 +70,16 @@ public class MultiThreadBatchTask
         // maintained *across* configurations, so maybe the scope should also be maintained
         // *across* configurations? - REC 2014-06-15
         Set<String> scope = new HashSet<>();
-        if (inheritedScope != null) {
-            scope.addAll(inheritedScope);
+        if (aConfiguration.getScope() != null) {
+            scope.addAll(aConfiguration.getScope());
         }
 
         // Configure subtasks
-        for (Task task : tasks) {
+        for (Task task : aConfiguration.getTasks()) {
             TaskFactory.configureTask(task, aConfig);
         }
 
-        Queue<Task> queue = new LinkedList<>(tasks);
+        Queue<Task> queue = new LinkedList<>(aConfiguration.getTasks());
         //        Set<Task> loopDetection = new HashSet<>();
         //        List<UnresolvedImportException> deferralReasons = new ArrayList<>();
 
@@ -104,8 +105,8 @@ public class MultiThreadBatchTask
             while (!queue.isEmpty()) {
                 Task task = queue.poll();
 
-                TaskContextMetadata execution = getExistingExecution(aContext, task, aConfig,
-                        aExecutedSubtasks);
+                TaskContextMetadata execution = getExistingExecution(aConfiguration, aContext,
+                        task, aConfig, aExecutedSubtasks);
 
                 // Check if a subtask execution compatible with the present configuration has
                 // does already exist ...

@@ -21,6 +21,7 @@ import de.tudarmstadt.ukp.dkpro.lab.Lab;
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.storage.impl.PropertiesAdapter;
 import de.tudarmstadt.ukp.dkpro.lab.task.Task;
+
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Rule;
@@ -35,7 +36,7 @@ import java.util.*;
  */
 public class MultiThreadTaskPerformanceTest
 {
-    private BatchTask batchTask;
+    private DefaultBatchTask batchTask;
 
     @Rule
     public TestName name = new TestName();
@@ -49,7 +50,7 @@ public class MultiThreadTaskPerformanceTest
         FileUtils.deleteQuietly(path);
 
         //        batchTask = new BatchTask();
-        batchTask = new MultiThreadBatchTask();
+        batchTask = new DefaultBatchTask();
     }
 
     static class DummyTask

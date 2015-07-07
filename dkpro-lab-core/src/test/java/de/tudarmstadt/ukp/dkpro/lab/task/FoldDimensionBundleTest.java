@@ -26,7 +26,6 @@ import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
@@ -34,7 +33,7 @@ import org.junit.rules.TestName;
 import de.tudarmstadt.ukp.dkpro.lab.Lab;
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.storage.filesystem.FileSystemStorageService;
-import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask;
+import de.tudarmstadt.ukp.dkpro.lab.task.impl.DefaultBatchTask;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.ExecutableTaskBase;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.FoldDimensionBundle;
 
@@ -247,7 +246,7 @@ public class FoldDimensionBundleTest
 			}
 		};
 		
-		BatchTask batchTask = new BatchTask();
+		DefaultBatchTask batchTask = new DefaultBatchTask();
 		batchTask.setParameterSpace(pSpace);
 		batchTask.addTask(testTask);
 			

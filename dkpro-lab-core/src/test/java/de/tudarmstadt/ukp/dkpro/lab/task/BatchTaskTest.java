@@ -31,7 +31,7 @@ import org.junit.rules.TestName;
 import de.tudarmstadt.ukp.dkpro.lab.Lab;
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.storage.impl.PropertiesAdapter;
-import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask;
+import de.tudarmstadt.ukp.dkpro.lab.task.impl.DefaultBatchTask;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.ExecutableTaskBase;
 
 public class BatchTaskTest
@@ -80,7 +80,7 @@ public class BatchTaskTest
 
         consumer.addImport(producer, "DATA1", "DATA");
 
-        BatchTask batch = new BatchTask();
+        DefaultBatchTask batch = new DefaultBatchTask();
         batch.addTask(producer);
         batch.addTask(consumer);
 
@@ -93,7 +93,7 @@ public class BatchTaskTest
     {
         Dimension innerDim = Dimension.create("inner", "1", "2", "3");
         ParameterSpace innerPSpace = new ParameterSpace(innerDim);
-        BatchTask innerTask = new BatchTask()
+        DefaultBatchTask innerTask = new DefaultBatchTask()
         {
             @Override
             public void setConfiguration(Map<String, Object> aConfig)
@@ -107,7 +107,7 @@ public class BatchTaskTest
 
         Dimension outerDim = Dimension.create("outer", "1", "2", "3");
         ParameterSpace outerPSpace = new ParameterSpace(outerDim);
-        BatchTask outerTask = new BatchTask()
+        DefaultBatchTask outerTask = new DefaultBatchTask()
         {
             @Override
             public void setConfiguration(Map<String, Object> aConfig)
@@ -127,14 +127,13 @@ public class BatchTaskTest
     public void testNested2()
         throws Exception
     {
-        BatchTask innerTask = new BatchTask()
+        DefaultBatchTask innerTask = new DefaultBatchTask()
         {
             @Discriminator
             private Integer outer;
 
             @Override
-            public void execute(TaskContext aContext)
-                throws Exception
+            public ParameterSpace getParameterSpace()
             {
                 // Dynamically configure parameter space of nested batch task
                 Integer[] values = new Integer[outer];
@@ -143,12 +142,9 @@ public class BatchTaskTest
                 }
                 Dimension<Integer> innerDim = Dimension.create("inner", values);
                 ParameterSpace innerPSpace = new ParameterSpace(innerDim);
-                setParameterSpace(innerPSpace);
-
-                // Execute the batch task
-                super.execute(aContext);
+                return innerPSpace;
             }
-
+            
             @Override
             public void setConfiguration(Map<String, Object> aConfig)
             {
@@ -160,7 +156,7 @@ public class BatchTaskTest
 
         Dimension<Integer> outerDim = Dimension.create("outer", 1, 2, 3);
         ParameterSpace outerPSpace = new ParameterSpace(outerDim);
-        BatchTask outerTask = new BatchTask()
+        DefaultBatchTask outerTask = new DefaultBatchTask()
         {
             @Override
             public void setConfiguration(Map<String, Object> aConfig)
@@ -213,7 +209,7 @@ public class BatchTaskTest
         task2.addImport(task1, "DUMMY");
         task1.addImport(task2, "DUMMY");
 
-        BatchTask batchTask = new BatchTask();
+        DefaultBatchTask batchTask = new DefaultBatchTask();
         batchTask.setParameterSpace(pSpace);
         batchTask.addTask(task1);
         batchTask.addTask(task2);

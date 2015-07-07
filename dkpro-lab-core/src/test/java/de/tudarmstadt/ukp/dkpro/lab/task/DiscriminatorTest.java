@@ -28,7 +28,7 @@ import org.junit.rules.TestName;
 
 import de.tudarmstadt.ukp.dkpro.lab.Lab;
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
-import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask;
+import de.tudarmstadt.ukp.dkpro.lab.task.impl.DefaultBatchTask;
 import de.tudarmstadt.ukp.dkpro.lab.task.impl.ExecutableTaskBase;
 
 public class DiscriminatorTest
@@ -55,7 +55,7 @@ public class DiscriminatorTest
 		
 		ParameterSpace pSpace = new ParameterSpace(dimMap);
 		
-		BatchTask batch = new BatchTask();
+		DefaultBatchTask batch = new DefaultBatchTask();
 		batch.setParameterSpace(pSpace);
 		batch.addTask(new MapDiscriminatorTask());
 		

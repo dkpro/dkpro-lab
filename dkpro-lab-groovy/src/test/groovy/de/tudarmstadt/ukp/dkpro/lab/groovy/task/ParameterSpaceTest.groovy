@@ -17,21 +17,18 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.lab.groovy.task;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.assertEquals
+import static org.junit.Assert.fail
 
-import java.util.Map;
+import org.junit.Test
 
-import org.junit.Test;
-
-import de.tudarmstadt.ukp.dkpro.lab.Lab;
-import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
-import de.tudarmstadt.ukp.dkpro.lab.groovy.task.Constraint;
-import de.tudarmstadt.ukp.dkpro.lab.task.Dimension;
-import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
-import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
-import de.tudarmstadt.ukp.dkpro.lab.task.impl.BatchTask;
-import de.tudarmstadt.ukp.dkpro.lab.task.impl.ExecutableTaskBase;
+import de.tudarmstadt.ukp.dkpro.lab.Lab
+import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext
+import de.tudarmstadt.ukp.dkpro.lab.task.Dimension
+import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator
+import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace
+import de.tudarmstadt.ukp.dkpro.lab.task.impl.DefaultBatchTask;
+import de.tudarmstadt.ukp.dkpro.lab.task.impl.ExecutableTaskBase
 
 public class ParameterSpaceTest
 {
@@ -56,7 +53,7 @@ public class ParameterSpaceTest
                 Dimension.create("y", 1, 2, 3, 4, 5, /*6, 7, 8, 9, 10, 11, 12, 13, 14, 15*/)],
             ] as ParameterSpace,
             tasks: [subtask]
-        ] as BatchTask;
+        ] as DefaultBatchTask;
 
         Lab.instance.run(batchTask);
     }
