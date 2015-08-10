@@ -21,7 +21,7 @@ description: "Workflow engine for parameter sweeping experiments."
 
 # This URL is the main adresse. Don't include a slash at the end.
 #
-url: "//dkpro.github.io/dkprolab"
+url: "//dkpro.github.io/dkpro-lab"
 baseurl: ""
 
 # This is for the editing function in _/includes/improve_content.html
