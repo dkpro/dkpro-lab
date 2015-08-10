@@ -1,0 +1,24 @@
+- title: DKPro
+  url: "http://dkpro.github.io"
+  side: left
+
+- title: Lab
+  url: "/"
+  side: left
+
+- title: Downloads
+  url: "/downloads/"
+  side: left
+
+- title: "Issues"
+  url: "http://github.com/dkpro/dkpro-lab/issues"
+  side: left
+
+- title: Source
+  url: "http://github.com/dkpro/dkpro-lab"
+  side: left
+
+- title: "About"
+  side: left
+  url: "/info"
+  

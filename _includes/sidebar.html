@@ -1,0 +1,17 @@
+<aside>
+
+{% assign stable = (site.data.releases | where:"status", "stable" | first) %}
+
+{% if stable.version %}
+<div class="radius b20" style="text-align: center;">
+Latest release: {{ stable.version }} ({{ stable.date }})
+</div>
+{% endif %}
+
+{% unless site.openhub_id == null %}
+<div class="radius openhub">
+<script type="text/javascript" src="http://www.openhub.net/p/{{ site.openhub_id }}/widgets/project_factoids_stats.js"></script>
+</div>
+{% endunless %}
+
+</aside>
