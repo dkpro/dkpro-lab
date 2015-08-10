@@ -8,7 +8,7 @@ permalink: "/downloads/"
 
 ## Maven
 
-DKPro Core is availble via the Maven infrastructure.
+{{ site.title }} is availble via the Maven infrastructure.
 
 {% highlight xml %}
 <properties>
@@ -36,7 +36,7 @@ DKPro Core is availble via the Maven infrastructure.
 {% endhighlight xml %}
 
 A full list of artifacts is available from [Maven Central][1]! 
-	
+  
 ## Sources
 
 Get the sources from [GitHub](https://github.com/dkpro/dkpro-lab/releases/tag/dkpro-lab-{{ stable.version }}).
