@@ -28,8 +28,7 @@ The source code including examples is already available from the Git repository 
 
 If you use DKPro Lab in scientific work, please cite
 
-> Eckart de Castilho, R. and Gurevych, I. (2011). **A lightweight framework for reproducible parameter sweeping in information retrieval**. In Proceedings of the 2011 workshop on Data infrastructurEs for supporting information retrieval evaluation, DESIRE ’11, pages 7–10, New York, NY, USA. ACM. [(pdf)][DESIRE-2011] [(bib)][DESIRE-2011-BIB]
+> Eckart de Castilho, R. and Gurevych, I. (2011). **A lightweight framework for reproducible parameter sweeping in information retrieval**. In Proceedings of the 2011 workshop on Data infrastructurEs for supporting information retrieval evaluation, DESIRE ’11, pages 7–10, New York, NY, USA. ACM. [(link)][DESIRE-2011]
 
-[DESIRE-2011]: http://www.ukp.tu-darmstadt.de/fileadmin/user_upload/Group_UKP/publikationen/2011/CIKM-DESIRE-2011-rec-ig-submitted.pdf
-[DESIRE-2011-BIB]: http://www.ukp.tu-darmstadt.de/publications/details/?no_cache=1&tx_bibtex_pi1%5Bpub_id%5D=TUD-CS-2011-0215&type=99&tx_bibtex_pi1%5Bbibtex%5D=yes
+[DESIRE-2011]: http://dl.acm.org/citation.cfm?id=2064248
 [WERC-2011]: http://www.werc.tu-darmstadt.de/fileadmin/user_upload/GROUP_WERC/LKE/tutorials/ML-tutorial-5a.pdf 
