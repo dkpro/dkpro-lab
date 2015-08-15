@@ -28,8 +28,6 @@ import de.tudarmstadt.ukp.dkpro.lab.task.Task;
  * bindings, storage keys or imports that are particularly targeted at configuring a report or a
  * report may depend on certain storage keys, imports or external bindings to be present to do its
  * work properly.
- *
- * @author Richard Eckart de Castilho
  */
 public interface Report
 {

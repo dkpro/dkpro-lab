@@ -35,9 +35,6 @@ import de.tudarmstadt.ukp.dkpro.lab.task.TaskContextMetadata;
 
 /**
  * File system-based storage service which caches task contexts and discriminators.
- *
- * @author Richard Eckart de Castilho
- * @author Erik-Lân Do Dinh
  */
 public class CachedFileSystemStorageService
     extends FileSystemStorageService

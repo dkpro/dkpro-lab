@@ -22,8 +22,6 @@ import de.tudarmstadt.ukp.dkpro.lab.task.Task;
 /**
  * Exceptions thrown during the main execution step of a {@link Task} that is being executed in a
  * {@link TaskExecutionEngine}.
- *
- * @author Richard Eckart de Castilho
  */
 public class ExecutionException
 	extends Exception

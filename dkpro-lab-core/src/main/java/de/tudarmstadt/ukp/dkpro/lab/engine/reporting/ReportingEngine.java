@@ -27,8 +27,6 @@ import de.tudarmstadt.ukp.dkpro.lab.task.Task;
 
 /**
  * Task execution engine which skips the main execution steps and only executes reports.
- *
- * @author Richard Eckart de Castilho
  */
 public class ReportingEngine
 	implements TaskExecutionEngine

@@ -20,9 +20,6 @@ package de.tudarmstadt.ukp.dkpro.lab.engine;
 import de.tudarmstadt.ukp.dkpro.lab.task.Task;
 import de.tudarmstadt.ukp.dkpro.lab.task.TaskContextMetadata;
 
-/**
- * @author Richard Eckart de Castilho
- */
 public interface TaskContextFactory
 {
 	/**

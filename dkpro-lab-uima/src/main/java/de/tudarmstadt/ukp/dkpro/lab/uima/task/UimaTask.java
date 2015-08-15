@@ -30,8 +30,6 @@ import de.tudarmstadt.ukp.dkpro.lab.task.Task;
 /**
  * Task configuration for an UIMA-based task. Any UIMA task always requires a
  * {@link CollectionReaderDescription} and a {@link AnalysisEngineDescription}.
- *
- * @author Richard Eckart de Castilho
  */
 public interface UimaTask
 	extends Task

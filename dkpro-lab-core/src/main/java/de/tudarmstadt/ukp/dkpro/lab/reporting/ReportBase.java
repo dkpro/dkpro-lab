@@ -38,8 +38,6 @@ import de.tudarmstadt.ukp.dkpro.lab.task.Task;
 
 /**
  * Base class for reports.
- *
- * @author Richard Eckart de Castilho
  */
 public abstract class ReportBase
 	implements Report

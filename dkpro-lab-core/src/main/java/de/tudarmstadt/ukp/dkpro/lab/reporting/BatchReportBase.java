@@ -23,8 +23,6 @@ import de.tudarmstadt.ukp.dkpro.lab.task.TaskContextMetadata;
 /**
  * Base class for reports on {@link BatchTask}s. Provides convenience methods to access the subtask
  * contexts.
- * 
- * @author Richard Eckart de Castilho
  */
 public abstract class BatchReportBase
 	extends ReportBase

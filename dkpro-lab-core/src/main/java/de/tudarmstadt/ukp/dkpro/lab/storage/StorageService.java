@@ -30,7 +30,6 @@ import de.tudarmstadt.ukp.dkpro.lab.task.TaskContextMetadata;
  * Task context storage API. Data generated during the execution of a {@link Task} is persisted using
  * the storage API and can be accessed easily by following tasks or {@link Report}s.
  *
- * @author Richard Eckart de Castilho
  * @since 0.2.0
  */
 public interface StorageService

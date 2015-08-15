@@ -34,8 +34,6 @@ import de.tudarmstadt.ukp.dkpro.lab.task.TaskContextMetadata;
  * access to most important methods of the many services. In particular the storage methods should
  * be used from the context instead of directly accessing the storage service, as the context
  * provides the resolution if imports.
- *
- * @author Richard Eckart de Castilho
  */
 public interface TaskContext
 {

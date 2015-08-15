@@ -48,8 +48,6 @@ import de.tudarmstadt.ukp.dkpro.lab.storage.StreamWriter;
  * Conveniently create a tabular data structure which may be persisted to and read from a CSV file
  * or serialized in several other formats.
  *
- * @author Richard Eckart de Castilho
- *
  * @param <V> cell data type.
  */
 public class FlexTable <V>

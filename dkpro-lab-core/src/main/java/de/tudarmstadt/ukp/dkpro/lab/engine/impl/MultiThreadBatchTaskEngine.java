@@ -44,9 +44,6 @@ import de.tudarmstadt.ukp.dkpro.lab.task.Task;
 import de.tudarmstadt.ukp.dkpro.lab.task.TaskContextMetadata;
 import de.tudarmstadt.ukp.dkpro.lab.task.TaskFactory;
 
-/**
- * @author Ivan Habernal
- */
 public class MultiThreadBatchTaskEngine
     extends BatchTaskEngine
 {

@@ -46,9 +46,7 @@ import de.tudarmstadt.ukp.dkpro.lab.uima.task.UimaTask;
  * CPE-based execution engine. This engine will try to automatically create so many threads that
  * each CPU core will be utilized.
  * <p>
- * Refert to {@link CpeBuilder} for information about how aggregte analysis engines are treated.
- *
- * @author Richard Eckart de Castilho
+ * Refer to {@link CpeBuilder} for information about how aggregte analysis engines are treated.
  */
 public class CpeExecutionEngine
 	implements TaskExecutionEngine

@@ -24,8 +24,6 @@ import de.tudarmstadt.ukp.dkpro.lab.task.impl.TaskBase;
 /**
  * Task for executing only reports. Actually this task does nothing and relies on the
  * {@link LifeCycleManager} to execute the attached {@link Report}s.
- *
- * @author Richard Eckart de Castilho
  */
 public class ReportingTask
 	extends TaskBase

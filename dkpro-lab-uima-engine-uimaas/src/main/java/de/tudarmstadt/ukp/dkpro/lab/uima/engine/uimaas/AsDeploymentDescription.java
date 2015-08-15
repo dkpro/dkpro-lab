@@ -53,8 +53,6 @@ import org.xml.sax.SAXException;
  * <p>
  * The application can include both Java and non-Java components; the deployment
  * descriptors are slightly different for non-Java components.
- *
- * @author Richard Eckart de Castilho
  */
 public class AsDeploymentDescription
 {

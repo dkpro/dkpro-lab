@@ -22,8 +22,6 @@ import de.tudarmstadt.ukp.dkpro.lab.task.Task;
 
 /**
  * Manages the task life-cycle. This represents a strategy pattern.
- *
- * @author Richard Eckart de Castilho
  */
 public interface LifeCycleManager
 {

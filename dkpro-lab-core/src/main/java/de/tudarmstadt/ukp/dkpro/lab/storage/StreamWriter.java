@@ -26,8 +26,7 @@ import java.util.Properties;
  * object using the Java Object Serialization mechanism, since it is supposed to be resilient to
  * implementation changes. Data would usually be stored in a {@link Properties}, CSV, XML or simple
  * text format.
- *
- * @author Richard Eckart de Castilho
+ * 
  * @see StreamReader
  */
 public interface StreamWriter

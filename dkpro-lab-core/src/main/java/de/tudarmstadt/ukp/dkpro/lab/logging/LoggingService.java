@@ -19,8 +19,6 @@ package de.tudarmstadt.ukp.dkpro.lab.logging;
 
 /**
  * Logging API.
- *
- * @author Richard Eckart de Castilho
  */
 public interface LoggingService
 {

@@ -37,8 +37,6 @@ import de.tudarmstadt.ukp.dkpro.lab.engine.impl.StaticContext;
 /**
  * Allows access to the experiment context from with a UIMA component. The context can be injected
  * as an external resource.
- *
- * @author Richard Eckart de Castilho
  */
 public class TaskContextProvider
 	extends Resource_ImplBase

@@ -25,8 +25,6 @@ import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 /**
  * Helper-class to allow injecting {@link TaskContext} instances into UIMA components. This is
  * actually a bad hack that will not work if the components are deployed in another Java VM.
- *
- * @author Richard Eckart de Castilho
  */
 public class StaticContext
 {

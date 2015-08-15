@@ -52,8 +52,6 @@ import de.tudarmstadt.ukp.dkpro.lab.uima.task.UimaTask;
 /**
  * UIMA AS-based execution engine. An {@link UimaTask} is be executed using the UIMA AS framework.
  * This is currently a simple proof-of-concept implementation.
- *
- * @author Richard Eckart de Castilho
  */
 public class UimaAsExecutionEngine
 	implements TaskExecutionEngine

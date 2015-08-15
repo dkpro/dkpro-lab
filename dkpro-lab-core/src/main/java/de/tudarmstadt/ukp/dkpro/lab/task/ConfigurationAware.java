@@ -25,8 +25,6 @@ import java.util.Map;
  * direct field access.
  * 
  * @see TaskFactory#configureTask(Task, Map)
- * 
- * @author Richard Eckart de Castilho
  */
 public interface ConfigurationAware
 {

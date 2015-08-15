@@ -57,8 +57,6 @@ import de.tudarmstadt.ukp.dkpro.lab.uima.task.impl.UimaLoggingAdapter;
 /**
  * UUTUC-based execution engine. An {@link UimaTask} is be executed using a simple single-threaded
  * approach. Useful for fool-proof setups and quick testing.
- * 
- * @author Richard Eckart de Castilho
  */
 public class SimpleExecutionEngine
     implements TaskExecutionEngine

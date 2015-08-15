@@ -31,8 +31,6 @@ import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
  * would want to extend {@link UimaTaskBase} and just override
  * {@link UimaTaskBase#getCollectionReaderDescription(TaskContext)} and
  * {@link UimaTaskBase#getAnalysisEngineDescription(TaskContext)}.
- *
- * @author Richard Eckart de Castilho
  */
 public class DefaultUimaTask
 	extends UimaTaskBase

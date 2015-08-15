@@ -31,9 +31,6 @@ import org.junit.rules.TestName;
 import java.io.File;
 import java.util.*;
 
-/**
- * @author Ivan Habernal
- */
 public class MultiThreadTaskPerformanceTest
 {
     private DefaultBatchTask batchTask;

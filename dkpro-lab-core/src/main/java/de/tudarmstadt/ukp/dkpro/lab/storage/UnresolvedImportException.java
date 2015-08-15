@@ -23,8 +23,6 @@ import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 
 /**
  * Exception thrown when an import cannot be resolved.
- * 
- * @author Richard Eckart de Castilho
  */
 public class UnresolvedImportException
     extends DataAccessResourceFailureException

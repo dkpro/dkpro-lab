@@ -28,8 +28,6 @@ import de.tudarmstadt.ukp.dkpro.lab.reporting.Report;
 
 /**
  * Task configuration API.
- *
- * @author Richard Eckart de Castilho
  */
 public interface Task
 {

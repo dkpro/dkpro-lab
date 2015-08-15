@@ -35,8 +35,6 @@ import de.tudarmstadt.ukp.dkpro.lab.storage.StreamWriter;
 /**
  * Task context meta data is a subset of essential information from the {@link Task} as well as some
  * essential execution information. It is persisted for every execution.
- *
- * @author Richard Eckart de Castilho
  */
 public class TaskContextMetadata
 	implements StreamReader, StreamWriter

@@ -51,8 +51,6 @@ import de.tudarmstadt.ukp.dkpro.lab.task.TaskContextMetadata;
 
 /**
  * Simple but effective file system-based storage service.
- *
- * @author Richard Eckart de Castilho
  */
 public class FileSystemStorageService
     implements StorageService

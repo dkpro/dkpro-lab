@@ -24,8 +24,6 @@ import java.util.Map;
  * {@link Report reports} more readable.
  * 
  * @see Report#TASK_LABEL_FUNC_PROP
- * 
- * @author Richard Eckart de Castilho
  */
 public interface LabelFunction
 {

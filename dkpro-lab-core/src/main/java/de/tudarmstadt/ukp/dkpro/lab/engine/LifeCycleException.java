@@ -19,8 +19,6 @@ package de.tudarmstadt.ukp.dkpro.lab.engine;
 
 /**
  * Exception thrown during one of the life-cycle actions controlled by a {@link LifeCycleManager}.
- *
- * @author Richard Eckart de Castilho
  */
 public class LifeCycleException
 	extends Exception

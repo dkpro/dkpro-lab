@@ -26,8 +26,6 @@ import de.tudarmstadt.ukp.dkpro.lab.task.impl.DiscreteDimension;
 
 /**
  * A dimension in a {@link ParameterSpace}.
- *
- * @author Richard Eckart de Castilho
  */
 public abstract class Dimension<T>
 	implements Iterator<T>

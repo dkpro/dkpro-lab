@@ -28,7 +28,6 @@ import java.util.Properties;
  * implementation changes. Data would usually be stored in a {@link Properties}, CSV, XML or simple
  * text format.
  *
- * @author Richard Eckart de Castilho
  * @see StreamWriter
  */
 public interface StreamReader
