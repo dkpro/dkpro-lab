@@ -61,6 +61,7 @@
 		<module>dkpro-lab-uima-engine-simple</module>
 		<module>dkpro-lab-uima-engine-cpe</module>
    <!-- <module>dkpro-lab-uima-engine-uimaas</module> -->
+   <module>dkpro-lab-doc</module>
 	</modules>
 	<!-- 
 	  - For uimaFIT snapshots
