@@ -22,6 +22,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.core.io.Resource;
 
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContextFactory;
@@ -32,6 +34,9 @@ import de.tudarmstadt.ukp.dkpro.lab.task.Task;
 public class DefaultTaskExecutionService
 	implements TaskExecutionService
 {
+    @Autowired
+    private AutowireCapableBeanFactory beanFactory;
+    
 	private TaskContextFactory contextFactory;
 
 	private final Map<Class<? extends Task>, Class<? extends TaskExecutionEngine>> map;
@@ -56,6 +61,7 @@ public class DefaultTaskExecutionService
 				if (taskClass.isAssignableFrom(aConfiguration.getClass())) {
 					TaskExecutionEngine engine = map.get(taskClass).newInstance();
 					engine.setContextFactory(contextFactory);
+					beanFactory.autowireBean(engine);
 					return engine;
 				}
 			}
@@ -87,6 +93,22 @@ public class DefaultTaskExecutionService
 			}
 		}
 	}
+	
+    public void registerEngine(Class<? extends Task> aTaskClazz,
+            Class<? extends TaskExecutionEngine> aEngineClazz)
+    {
+        map.put(aTaskClazz, aEngineClazz);
+    }
+    
+    public void unregisterEngine(Class<? extends Task> aTaskClazz)
+    {
+        map.remove(aTaskClazz);
+    }
+    
+    public Class<? extends TaskExecutionEngine> getEngine(Class<? extends Task> aTaskClazz)
+    {
+        return map.get(aTaskClazz);
+    }
 
 	public void setContextFactory(TaskContextFactory aContextFactory)
 	{

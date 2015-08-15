@@ -31,6 +31,7 @@ import java.util.concurrent.Future;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Value;
 
 import de.tudarmstadt.ukp.dkpro.lab.engine.ExecutionException;
 import de.tudarmstadt.ukp.dkpro.lab.engine.LifeCycleException;
@@ -50,6 +51,35 @@ public class MultiThreadBatchTaskEngine
     extends BatchTaskEngine
 {
     private final Log log = LogFactory.getLog(getClass());
+    
+    public static final String PROP_THREADS = "engine.batch.maxThreads";
+    
+    @Value("#{ @Properties['" + PROP_THREADS + "'] }")
+    private int maxThreads = Runtime.getRuntime().availableProcessors() - 1;
+    
+    /**
+     * Explicit no-args constructor
+     */
+    public MultiThreadBatchTaskEngine()
+    {
+        // Nothing to do.
+    }
+    
+    /**
+     * Constructor with number of threads.
+     * 
+     * @param aNThreads
+     *            The number of threads to use for the MultiThreadBatchTask.
+     */
+    public MultiThreadBatchTaskEngine(int aNThreads)
+    {
+        setMaxThreads(aNThreads);
+    }
+
+    public void setMaxThreads(int aNThreads)
+    {
+        maxThreads = aNThreads;
+    }
 
     @Override
     protected void executeConfiguration(BatchTask aConfiguration, TaskContext aContext,
@@ -80,25 +110,29 @@ public class MultiThreadBatchTaskEngine
         }
 
         Queue<Task> queue = new LinkedList<>(aConfiguration.getTasks());
-        //        Set<Task> loopDetection = new HashSet<>();
-        //        List<UnresolvedImportException> deferralReasons = new ArrayList<>();
-
-        ConcurrentMap<Task, Throwable> exceptionsFromLastLoop;
+        // keeps track of the execution threads; 
+        // TODO MW: do we really need this or can we work with the futures list only?
+        Map<Task, ExecutionThread> threads = new HashMap<>();              
+        // keeps track of submitted Futures and their associated tasks
+        Map<Future<?>, Task> futures = new HashMap<Future<?>, Task>();     
+        // will be instantiated with all exceptions from current loop
+        ConcurrentMap<Task, Throwable> exceptionsFromLastLoop = null;      
         ConcurrentMap<Task, Throwable> exceptionsFromCurrentLoop = new ConcurrentHashMap<>();
 
-        //        ThreadPoolExecutorFactoryBean factory = new ThreadPoolExecutorFactoryBean();
-        //        factory.setCorePoolSize(4);
+        int outerLoopCounter = 0;
 
         // main loop
         do {
-            Map<Task, ExecutionThread> threads = new HashMap<>();
+            outerLoopCounter++;
 
-            ExecutorService executor = Executors.newFixedThreadPool(2);
+            threads.clear();
+            futures.clear();
+            ExecutorService executor = Executors.newFixedThreadPool(maxThreads);
 
             // set the exceptions from the last loop
             exceptionsFromLastLoop = new ConcurrentHashMap<>(exceptionsFromCurrentLoop);
 
-            // Fix MW: Clear exceptionFromCurrentLoop; otherwise the loop with run at most twice.
+            // Fix MW: Clear exceptionsFromCurrentLoop; otherwise the loop with run at most twice.
             exceptionsFromCurrentLoop.clear();
             
             // process all tasks from the queue
@@ -115,70 +149,15 @@ public class MultiThreadBatchTaskEngine
                     log.info("Executing task [" + task.getType() + "]");
 
                     // set scope here so that the inherited scopes are considered
-                    // set scope here so that tasks added to scope in this loop are considered
                     if (task instanceof BatchTask) {
                         ((BatchTask) task).setScope(scope);
                     }
 
-                    //                    try {
-                    //                    execution = runNewExecution(aContext, task, aConfig, aExecutedSubtasks);
-
-                    //                    ExecutionThread thread = (ExecutionThread) factory.newThread(new ExecutionThread(aContext, task, aConfig,
-                    //                            aExecutedSubtasks));
-
                     ExecutionThread thread = new ExecutionThread(aContext, task, aConfig,
                             aExecutedSubtasks);
-
-                    //                    TaskUncaughtExceptionHandler exceptionHandler = new TaskUncaughtExceptionHandler(
-                    //                            exceptionsFromCurrentLoop, task);
-                    //                    thread.setUncaughtExceptionHandler(exceptionHandler);
-
                     threads.put(task, thread);
 
-                    // TODO xxx
-                    //                                        thread.start();
-                    //                    executor.execute(thread);
-                    //                    factory.createThread(thread)
-                    Future<?> future = executor.submit(thread);
-
-                    // and run it
-                    try {
-                        future.get();
-                    }
-                    catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-                    catch (java.util.concurrent.ExecutionException e) {
-                        exceptionsFromCurrentLoop.putIfAbsent(task, e.getCause());
-                    }
-
-                    //                    // Record new/existing execution
-                    //                    aExecutedSubtasks.add(execution.getId());
-                    //                    scope.add(execution.getId());
-                    //                    loopDetection.clear();
-                    //                    deferralReasons.clear();
-                    //                    }
-                    //                    catch (UnresolvedImportException e) {
-                    //                        Add task back to queue
-                    //                        log.debug("Deferring execution of task [" + task.getType() + "]: "
-                    //                                + e.getMessage());
-                    //                        queue.add(task);
-                    //
-                    // Detect endless loop
-                    //                        if (loopDetection.contains(task)) {
-                    //                            StringBuilder details = new StringBuilder();
-                    //                            for (UnresolvedImportException r : deferralReasons) {
-                    //                                details.append("\n -");
-                    //                                details.append(r.getMessage());
-                    //                            }
-                    //
-                    //                            throw an UnresolvedImportException in case there is an outer BatchTask which needs to be executed first
-                    //                            throw new UnresolvedImportException(e, details.toString());
-                    //                        }
-                    // Record failed execution
-                    //                        loopDetection.add(task);
-                    //                        deferralReasons.add(e);
-                    //                    }
+                    futures.put(executor.submit(thread), task);
                 }
                 else {
                     log.debug("Using existing execution [" + execution.getId() + "]");
@@ -186,56 +165,47 @@ public class MultiThreadBatchTaskEngine
                     // Record new/existing execution
                     aExecutedSubtasks.add(execution.getId());
                     scope.add(execution.getId());
-                    //                    loopDetection.clear();
-                    //                    deferralReasons.clear();
                 }
             }
 
-            // TODO xxx
+            // try and get results from all futures to check for failed executions
+            for(Map.Entry<Future<?>, Task> entry : futures.entrySet()){
+                try {
+                    entry.getKey().get();
+                }
+                catch(java.util.concurrent.ExecutionException ex) {
+                    Task task = entry.getValue();
+                    // TODO MW: add a retry-counter here to prevent endless loops?
+                    log.info("Task exec failed for [" + task.getType() + "]");
+                    // record the failed task, so that it can be re-added to the queue
+                    exceptionsFromCurrentLoop.put(task, ex);
+                }
+                catch(InterruptedException ex){
+                    // thread interrupted, exit
+                    throw new RuntimeException(ex);
+                }
+            }
 
-            //            executor.shutdown();
-            //            while (!executor.isTerminated()) {
-            //                empty
-            //            }
-
-            // wait for completing all threads
-            //            for (ExecutionThread thread : threads.values()) {
-            //                try {
-            //                    thread.join();
-            //                }
-            //                catch (InterruptedException e) {
-            //                    throw new RuntimeException(e);
-            //                }
-            //
-            //            }
-//            try {
-                System.out.println("Calling shutdown");
-                executor.shutdown();
-//            }
-//            catch (InterruptedException e) {
-//                throw new RuntimeException(e);
-//            }
-
-            // empty the queue -- it's already empty!!
-            // queue.clear();
-
-            System.out.println("All threads finished");
+            log.debug("Calling shutdown");
+            executor.shutdown();
+            log.debug("All threads finished");
 
             // collect the results
             for (Map.Entry<Task, ExecutionThread> entry : threads.entrySet()) {
-                ExecutionThread thread = entry.getValue();
                 Task task = entry.getKey();
+                ExecutionThread thread = entry.getValue();
                 TaskContextMetadata execution = thread.getTaskContextMetadata();
 
                 // probably failed
                 if (execution == null) {
                     Throwable exception = exceptionsFromCurrentLoop.get(task);
-                    if (!(exception instanceof UnresolvedImportException)) {
+                    if (!(exception instanceof UnresolvedImportException)
+                            && !(exception instanceof java.util.concurrent.ExecutionException)) {
                         throw new RuntimeException(exception);
                     }
                     exceptionsFromCurrentLoop.put(task, exception);
 
-                    // put it to the queue
+                    // re-add to the queue
                     queue.add(task);
                 }
                 else {
@@ -248,7 +218,8 @@ public class MultiThreadBatchTaskEngine
 
         }
         // finish if the same tasks failed again
-        while (!exceptionsFromCurrentLoop.keySet().equals(exceptionsFromLastLoop.keySet()));
+        while (!exceptionsFromCurrentLoop.keySet().equals(exceptionsFromLastLoop.keySet())); 
+        // END OF DO; finish if the same tasks failed again
 
         if (!exceptionsFromCurrentLoop.isEmpty()) {
             // collect all details
@@ -256,7 +227,6 @@ public class MultiThreadBatchTaskEngine
             for (Throwable throwable : exceptionsFromCurrentLoop.values()) {
                 details.append("\n -");
                 details.append(throwable.getMessage());
-
             }
 
             // we re-throw the first exception
@@ -268,8 +238,14 @@ public class MultiThreadBatchTaskEngine
             // otherwise wrap it
             throw new RuntimeException(details.toString(), next);
         }
+        log.info("MultiThreadBatchTask completed successfully. Total number of outer loop runs: "
+                + outerLoopCounter);
     }
 
+    /**
+     * Represents a task's execution thread,
+     * together with the associated context, config and scope.
+     */
     protected class ExecutionThread
             extends Thread
     {
@@ -313,31 +289,6 @@ public class MultiThreadBatchTaskEngine
         public TaskContextMetadata getTaskContextMetadata()
         {
             return taskContextMetadata;
-        }
-    }
-
-    @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
-    protected class TaskUncaughtExceptionHandler
-            implements Thread.UncaughtExceptionHandler
-
-    {
-        private final ConcurrentMap<Task, Throwable> thrownExceptions;
-        private final Task task;
-
-        public TaskUncaughtExceptionHandler(ConcurrentMap<Task, Throwable> resultingExceptionMap,
-                Task task)
-        {
-            this.thrownExceptions = resultingExceptionMap;
-            this.task = task;
-        }
-
-        @Override
-        public void uncaughtException(Thread t, Throwable e)
-        {
-            System.err.println(
-                    "Task: " + task.getClass().getSimpleName() + " in thread " + t.getId()
-                            + " threw an exception: " + e.toString());
-            thrownExceptions.put(task, e);
         }
     }
 }

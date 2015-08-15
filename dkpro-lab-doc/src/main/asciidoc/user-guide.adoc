@@ -25,3 +25,8 @@ include::{include-dir}TaskLifecycle.adoc[]
 <<<
 
 include::{include-dir}CrossValidation.adoc[]
+
+<<<
+
+include::{include-dir}Multithreading.adoc[]
+

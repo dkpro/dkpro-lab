@@ -19,6 +19,7 @@ package de.tudarmstadt.ukp.dkpro.lab;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.Properties;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -62,6 +63,16 @@ public class Lab
 		lab.context = new ClassPathXmlApplicationContext(aContext, lab.getClass());
 		return lab;
 	}
+
+    public void setProperty(String aKey, String aValue)
+    {
+        context.getBean("Properties", Properties.class).setProperty(aKey, aValue);
+    }
+
+    public String getProperty(String aKey)
+    {
+        return context.getBean("Properties", Properties.class).getProperty(aKey);
+    }
 
 	public TaskExecutionService getTaskExecutionService()
 	{

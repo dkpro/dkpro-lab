@@ -18,11 +18,16 @@
 package de.tudarmstadt.ukp.dkpro.lab.task.impl;
 
 import de.tudarmstadt.ukp.dkpro.lab.Lab;
+import de.tudarmstadt.ukp.dkpro.lab.engine.ExecutionException;
 import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
+import de.tudarmstadt.ukp.dkpro.lab.engine.TaskExecutionEngine;
+import de.tudarmstadt.ukp.dkpro.lab.engine.impl.DefaultTaskExecutionService;
+import de.tudarmstadt.ukp.dkpro.lab.engine.impl.MultiThreadBatchTaskEngine;
 import de.tudarmstadt.ukp.dkpro.lab.storage.impl.PropertiesAdapter;
 import de.tudarmstadt.ukp.dkpro.lab.task.*;
 
 import org.apache.commons.io.FileUtils;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -35,6 +40,8 @@ import java.util.Properties;
 
 public class MultiThreadBatchTaskTest
 {
+    private Class<? extends TaskExecutionEngine> oldEngine;
+    
     @Before
     public void setup()
     {
@@ -42,9 +49,28 @@ public class MultiThreadBatchTaskTest
                 + name.getMethodName());
         System.setProperty("DKPRO_HOME", path.getAbsolutePath());
         FileUtils.deleteQuietly(path);
+        
+        // Configure Lab to use MultiThreadBatchTaskEngine
+        Lab lab = Lab.getInstance();
+        oldEngine = ((DefaultTaskExecutionService) lab.getTaskExecutionService())
+                .getEngine(BatchTask.class);
+        ((DefaultTaskExecutionService) lab.getTaskExecutionService()).registerEngine(
+                BatchTask.class, MultiThreadBatchTaskEngine.class);
+        lab.setProperty(MultiThreadBatchTaskEngine.PROP_THREADS, "10");
+    }
+    
+    @After
+    public void teardown()
+    {
+        // Restore Lab to using default BatchTask engine
+        Lab lab = Lab.getInstance();
+        oldEngine = ((DefaultTaskExecutionService) lab.getTaskExecutionService())
+                .getEngine(BatchTask.class);
+        ((DefaultTaskExecutionService) lab.getTaskExecutionService()).registerEngine(
+                BatchTask.class, oldEngine);
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test(expected = ExecutionException.class)
     public void importTest()
             throws Exception
     {
@@ -176,7 +202,7 @@ public class MultiThreadBatchTaskTest
         Lab.getInstance().run(outerTask);
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test(expected = ExecutionException.class)
     public void testUnresolvable()
             throws Exception
     {
