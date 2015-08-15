@@ -1,6 +1,7 @@
-/.project
-/.settings
-/target
+.project
+.settings
+.classpath
+target
 .springBeans
 *.iml
 *.iws
