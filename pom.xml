@@ -28,11 +28,11 @@
 	<version>0.12.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>DKPro Lab</name>
-	<url>http://code.google.com/p/dkpro-lab/</url>
+	<url>http://dkpro.github.io/dkpro-lab/</url>
 	<description>DKPro Lab is a lightweight framework for parameter sweeping experiments. It allows to set up experiments consisting of multiple interdependent tasks in a declarative manner with minimal overhead. Parameters are injected into tasks using via annotated class fields. Data produced by a task for any particular parameter configuration is stored and re-used whenever possible to avoid the needless recalculation of results. Reports can be attached to each task to post-process the experimental results and present them in a convenient manner, e.g. as tables or charts.</description>
 	<issueManagement>
-		<system>code.google.com</system>
-		<url>http://code.google.com/p/dkpro-lab/issues</url>
+		<url>https://github.com/dkpro/dkpro-lab/issues</url>
+		<system>GitHub Issues</system>
 	</issueManagement>
 	<licenses>
 		<license>
@@ -397,9 +397,9 @@
 		</dependencies>
 	</dependencyManagement>
 	<scm>
-		<connection>scm:git:https://code.google.com/p/dkpro-lab/</connection>
-		<developerConnection>scm:git:https://code.google.com/p/dkpro-lab/</developerConnection>
-		<url>http://code.google.com/p/dkpro-lab/source/browse/</url>
+		<connection>scm:git:https://github.com/dkpro/dkpro-lab.git</connection>
+		<developerConnection>scm:git:https://github.com/dkpro/dkpro-lab.git</developerConnection>
+		<url>https://github.com/dkpro/dkpro-lab</url>
 		<tag>HEAD</tag>
 	</scm>
 	<build>
