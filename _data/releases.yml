@@ -1,5 +1,22 @@
+# Project releases
+# 
+# Example: 
+#
+# - version: 0.7.0
+#   date: 2015-04-08
+#   status: stable
+#
+# Possible status: "stable", "unstable"
+
 - version: 0.11.0
   date: 2014-06-18
   status: stable
   groupId: de.tudarmstadt.ukp.dkpro.lab
   artifactId: dkpro-lab
+
+- version: 0.12.SNAPSHOT
+  status: unstable
+  groupId: de.tudarmstadt.ukp.dkpro.lab
+  artifactId: dkpro-lab
+  user_guide_url: https://zoidberg.ukp.informatik.tu-darmstadt.de/jenkins/job/DKPro%20Lab%20Documentation%20(GitHub)/de.tudarmstadt.ukp.dkpro.lab$dkpro-lab-doc/doclinks/1/
+  developer_guide_url: https://zoidberg.ukp.informatik.tu-darmstadt.de/jenkins/job/DKPro%20Lab%20Documentation%20(GitHub)/de.tudarmstadt.ukp.dkpro.lab$dkpro-lab-doc/doclinks/2/

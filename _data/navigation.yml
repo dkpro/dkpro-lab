@@ -1,5 +1,5 @@
 - title: DKPro
-  url: "http://dkpro.github.io"
+  url: "https://dkpro.github.io"
   side: left
 
 - title: Lab
@@ -10,6 +10,10 @@
   url: "/downloads/"
   side: left
 
+- title: Documentation
+  url: "/documentation/"
+  side: left
+
 - title: "Issues"
   url: "http://github.com/dkpro/dkpro-lab/issues"
   side: left
@@ -18,7 +22,16 @@
   url: "http://github.com/dkpro/dkpro-lab"
   side: left
 
+- title: "Contact"
+  side: left
+  dropdown:
+  - title: "Mailing lists"
+    url: "/pages/mailinglists.html"
+  - title: "Contributing"
+    url: "http://github.com/dkpro/dkpro-lab/blob/develop/CONTRIBUTING.md"
+  - title: "Contributors"
+    url: "http://github.com/dkpro/dkpro-lab/blob/develop/CONTRIBUTORS.txt"
+
 - title: "About"
   side: left
   url: "/info"
-  
