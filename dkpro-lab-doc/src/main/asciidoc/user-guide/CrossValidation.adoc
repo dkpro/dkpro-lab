@@ -16,11 +16,9 @@
     
 ## Cross validation
 
-### Cross validation tutorial
-
 This is a brief introduction to running an experiment that has a cross validation part. The most important things to learn in this example is, how to set a parameter space dimension which is created dynamically via a nested `BatchTask` and how to use a `FoldDimensionBundle`.
 
-#### Basic tasks
+### Basic setup
 
 Assume you have these tasks:
 
@@ -30,7 +28,7 @@ Assume you have these tasks:
   * `validationTask`: this task finally evaluates the classifier on _testSet_.
   * `batchTask`: this tasks runs all the four task above.
 
-#### Cross-validation dimension
+### Cross-validation dimension
 
 With such a setup, the data which is the input for the cross validation is unknown, until the `preprocessingTask` has completed. Only when it is done, the n-fold cross validation can be set up during which part of the data is assigned to the _trainingSet_ and _testSet_.
 
@@ -66,7 +64,7 @@ To solve this problem, we introduce another batch task and change the batch task
    * `crossValidationTask`: this task runs the `featureExtractionTask`, the `trainingTask` and the `validationTask`
    * `batchTask` (modified): this tasks now runs the `preprocessingTask` and the `crossValidationTask`.
 
-#### Cross-validation task
+### Cross-validation task
 
 Now, instead of statically setting up the parameter space for the `crossValidationTask`, we set it up dynamically by overriding the `execute()` method. In the following example, we assume that the `preprocessingTask` has produced some `XMI` data, which is the data on which we want to perform the cross-validation. The `featureExtractionTask` requires two parameters, `filesRoot` (the base directory of the data) and `files_training` (the data in the _trainingSet_). The `validationTask`also requires `filesRoot` and it needs `files_validation` (the _testSet_ ) to evaluate the classifier.
 
@@ -110,7 +108,7 @@ batchTask.addTask(crossValidationTask);
    * *line 20-22*: add the sub-tasks that perform the cross-validation.
    * *line 24-27*: configure the overall batchTask that runs the preprocessing and the cross-validation.
 
-#### Reader 
+### Reader 
 
 The following snipped illustrates how to use the _trainingSet_ parameter `files_training_` and `filesRoot` to configure the DKPro Core ASL `XmiReader` component.
 
@@ -135,10 +133,10 @@ public CollectionReaderDescription getCollectionReaderDescription(TaskContext aC
 };
 ----
 
-#### Caveat
+### Caveat
 
 Mind, that it is currently not tested to import data across batch task boundaries. That is, in the example above, the `featureExtractionTask` does not directly import data from the `preprocessingTask`. Instead, the `crossvalidationTask` imports the data from the `preprocessingTask` and forwards it to the `featureExtractionTask` via the file names in the fold dimension.
 
-#### Summary
+### Summary
 
 If a cross-validation task depends on the output of a preprocessing task, it is impossible to set up a static parameter dimension for the _trainingSet_ and _testSet_, because it depends on the data created by the preprocessing task. The tutorial has illustrated how to create a nested batch task which dynamically creates its own parameter space using a `FoldDimensionBundle` based on the output of the preprocessing task.
