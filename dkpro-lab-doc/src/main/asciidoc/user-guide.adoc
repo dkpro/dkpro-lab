@@ -28,5 +28,5 @@ include::{include-dir}CrossValidation.adoc[]
 
 <<<
 
-include::{include-dir}Multithreading.adoc[]
+include::{include-dir}MultiThreading.adoc[]
 
