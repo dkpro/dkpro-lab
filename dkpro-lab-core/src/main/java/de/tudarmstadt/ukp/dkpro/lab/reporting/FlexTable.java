@@ -313,8 +313,19 @@ public class FlexTable <V>
 		};
 	}
 
-	public StreamWriter getLatexWriter()
+	/**
+	 * Returns a LaTeX writer to write the FlexTable to a Latex file.
+	 * 
+	 * @param transpose If set to true, the FlexTable is transposed before output.
+	 * @param decimalPlacesForDouble How many decimal places should double values have; if set to -1, the values won't be rounded.
+	 * @param decimalPlacesForPercentages How many decimal places should percentage values have; if set to -1, the values won't be rounded.
+	 * 
+	 */
+	public StreamWriter getLatexWriter(boolean transpose, final int decimalPlacesForDouble, final int decimalPlacesForPercentages)
 	{
+		if(transpose)
+			this.transposeTable();
+		
 		return new StreamWriter()
 		{
 			@Override
@@ -322,37 +333,130 @@ public class FlexTable <V>
 				throws Exception
 			{
 				PrintWriter writer = new PrintWriter(new OutputStreamWriter(aStream, "UTF-8"));
-				writer.print("\\begin{tabular}{FIXME}");
-
+				writer.print("\\begin{tabular}");
 				String[] colIds = getColumnIds();
+				writer.print("{");
+				for(int i = 0; i <= colIds.length; i++)
+					writer.print(" l");	// TODO: Pass column alignment as parameter
+				writer.println(" }");
+				
+				writer.print("\\small");
+				
 				String[] buf = new String[colIds.length+1];
 				{
 					int i = 1;
 					buf[0] = "ID";
 					for (String col : colIds) {
-						buf[i] = col.replace('|', ' ');
+						buf[i] = escapeForLatex(col.replace('|', ' '));
 						i++;
 					}
 				}
-				writer.print("\\hline");
+				writer.println("\\hline");
 				writer.print(StringUtils.join(buf, " & "));
 				writer.println("\\\\");
 
 				for (String rowId : getRowIds()) {
-					buf[0] = rowId;
+					String rowVal = doStringReplace(rowId);
+					buf[0] = escapeForLatex(rowVal);
 					int i = 1;
 					for (String colId : colIds) {
-						buf[i] = getValueAsString(rowId, colId);
+						String val = getValueAsString(rowId, colId);
+						
+						val = convertNumbers(decimalPlacesForDouble, decimalPlacesForPercentages, val);
+						
+						buf[i] = escapeForLatex(val);	// TODO: Move to util class? Which one?
 						i++;
 					}
 					writer.print(StringUtils.join(buf, " & "));
 					writer.println("\\\\");
 				}
 
-				writer.print("\\end{tabular}");
+				writer.println("\\hline");
+				writer.println("\\end{tabular}");
 				writer.flush();
 			}
+
+			private String convertNumbers(final int decimalPlacesForDouble, final int decimalPlacesForPercentages,
+					String val) {
+				if(decimalPlacesForPercentages != -1 && isPercentage(val))
+					val = doRoundDouble(val, decimalPlacesForPercentages);
+				else if(decimalPlacesForDouble != -1 && isDouble(val))
+					val = doRoundDouble(val, decimalPlacesForDouble);
+				return val;
+			}
+
+			private String doStringReplace(String val) {
+				// TODO MW: Make all this configurable
+				val = val.replace("de.tudarmstadt.ukp.dkpro.tc.core.task.", "");
+				val = val.replace("de.tudarmstadt.ukp.dkpro.tc.weka.task.", "");
+				
+				return val;
+			}
+
+			private String doRoundDouble(String val, int decimalPlaces) {
+				double d = Double.parseDouble(val);
+				
+				int temp = (int)(d * Math.pow(10 , decimalPlaces));  	// TODO: Could this cause rounding problems?
+				Double newD = (temp) / Math.pow(10 , decimalPlaces);
+				   
+				return newD.toString();
+			}
+
+			private boolean isDouble(String val) {
+				try {
+					double d = Double.parseDouble(val);		// TODO: A bit of a hack; use Regex instead?
+				}
+				catch(NumberFormatException ex) {
+					return false;
+				}
+				
+				return true;
+			}
+
+			private boolean isPercentage(String val) {
+				// TODO: Implement
+				return false;
+			}
+
+			private String escapeForLatex(String val) {
+				val = val.replace("_", "\\_");
+				
+				return val;
+			}
 		};
+	}
+
+	/**
+	 * Method to transpose the data in the table,
+	 * turning columns into rows and vice versa.
+	 * 
+	 * @author Martin Wunderlich (martin@wunderlich.com)
+	 */
+	void transposeTable() {
+		LinkedHashMap<String, Object> newColumns = new LinkedHashMap<String, Object>();
+		LinkedHashMap<String, Map<String, V>> newRows = new LinkedHashMap<String, Map<String, V>>();
+		
+		for(String columnHeader : this.columns.keySet()) {
+			String newRowID = columnHeader;
+		
+			Map<String, V> row = new LinkedHashMap<>();
+			Map<String, V> oldRow;
+			
+			for(String rowID : this.rows.keySet()) {
+				if(! newColumns.containsKey(rowID))
+					newColumns.put(rowID, PRESENT);
+				
+				oldRow = this.rows.get(rowID);
+				V value = oldRow.get(newRowID);
+				
+				row.put(rowID, value);
+			}
+			
+			newRows.put(newRowID, row);
+		}
+		
+		this.columns = newColumns;
+		this.rows = newRows;
 	}
 
 	public StreamWriter getCsvWriter()
@@ -366,7 +470,7 @@ public class FlexTable <V>
 				String[] colIds = getColumnIds();
 
 				CSVWriter writer = new CSVWriter(new OutputStreamWriter(aStream, "UTF-8"));
-				String[] buf = new String[columns.size()+1];
+				String[] buf = new String[FlexTable.this.columns.size()+1];
 				{
 					int i = 1;
 					buf[0] = "ID";
@@ -403,7 +507,7 @@ public class FlexTable <V>
 				try {
 					CSVReader reader = new CSVReader(new InputStreamReader(aStream, "UTF-8"));
 					String[] headers = reader.readNext();
-					Method converter = dataClass.getMethod("valueOf", String.class);
+					Method converter = FlexTable.this.dataClass.getMethod("valueOf", String.class);
 
 					String[] data;
 					while ((data = reader.readNext()) != null) {
@@ -420,7 +524,7 @@ public class FlexTable <V>
 					throw e;
 				}
 				catch (NoSuchMethodException e) {
-					throw new IOException("Data class "+dataClass.getName()+" does not have a "+
+					throw new IOException("Data class "+FlexTable.this.dataClass.getName()+" does not have a "+
 							"public static Object valueOf(String) method - unable unmarshall the "+
 							"data.");
 				}
@@ -439,7 +543,7 @@ public class FlexTable <V>
 			public void write(OutputStream aStream)
 				throws Exception
 			{
-				String[] colIds = compact ? getCompactColumnIds(false) : getColumnIds();
+				String[] colIds = FlexTable.this.compact ? getCompactColumnIds(false) : getColumnIds();
 
 				Workbook wb = new HSSFWorkbook();
 				Sheet sheet = wb.createSheet("Summary");
