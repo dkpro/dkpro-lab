@@ -321,10 +321,18 @@ public class FlexTable<V>
     }
 
     /**
-     * Returns a LaTeX writer to write the FlexTable to a Latex file.
+     * Returns a LaTeX writer to write the FlexTable to a Latex file. (without rounding any figures)
      * 
-     * @param transpose
-     *            If set to true, the FlexTable is transposed before output.
+     */
+    public StreamWriter getLatexWriter()
+    {
+        return this.getLatexWriter(-1, -1);
+    }
+
+    /**
+     * Returns a LaTeX writer to write the FlexTable to a Latex file. To get a writer for a
+     * transposed version of the table, call table.transpose() prior to retrieving the writer.
+     * 
      * @param decimalPlacesForDouble
      *            How many decimal places should double values have; if set to -1, the values won't
      *            be rounded.
@@ -332,13 +340,9 @@ public class FlexTable<V>
      *            How many decimal places should percentage values have; if set to -1, the values
      *            won't be rounded.
      */
-    public StreamWriter getLatexWriter(boolean transpose, final int decimalPlacesForDouble,
+    public StreamWriter getLatexWriter(final int decimalPlacesForDouble,
             final int decimalPlacesForPercentages)
     {
-        if (transpose) {
-            transposeTable();
-        }
-
         return new StreamWriter()
         {
             @Override
@@ -453,7 +457,7 @@ public class FlexTable<V>
     /**
      * Method to transpose the data in the table, turning columns into rows and vice versa.
      */
-    void transposeTable()
+    public void transposeTable()
     {
         LinkedHashMap<String, Object> newColumns = new LinkedHashMap<>();
         Map<String, Map<String, V>> newRows = new LinkedHashMap<>();
