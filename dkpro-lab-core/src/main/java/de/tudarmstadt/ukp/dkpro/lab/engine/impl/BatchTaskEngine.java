@@ -97,6 +97,11 @@ public class BatchTaskEngine
 
             try {
                 BatchTask cfg = (BatchTask) aConfiguration;
+
+                // Preparation hook for batch task in case it wants to do anything to itself
+                // before the subtasks are executed (e.g. adding subtasks or a parameter space)
+                cfg.initialize(ctx);
+
                 ParameterSpace parameterSpace = cfg.getParameterSpace();
                 
                 // Try to calculate the parameter space size.
@@ -204,7 +209,7 @@ public class BatchTaskEngine
         if (aConfiguration.getScope() != null) {
             scope.addAll(aConfiguration.getScope());
         }
-
+        
         // Configure subtasks
         for (Task task : aConfiguration.getTasks()) {
             TaskFactory.configureTask(task, aConfig);

@@ -20,6 +20,8 @@ package de.tudarmstadt.ukp.dkpro.lab.task;
 import java.util.Map;
 import java.util.Set;
 
+import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
+
 public interface BatchTask
     extends Task, ConfigurationAware
 {
@@ -44,4 +46,6 @@ public interface BatchTask
     Set<String> getScope();
     
     ExecutionPolicy getExecutionPolicy();
+
+    void initialize(TaskContext aContext);
 }
