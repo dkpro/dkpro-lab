@@ -187,8 +187,46 @@ public class DefaultTaskContext
     @Override
 	public File getStorageLocation(String aKey, AccessMode aMode)
 	{
-	    return getFolder(aKey, aMode);
-	}
+        StorageKey key;
+
+        StorageService storage = getStorageService();
+        Map<String, String> imports = getMetadata().getImports();
+
+        if (storage.containsKey(getId(), aKey)) {
+            // If the context contains the key, we do nothing. Locally available data always
+            // supersedes imported data.
+            key = new StorageKey(getId(), aKey);
+        }
+        else if (imports.containsKey(aKey)) {
+            URI uri;
+            try {
+                uri = new URI(imports.get(aKey));
+            }
+            catch (URISyntaxException e) {
+                throw new DataAccessResourceFailureException("Imported key [" + aKey
+                        + "] resolves to illegal URL [" + imports.get(aKey) + "]", e);
+            }
+
+            if ("file".equals(uri.getScheme()) && new File(uri).isDirectory()) {
+                if (aMode == AccessMode.READONLY) {
+                    return new File(uri);
+                }
+                else {
+                    // Here we should probably just copy the imported folder into the context
+                    throw new DataAccessResourceFailureException("READWRITE access of imported " +
+                            "folders is not implemented yet.");
+                }
+            }
+            else {
+                key = resolve(aKey, aMode, true);
+            }
+        }
+        else {
+            key = resolve(aKey, aMode, true);
+        }
+
+        return getStorageService().getStorageFolder(key.contextId, key.key);
+    }
 	
 	@Override
 	public File getFile(String aKey, AccessMode aMode)
