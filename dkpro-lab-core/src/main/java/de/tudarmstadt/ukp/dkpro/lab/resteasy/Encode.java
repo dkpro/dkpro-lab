@@ -69,9 +69,15 @@ public class Encode
        */
       for (int i = 0; i < 128; i++)
       {
-         if (i >= 'a' && i <= 'z') continue;
-         if (i >= 'A' && i <= 'Z') continue;
-         if (i >= '0' && i <= '9') continue;
+         if (i >= 'a' && i <= 'z') {
+            continue;
+        }
+         if (i >= 'A' && i <= 'Z') {
+            continue;
+        }
+         if (i >= '0' && i <= '9') {
+            continue;
+        }
          switch ((char) i)
          {
             case '-':
@@ -113,9 +119,15 @@ public class Encode
        */
       for (int i = 0; i < 128; i++)
       {
-         if (i >= 'a' && i <= 'z') continue;
-         if (i >= 'A' && i <= 'Z') continue;
-         if (i >= '0' && i <= '9') continue;
+         if (i >= 'a' && i <= 'z') {
+            continue;
+        }
+         if (i >= 'A' && i <= 'Z') {
+            continue;
+        }
+         if (i >= '0' && i <= '9') {
+            continue;
+        }
          switch ((char) i)
          {
             case '-':
@@ -139,9 +151,15 @@ public class Encode
        */
       for (int i = 0; i < 128; i++)
       {
-         if (i >= 'a' && i <= 'z') continue;
-         if (i >= 'A' && i <= 'Z') continue;
-         if (i >= '0' && i <= '9') continue;
+         if (i >= 'a' && i <= 'z') {
+            continue;
+        }
+         if (i >= 'A' && i <= 'Z') {
+            continue;
+        }
+         if (i >= '0' && i <= '9') {
+            continue;
+        }
          switch ((char) i)
          {
             case '-':
@@ -323,11 +341,12 @@ public class Encode
 
    /**
     * Encode via <a href="http://ietf.org/rfc/rfc3986.txt">RFC 3986</a>.  PCHAR is allowed allong with '/'
-    * <p/>
+    * <p>
     * unreserved  = ALPHA / DIGIT / "-" / "." / "_" / "~"
-    * sub-delims  = "!" / "$" / "&" / "'" / "(" / ")"
+    * sub-delims  = "!" / "$" / "&amp;" / "'" / "(" / ")"
     * / "*" / "+" / "," / ";" / "="
     * pchar = unreserved / pct-encoded / sub-delims / ":" / "@"
+    * </p>
     */
    public static String encodePathAsIs(String segment)
    {
