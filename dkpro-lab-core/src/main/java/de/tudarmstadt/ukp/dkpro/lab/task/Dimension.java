@@ -85,7 +85,7 @@ public abstract class Dimension<T>
 			// Dispatch to enum factory method
 			Class<?> clazz = (Class<?>) aValues[0];
 			if (Enum.class.isAssignableFrom(clazz)) {
-				return create(aName, (Class<Enum>) clazz);
+				return (Dimension<T>) create(aName, (Class<Enum>) clazz);
 			}
 		}
 		return new DiscreteDimension<T>(aName, aValues);
