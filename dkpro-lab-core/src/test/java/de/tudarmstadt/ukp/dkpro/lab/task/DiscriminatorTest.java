@@ -17,6 +17,8 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.lab.task;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
@@ -74,6 +76,32 @@ public class DiscriminatorTest
 			// Do nothing
 		}
 	}
+	
+	@Test
+	public void testName() throws Exception
+	{
+        Dimension<String> dimValues = Dimension.create("val", "1");
+
+        DefaultBatchTask batch = new DefaultBatchTask();
+        batch.setParameterSpace(new ParameterSpace(dimValues));
+        batch.addTask(new NameDiscriminatorTask());
+
+        Lab.getInstance().run(batch);
+	}
+	
+	public static class NameDiscriminatorTask extends ExecutableTaskBase
+	{
+	    @Discriminator(name = "val")
+	    private String value;
+
+        @Override
+        public void execute(TaskContext aContext)
+            throws Exception
+        {
+            assertEquals("1", value);
+        }
+	}
+	
 
 	@Rule
 	public TestName name = new TestName();

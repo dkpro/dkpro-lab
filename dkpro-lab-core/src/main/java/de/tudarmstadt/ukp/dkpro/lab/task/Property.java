@@ -27,4 +27,10 @@ import java.lang.annotation.Target;
 public @interface Property
 {
 	// Just a marker
+    String name() default USE_FIELD_NAME;
+
+    /**
+     * the default value for name if none is given.
+     */
+    public static final String USE_FIELD_NAME = "de.tudarmstadt.ukp.dkpro.lab.task.Property.USE_FIELD_NAME";
 }

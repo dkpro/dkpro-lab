@@ -23,6 +23,8 @@ import java.util.Map.Entry;
 import org.springframework.beans.PropertyAccessor;
 import org.springframework.beans.PropertyAccessorFactory;
 
+import de.tudarmstadt.ukp.dkpro.lab.task.impl.ParameterUtil;
+
 public class TaskFactory
 {
 	/**
@@ -46,6 +48,21 @@ public class TaskFactory
 			String key = property.getKey();
 			Object value = property.getValue();
 
+			// Find all fields that are annotated with a discriminator/property that have
+			// a non-default name and might apply.
+			for (String prop : ParameterUtil.findBeanPropertiesWithName(aTask, key)) {
+	            // Try setter - there may be extra logic in the setter
+	            if (paBean.isWritableProperty(prop)) {
+	                paBean.setPropertyValue(prop, value);
+	            }
+	            // Otherwise try direct access
+	            else if (paDirect.isWritableProperty(prop)) {
+	                paDirect.setPropertyValue(prop, value);
+	            }
+			}
+
+			// And try once again for all fields where the name is not explicitly set
+			
 			// Try setter - there may be extra logic in the setter
 			if (paBean.isWritableProperty(key)) {
 				paBean.setPropertyValue(key, value);
@@ -60,7 +77,7 @@ public class TaskFactory
 			((ConfigurationAware) aTask).setConfiguration(aConfiguration);
 		}
 	}
-
+	
 	public static <T extends Task> T createTask(Class<T> aTaskClass,
 			Map<String, Object> aConfiguration)
 		throws Exception

@@ -126,6 +126,8 @@ public class TaskBase
 	@Override
 	public Map<String, String> getAttributes()
 	{
+	    // Reset properties map
+	    properties = new HashMap<>();
 		analyze(getClass(), Property.class, properties);
 		return properties;
 	}
@@ -153,6 +155,8 @@ public class TaskBase
 	@Override
 	public Map<String, String> getDescriminators()
 	{
+        // Reset discriminators map
+	    discriminators = new HashMap<>();
 		analyze(getClass(), Discriminator.class, discriminators);
 		return discriminators;
 	}
@@ -361,9 +365,24 @@ public class TaskBase
 			field.setAccessible(true);
 			try {
 				if (field.isAnnotationPresent(aAnnotation)) {
-					String name = getClass().getName()+"|"+field.getName();
+					String name;
+					
+					Annotation annotation = field.getAnnotation(aAnnotation);
+					
+                    if (StringUtils.isNotBlank(ParameterUtil.getName(annotation))) {
+                        name = getClass().getName() + "|" + ParameterUtil.getName(annotation);
+                    }
+                    else {
+                        name = getClass().getName() + "|" + field.getName();
+                    }
+					
 					String value = Util.toString(field.get(this));
-					props.put(name, value);
+					String oldValue = props.put(name, value);
+					if (oldValue != null) {
+                        throw new IllegalStateException(
+                                "Discriminator/property name must be unique and cannot be used "
+                                + "on multiple fields in the same class [" + name + "]");
+					}
 					log.debug("Found "+aAnnotation.getSimpleName()+" ["+name+"]: "+value);
 				}
 			}
