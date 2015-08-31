@@ -91,7 +91,8 @@ public abstract class Dimension<T>
 		return new DiscreteDimension<T>(aName, aValues);
 	}
 
-	public static <T> Dimension<Map<String, T>> createBundle(String aName, Map<String, T>... aValues)
+	@SafeVarargs
+    public static <T> Dimension<Map<String, T>> createBundle(String aName, Map<String, T>... aValues)
 	{
 		return new DimensionBundle<T>(aName, aValues);
 	}

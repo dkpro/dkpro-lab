@@ -34,7 +34,8 @@ public class DimensionBundle<T>
 	private final Map<String, T>[] values;
 	private int current;
 
-	public DimensionBundle(String aName, Map<String, T>... aValues)
+	@SafeVarargs
+    public DimensionBundle(String aName, Map<String, T>... aValues)
 	{
 		super(aName);
 		values = aValues;
