@@ -58,7 +58,7 @@ public abstract class ReportBase
 	}
 
 	/**
-	 * Convenience method to fetch the properties stored in the tast context.
+	 * Convenience method to fetch the properties stored in the task context.
 	 */
 	public Map<String, String> getProperties()
 	{
@@ -69,7 +69,7 @@ public abstract class ReportBase
 	}
 
 	/**
-	 * Convenience method to fetch the disciminators stored in the tast context.
+	 * Convenience method to fetch the discriminators stored in the task context.
 	 */
 	public Map<String, String> getDiscriminators()
 	{
