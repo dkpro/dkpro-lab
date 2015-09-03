@@ -126,9 +126,9 @@ public class CpeExecutionEngine
 			throw new ExecutionException(e);
 		}
 		finally {
-			if (ctx != null) {
-				ctx.destroy();
-			}
+            if (ctx != null) {
+                ctx.getLifeCycleManager().destroy(ctx, aConfiguration);
+            }
 		}
 	}
 

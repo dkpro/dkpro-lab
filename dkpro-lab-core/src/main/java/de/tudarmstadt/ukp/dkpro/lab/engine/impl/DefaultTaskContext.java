@@ -96,7 +96,6 @@ public class DefaultTaskContext
 	@Override
 	public void destroy()
 	{
-		getLifeCycleManager().destroy(this);
 		owner.destroyContext(this);
 	}
 

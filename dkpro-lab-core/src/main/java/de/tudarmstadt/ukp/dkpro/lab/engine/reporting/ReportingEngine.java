@@ -59,9 +59,9 @@ public class ReportingEngine
 			return ctx.getId();
 		}
 		finally {
-			if (ctx != null) {
-				ctx.destroy();
-			}
+            if (ctx != null) {
+                ctx.getLifeCycleManager().destroy(ctx, aConfiguration);
+            }
 		}
 	}
 

@@ -75,7 +75,7 @@ public class ExecutableTaskEngine
         }
         finally {
             if (ctx != null) {
-                ctx.destroy();
+                ctx.getLifeCycleManager().destroy(ctx, aConfiguration);
             }
         }
     }

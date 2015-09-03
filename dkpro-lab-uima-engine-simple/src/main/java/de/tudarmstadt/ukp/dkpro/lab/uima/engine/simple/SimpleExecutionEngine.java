@@ -176,7 +176,9 @@ public class SimpleExecutionEngine
             throw new ExecutionException(e);
         }
         finally {
-            ctx.destroy();
+            if (ctx != null) {
+                ctx.getLifeCycleManager().destroy(ctx, aConfiguration);
+            }
         }
     }
 

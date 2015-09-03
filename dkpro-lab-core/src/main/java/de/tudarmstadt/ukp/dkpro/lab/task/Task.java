@@ -185,4 +185,12 @@ public interface Task
 	void removeReport(Class<? extends Report> aReport);
 
 	Set<Class<? extends Report>> getReports();
+	
+    void initialize(TaskContext aContext);
+
+    boolean isInitialized();
+
+    void analyze();
+    
+    void destroy(TaskContext aContext);
 }

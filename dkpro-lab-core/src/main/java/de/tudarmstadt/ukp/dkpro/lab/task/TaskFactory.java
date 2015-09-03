@@ -76,6 +76,9 @@ public class TaskFactory
 		if (aTask instanceof ConfigurationAware) {
 			((ConfigurationAware) aTask).setConfiguration(aConfiguration);
 		}
+		
+        // Analysze the task to determine property and discriminator values.
+		aTask.analyze();
 	}
 	
 	public static <T extends Task> T createTask(Class<T> aTaskClass,

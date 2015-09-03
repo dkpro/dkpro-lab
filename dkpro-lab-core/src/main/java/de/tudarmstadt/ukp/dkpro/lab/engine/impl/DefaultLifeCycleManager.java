@@ -40,6 +40,10 @@ public class DefaultLifeCycleManager
 			Task aConfiguration)
 		throws LifeCycleException
 	{
+        // Preparation hook for batch task in case it wants to do anything to itself
+        // before the subtasks are executed (e.g. adding subtasks or a parameter space)
+	    aConfiguration.initialize(aContext);
+	    
 		try {
 			aConfiguration.persist(aContext);
 		}
@@ -132,8 +136,17 @@ public class DefaultLifeCycleManager
 	}
 
 	@Override
-	public void destroy(TaskContext aContext)
+	public void destroy(TaskContext aContext, Task aConfiguration)
 	{
+	    aConfiguration.destroy(aContext);
+	    
+        if (aConfiguration.isInitialized()) {
+            throw new IllegalStateException(
+                    "Task not destroyed. Maybe forgot to call super.destroy(ctx) in ["
+                            + getClass().getName() + "]?");
+        }
+        
+	    aContext.destroy();
 		aContext.message("Shut down task");
 	}
 }

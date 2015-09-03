@@ -69,7 +69,8 @@ public interface LifeCycleManager
 	/**
 	 * Called by an {@link TaskExecutionEngine} just before the {@link TaskContext} is destroyed.
 	 *
-	 * @param aContext the task context.
+     * @param aContext the task context.
+     * @param aConfiguration the task configuration.
 	 */
-	void destroy(TaskContext aContext);
+    void destroy(TaskContext aContext, Task aConfiguration);
 }

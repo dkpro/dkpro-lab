@@ -22,7 +22,6 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
-import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
 import de.tudarmstadt.ukp.dkpro.lab.task.BatchTask;
 import de.tudarmstadt.ukp.dkpro.lab.task.Dimension;
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
@@ -119,11 +118,5 @@ public class DefaultBatchTask
     public Set<String> getScope()
     {
         return inheritedScope;
-    }
-    
-    @Override
-    public void initialize(TaskContext aContext)
-    {
-        // Do nothing by default
     }
 }

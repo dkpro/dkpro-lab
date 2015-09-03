@@ -58,6 +58,8 @@ public class TaskBase
 	private Map<String, String> properties;
 	private Map<String, String> discriminators;
 	private Set<Class<? extends Report>> reports;
+	
+	private boolean initialized = false;
 
 	{
 		properties = new HashMap<String, String>();
@@ -89,6 +91,33 @@ public class TaskBase
 		setType(aType);
 	}
 
+	@Override
+	public void initialize(TaskContext aContext)
+	{
+        initialized = true;
+	}
+	
+	@Override
+    public boolean isInitialized()
+	{
+	    return initialized;
+	}
+	
+	@Override
+	public final void analyze()
+	{
+        properties = new HashMap<String, String>();
+        discriminators = new HashMap<String, String>();
+        analyze(getClass(), Property.class, properties);
+        analyze(getClass(), Discriminator.class, discriminators);
+	}
+	
+	@Override
+	public void destroy(TaskContext aContext)
+	{
+	    initialized = false;
+	}
+	
 	public void setType(String aType)
 	{
 		if (aType == null) {
@@ -126,9 +155,6 @@ public class TaskBase
 	@Override
 	public Map<String, String> getAttributes()
 	{
-	    // Reset properties map
-	    properties = new HashMap<>();
-		analyze(getClass(), Property.class, properties);
 		return properties;
 	}
 
@@ -155,9 +181,6 @@ public class TaskBase
 	@Override
 	public Map<String, String> getDescriminators()
 	{
-        // Reset discriminators map
-	    discriminators = new HashMap<>();
-		analyze(getClass(), Discriminator.class, discriminators);
 		return discriminators;
 	}
 
@@ -350,6 +373,12 @@ public class TaskBase
 	public void persist(final TaskContext aContext)
 		throws IOException
 	{
+        if (!initialized) {
+            throw new IllegalStateException(
+                    "Task not initialized. Maybe forgot to call super.initialize(ctx) in ["
+                            + getClass().getName() + "]?");
+        }
+	    
 		aContext.storeBinary(PROPERTIES_KEY, new PropertiesAdapter(getAttributes(), "Task properties"));
 
 		aContext.storeBinary(DISCRIMINATORS_KEY, new PropertiesAdapter(getResolvedDescriminators(aContext)));

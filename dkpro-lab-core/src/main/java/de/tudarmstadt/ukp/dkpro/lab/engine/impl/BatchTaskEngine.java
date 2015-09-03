@@ -98,10 +98,6 @@ public class BatchTaskEngine
             try {
                 BatchTask cfg = (BatchTask) aConfiguration;
 
-                // Preparation hook for batch task in case it wants to do anything to itself
-                // before the subtasks are executed (e.g. adding subtasks or a parameter space)
-                cfg.initialize(ctx);
-
                 ParameterSpace parameterSpace = cfg.getParameterSpace();
                 
                 // Try to calculate the parameter space size.
@@ -167,7 +163,7 @@ public class BatchTaskEngine
         }
         finally {
             if (ctx != null) {
-                ctx.destroy();
+                ctx.getLifeCycleManager().destroy(ctx, aConfiguration);
             }
         }
     }
