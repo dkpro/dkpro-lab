@@ -17,6 +17,10 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.dkpro.lab.engine;
 
+import java.util.Map;
+
+import de.tudarmstadt.ukp.dkpro.lab.task.ConfigurationAware;
+import de.tudarmstadt.ukp.dkpro.lab.task.Discriminator;
 import de.tudarmstadt.ukp.dkpro.lab.task.Task;
 
 
@@ -25,6 +29,24 @@ import de.tudarmstadt.ukp.dkpro.lab.task.Task;
  */
 public interface LifeCycleManager
 {
+    /**
+     * Configure a task using the given parameter configuration. When the task has a field or a
+     * setter for any of the parameters, its value is set to the parameter value. Setter access is
+     * preferred over direct field access. If a task implements {@link ConfigurationAware} the
+     * full parameter configuration is also set via the
+     * {@link ConfigurationAware#setConfiguration(Map)} method.
+     * <p>
+     * The task should declare any parameters that affect its output as {@link Discriminator}s (
+     * see also {@link Task#getDescriminators()}.
+     * 
+     * @param aParentContext the context of the task which is the parent of the task to be configured.
+     * @param aTask the task to configure.
+     * @param aConfiguration the parameter configuration.
+     * @throws LifeCycleException if something goes wrong.
+     */
+    void configure(TaskContext aParentContext, Task aTask, Map<String, Object> aConfiguration)
+        throws LifeCycleException;
+    
 	/**
 	 * Called by an {@link TaskExecutionEngine} when the task is initialized.
 	 *

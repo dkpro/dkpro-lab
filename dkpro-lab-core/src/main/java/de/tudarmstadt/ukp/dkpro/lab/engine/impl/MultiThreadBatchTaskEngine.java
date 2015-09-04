@@ -42,7 +42,6 @@ import de.tudarmstadt.ukp.dkpro.lab.storage.UnresolvedImportException;
 import de.tudarmstadt.ukp.dkpro.lab.task.BatchTask;
 import de.tudarmstadt.ukp.dkpro.lab.task.Task;
 import de.tudarmstadt.ukp.dkpro.lab.task.TaskContextMetadata;
-import de.tudarmstadt.ukp.dkpro.lab.task.TaskFactory;
 
 public class MultiThreadBatchTaskEngine
     extends BatchTaskEngine
@@ -103,7 +102,8 @@ public class MultiThreadBatchTaskEngine
 
         // Configure subtasks
         for (Task task : aConfiguration.getTasks()) {
-            TaskFactory.configureTask(task, aConfig);
+            // Now the setup is complete
+            aContext.getLifeCycleManager().configure(aContext, task, aConfig);
         }
 
         Queue<Task> queue = new LinkedList<>(aConfiguration.getTasks());

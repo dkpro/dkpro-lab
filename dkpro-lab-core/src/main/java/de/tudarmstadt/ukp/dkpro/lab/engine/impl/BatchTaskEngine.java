@@ -61,7 +61,6 @@ import de.tudarmstadt.ukp.dkpro.lab.task.FixedSizeDimension;
 import de.tudarmstadt.ukp.dkpro.lab.task.ParameterSpace;
 import de.tudarmstadt.ukp.dkpro.lab.task.Task;
 import de.tudarmstadt.ukp.dkpro.lab.task.TaskContextMetadata;
-import de.tudarmstadt.ukp.dkpro.lab.task.TaskFactory;
 
 public class BatchTaskEngine
     implements TaskExecutionEngine
@@ -208,7 +207,7 @@ public class BatchTaskEngine
         
         // Configure subtasks
         for (Task task : aConfiguration.getTasks()) {
-            TaskFactory.configureTask(task, aConfig);
+            aContext.getLifeCycleManager().configure(aContext, task, aConfig);
         }
 
         Queue<Task> queue = new LinkedList<Task>(aConfiguration.getTasks());

@@ -31,11 +31,15 @@ A primitive task, i.e. one that is not running within a batch task, then passes 
   * *engine lookup:* the framework locates the engine responsible for executing the task.
   * *context setup:* the execution engine creates a new task context. The framework tries to resolve data dependencies at this point - if the dependencies cannot be resolved, this fails. 
   * *engine setup:* the engine performs preparative steps necessary before the task can run
-  * *lifecycle event "initialize":* signal that the task has been fully initialized. The default lifecycle manager stores the values of the discriminators and task properties in the task context at this point.
-  * *lifecycle event "begin":* signal that the task execution is about to begin. The default lifecycle manager enforces several JVM garbage collection runs to free up memory and records the start time.
+  * *parameter injection (no callback in task):* if a configuration is available (typically in a batch task) it is injected into the fields marked as discriminiators or properties
+  * *lifecycle event "initialize" (extensible in task):* signal that the task has been fully initialized. The default lifecycle manager stores the values of the discriminators and task properties in the task context at this point.
+  * *analyze (final in task):* the values for discriminators and values are obtained from correspondingly marked fields in the task. The task might have changed these values in the initialize phase.
+  * *persist (extensible in task):* the distriminator and properties are persisted to the context
+  * *lifecycle event "begin" (no callback in task):* signal that the task execution is about to begin. The default lifecycle manager enforces several JVM garbage collection runs to free up memory and records the start time.
   * *engine execution* the engine performs the actual task
-  * *lifecycle event "complete":* if the task completed successfully. The default lifecycle manager records the end time of the task, runs all reports registered on the task and stores the task metadata in the context to record that the task has completed.
-  * *lifecycle event "fail"*: if the task failed. The default lifecycle manager deletes the task context and logs a failure message.
+  * *lifecycle event "complete" (no callback in task):* if the task completed successfully. The default lifecycle manager records the end time of the task, runs all reports registered on the task and stores the task metadata in the context to record that the task has completed.
+  * *lifecycle event "fail"* (no callback in task): if the task failed. The default lifecycle manager deletes the task context and logs a failure message.
+  * *lifecycle evnet "destroy" (extensible in task):* prepares the task for the next iteration
 
 ####  Batch task and subtask lifecycle
 

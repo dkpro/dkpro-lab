@@ -36,6 +36,10 @@ public interface Task
 
 	String getType();
 
+    void initialize(TaskContext aContext);
+
+    void analyze();
+
 	/**
 	 * Persist the task configuration to the given task context. This allows subclasses to store
 	 * additional information depending on their needs.
@@ -44,6 +48,10 @@ public interface Task
 	 */
 	void persist(TaskContext aContext) throws IOException;
 
+    void destroy(TaskContext aContext);
+
+    boolean isInitialized();
+    
 	/**
 	 * Set a task context attribute.
 	 *
@@ -184,13 +192,5 @@ public interface Task
 
 	void removeReport(Class<? extends Report> aReport);
 
-	Set<Class<? extends Report>> getReports();
-	
-    void initialize(TaskContext aContext);
-
-    boolean isInitialized();
-
-    void analyze();
-    
-    void destroy(TaskContext aContext);
+	Set<Class<? extends Report>> getReports();	
 }
