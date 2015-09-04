@@ -19,12 +19,14 @@ package de.tudarmstadt.ukp.dkpro.lab.task;
 
 import java.util.Map;
 
+import de.tudarmstadt.ukp.dkpro.lab.engine.LifeCycleManager;
+
 /**
  * Interface that can be implemented by {@link Task}s for full access to the parameter 
  * configuration. This is called after the parameters have been injected via setters or
  * direct field access.
  * 
- * @see TaskFactory#configureTask(Task, Map)
+ * @see LifeCycleManager#configure(de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext, Task, Map)
  */
 public interface ConfigurationAware
 {
