@@ -26,7 +26,7 @@
   side: left
   dropdown:
   - title: "Mailing lists"
-    url: "/pages/mailinglists.html"
+    url: "/mailinglists/"
   - title: "Contributing"
     url: "http://github.com/dkpro/dkpro-lab/blob/develop/CONTRIBUTING.md"
   - title: "Contributors"
