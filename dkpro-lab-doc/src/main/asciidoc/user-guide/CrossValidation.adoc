@@ -66,12 +66,13 @@ To solve this problem, we introduce another batch task and change the batch task
 
 ### Cross-validation task
 
-Now, instead of statically setting up the parameter space for the `crossValidationTask`, we set it up dynamically by overriding the `execute()` method. In the following example, we assume that the `preprocessingTask` has produced some `XMI` data, which is the data on which we want to perform the cross-validation. The `featureExtractionTask` requires two parameters, `filesRoot` (the base directory of the data) and `files_training` (the data in the _trainingSet_). The `validationTask`also requires `filesRoot` and it needs `files_validation` (the _testSet_ ) to evaluate the classifier.
+Now, instead of statically setting up the parameter space for the `crossValidationTask`, we set it up dynamically by overriding the `initialize()` method. In the following example, we assume that the `preprocessingTask` has produced some `XMI` data, which is the data on which we want to perform the cross-validation. The `featureExtractionTask` requires two parameters, `filesRoot` (the base directory of the data) and `files_training` (the data in the _trainingSet_). The `validationTask`also requires `filesRoot` and it needs `files_validation` (the _testSet_ ) to evaluate the classifier.
 
 [source,java,numbered]
 ----
 BatchTask crossValidationTask = new BatchTask() {
-  public void execute(TaskContext aContext) throws Exception {
+  public void initialize(TaskContext aContext) throws Exception {
+    super.initialize(aContext);
     File xmiPathRoot = aContext.getStorageLocation("XMI", AccessMode.READONLY);
     Collection<File> files = FileUtils.listFiles(xmiPathRoot, new String[] { "xmi" }, false);
     String[] fileNames = new String[files.size()];
@@ -84,8 +85,6 @@ BatchTask crossValidationTask = new BatchTask() {
 			
     ParameterSpace pSpace = new ParameterSpace(foldDim, filesRootDim);
     setParameterSpace(pSpace);
-			
-    super.execute(aContext);
   }
 };
 crossValidationTask.addImportLatest("XMI", "XMI", preprocessTask.getType());
