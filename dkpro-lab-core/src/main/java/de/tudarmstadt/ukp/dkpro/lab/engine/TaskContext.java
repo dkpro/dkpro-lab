@@ -107,7 +107,7 @@ public interface TaskContext
      * If the key does not exist in the current context and is not imported from another context,
      * then a new folder is created in the current context and returned. 
      * 
-     * @see StorageService#getStorageFolder(String, String)
+     * @see StorageService#locateKey(String, String)
      */
 	File getFolder(String aKey, AccessMode aMode);
 	
