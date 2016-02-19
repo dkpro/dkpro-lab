@@ -253,6 +253,92 @@ public class FlexTable<V>
         }
     }
 
+    public StreamWriter getTextWriter()
+    {
+        return new StreamWriter()
+        {
+            @Override
+            public void write(OutputStream aStream)
+                throws Exception
+            {
+                String[] colIds = FlexTable.this.compact ? getCompactColumnIds(false)
+                        : getColumnIds();
+                
+                // Obtain the width of the columns based on their content and headers
+                // col 0 is reserved here for the rowId width
+                int colWidths[] = new int[colIds.length+1];
+                for (String rowId : getRowIds()) {
+                    colWidths[0] = Math.max(colWidths[0], rowId.length());
+                }
+                for (int i = 1; i < colWidths.length; i++) {
+                    colWidths[i] = Math.max(colWidths[i], colIds[i-1].length());
+                    for (String rowId : getRowIds()) {
+                        colWidths[i] = Math.max(colWidths[i], getValueAsString(rowId, colIds[i-1]).length());
+                    }
+                }
+
+                StringBuilder separator = new StringBuilder();
+                for (int w : colWidths) {
+                    if (separator.length() > 0) {
+                        separator.append("-+-");
+                    }
+                    separator.append(StringUtils.repeat("-", w));
+                }
+                separator.insert(0, "+-");
+                separator.append("-+");
+
+                PrintWriter writer = new PrintWriter(new OutputStreamWriter(aStream, "UTF-8"));
+                
+                // Render header column
+                writer.println(separator);
+                writer.print("| ");
+                writer.print(StringUtils.repeat(" ", colWidths[0]));
+                for (int i = 0; i < colIds.length; i++) {
+                    writer.print(" | ");
+                    // Remember: colWidth[0] is the rowId width!
+                    writer.print(StringUtils.center(colIds[i], colWidths[i+1]));
+                }
+                writer.println(" |");
+                writer.println(separator);
+                
+                // Render body
+                for (String rowId : getRowIds()) {
+                    writer.print("| ");
+                    writer.print(StringUtils.rightPad(rowId, colWidths[0]));
+                    for (int i = 0; i < colIds.length; i++) {
+                        writer.print(" | ");
+                        // Remember: colWidth[0] is the rowId width!
+                        String val = getValueAsString(rowId, colIds[i]);
+                        if (isDouble(val)) {
+                            writer.print(StringUtils.leftPad(val, colWidths[i + 1]));
+                        }
+                        else {
+                            writer.print(StringUtils.rightPad(val, colWidths[i + 1]));
+                        }
+                    }
+                    writer.println(" |");
+                }
+                
+                // Closing separator
+                writer.println(separator);
+             
+                writer.flush();
+            }
+            
+            private boolean isDouble(String val)
+            {
+                try {
+                    double d = Double.parseDouble(val); // TODO: A bit of a hack; use Regex instead?
+                }
+                catch (NumberFormatException ex) {
+                    return false;
+                }
+
+                return true;
+            }
+        };
+    }
+    
     public StreamWriter getTWikiWriter()
     {
         return new StreamWriter()
