@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -61,6 +62,7 @@ public class FlexTable<V>
     private boolean writeSorted = true;
     private boolean compact = true;
     private Class<V> dataClass;
+    private Locale locale = Locale.ENGLISH;
 
     {
         columns = new LinkedHashMap<String, Object>();
@@ -101,6 +103,20 @@ public class FlexTable<V>
     public void setFormatString(String aFormatString)
     {
         formatString = aFormatString;
+    }
+    
+    public Locale getLocale()
+    {
+        return locale;
+    }
+
+    /**
+     * Setting the locale to a non-English locale may break the detection of numeric values in
+     * writers.
+     */
+    public void setLocale(Locale aLocale)
+    {
+        locale = aLocale;
     }
 
     /**
@@ -246,7 +262,7 @@ public class FlexTable<V>
     {
         V value = getValue(aRowId, aColId);
         if (formatString != null) {
-            return String.format(formatString, value);
+            return String.format(locale, formatString, value);
         }
         else {
             return String.valueOf(value);
