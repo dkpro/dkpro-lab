@@ -15,9 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package de.tudarmstadt.ukp.dkpro.lab.uima.engine.uimaas.component;
+package org.dkpro.lab.uima.engine.uimaas.component;
 
-import static de.tudarmstadt.ukp.dkpro.lab.Util.getUrlAsFile;
+import static org.dkpro.lab.Util.getUrlAsFile;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,7 +31,7 @@ import org.apache.uima.adapter.jms.client.BaseUIMAAsynchronousEngine_impl;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 
-import de.tudarmstadt.ukp.dkpro.lab.uima.engine.uimaas.AsDeploymentDescription;
+import org.dkpro.lab.uima.engine.uimaas.AsDeploymentDescription;
 
 public class SimpleService extends JmsComponent
 {

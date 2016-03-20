@@ -19,4 +19,4 @@
 /**
  * (EXPERIMENTAL) Execution engine for UIMA tasks based on UIMA-AS.
  */
-package de.tudarmstadt.ukp.dkpro.lab.uima.engine.uimaas;
+package org.dkpro.lab.uima.engine.uimaas;

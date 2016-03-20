@@ -15,9 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package de.tudarmstadt.ukp.dkpro.lab.uima.engine.uimaas;
+package org.dkpro.lab.uima.engine.uimaas;
 
-import static de.tudarmstadt.ukp.dkpro.lab.Util.getUrlAsFile;
+import static org.dkpro.lab.Util.getUrlAsFile;
 import static org.apache.uima.UIMAFramework.newDefaultResourceManager;
 import static org.apache.uima.fit.factory.ExternalResourceFactory.bindResource;
 
@@ -40,14 +40,14 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.ResourceProcessException;
 
-import de.tudarmstadt.ukp.dkpro.lab.engine.ExecutionException;
-import de.tudarmstadt.ukp.dkpro.lab.engine.LifeCycleException;
-import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
-import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContextFactory;
-import de.tudarmstadt.ukp.dkpro.lab.engine.TaskExecutionEngine;
-import de.tudarmstadt.ukp.dkpro.lab.task.Task;
-import de.tudarmstadt.ukp.dkpro.lab.uima.task.TaskContextProvider;
-import de.tudarmstadt.ukp.dkpro.lab.uima.task.UimaTask;
+import org.dkpro.lab.engine.ExecutionException;
+import org.dkpro.lab.engine.LifeCycleException;
+import org.dkpro.lab.engine.TaskContext;
+import org.dkpro.lab.engine.TaskContextFactory;
+import org.dkpro.lab.engine.TaskExecutionEngine;
+import org.dkpro.lab.task.Task;
+import org.dkpro.lab.uima.task.TaskContextProvider;
+import org.dkpro.lab.uima.task.UimaTask;
 
 /**
  * UIMA AS-based execution engine. An {@link UimaTask} is be executed using the UIMA AS framework.

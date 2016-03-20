@@ -1,4 +1,4 @@
-== Package: de.tudarmstadt.ukp.dkpro.lab.resteasy ==
+== Package: org.dkpro.lab.resteasy ==
 
 Classes in this package are taken from 
 

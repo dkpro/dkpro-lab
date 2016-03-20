@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package de.tudarmstadt.ukp.dkpro.lab.uima.engine.uimaas;
+package org.dkpro.lab.uima.engine.uimaas;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription;
@@ -49,18 +49,18 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import de.tudarmstadt.ukp.dkpro.lab.Util;
-import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContext;
-import de.tudarmstadt.ukp.dkpro.lab.engine.TaskContextFactory;
-import de.tudarmstadt.ukp.dkpro.lab.engine.TaskExecutionEngine;
-import de.tudarmstadt.ukp.dkpro.lab.engine.TaskExecutionService;
-import de.tudarmstadt.ukp.dkpro.lab.storage.StorageService;
-import de.tudarmstadt.ukp.dkpro.lab.storage.StreamReader;
-import de.tudarmstadt.ukp.dkpro.lab.storage.filesystem.FileSystemStorageService;
-import de.tudarmstadt.ukp.dkpro.lab.task.TaskContextMetadata;
-import de.tudarmstadt.ukp.dkpro.lab.uima.engine.uimaas.component.SimpleBroker;
-import de.tudarmstadt.ukp.dkpro.lab.uima.task.TaskContextProvider;
-import de.tudarmstadt.ukp.dkpro.lab.uima.task.impl.DefaultUimaTask;
+import org.dkpro.lab.Util;
+import org.dkpro.lab.engine.TaskContext;
+import org.dkpro.lab.engine.TaskContextFactory;
+import org.dkpro.lab.engine.TaskExecutionEngine;
+import org.dkpro.lab.engine.TaskExecutionService;
+import org.dkpro.lab.storage.StorageService;
+import org.dkpro.lab.storage.StreamReader;
+import org.dkpro.lab.storage.filesystem.FileSystemStorageService;
+import org.dkpro.lab.task.TaskContextMetadata;
+import org.dkpro.lab.uima.engine.uimaas.component.SimpleBroker;
+import org.dkpro.lab.uima.task.TaskContextProvider;
+import org.dkpro.lab.uima.task.impl.DefaultUimaTask;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/test-context.xml" })

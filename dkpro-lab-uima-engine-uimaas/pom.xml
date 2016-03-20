@@ -19,14 +19,14 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<artifactId>dkpro.lab</artifactId>
-		<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
+		<groupId>org.dkpro.lab</groupId>
 		<version>0.10.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>dkpro.lab.uima.engine.uimaas</artifactId>
 	<name>DKPro Lab - UIMA AS Execution Engine (experimental)</name>
 	<dependencies>
 		<dependency>
-			<groupId>de.tudarmstadt.ukp.dkpro.lab</groupId>
+			<groupId>org.dkpro.lab</groupId>
 			<artifactId>dkpro.lab.uima</artifactId>
 		</dependency>
 		<dependency>

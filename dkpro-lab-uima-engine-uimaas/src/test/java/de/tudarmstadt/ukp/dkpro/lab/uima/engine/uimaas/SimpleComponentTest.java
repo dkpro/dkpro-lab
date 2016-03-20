@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package de.tudarmstadt.ukp.dkpro.lab.uima.engine.uimaas;
+package org.dkpro.lab.uima.engine.uimaas;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.apache.uima.fit.factory.TypeSystemDescriptionFactory.createTypeSystemDescription;
@@ -28,9 +28,9 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.util.CasCreationUtils;
 import org.junit.Test;
 
-import de.tudarmstadt.ukp.dkpro.lab.uima.engine.uimaas.component.SimpleBroker;
-import de.tudarmstadt.ukp.dkpro.lab.uima.engine.uimaas.component.SimpleClient;
-import de.tudarmstadt.ukp.dkpro.lab.uima.engine.uimaas.component.SimpleService;
+import org.dkpro.lab.uima.engine.uimaas.component.SimpleBroker;
+import org.dkpro.lab.uima.engine.uimaas.component.SimpleClient;
+import org.dkpro.lab.uima.engine.uimaas.component.SimpleService;
 
 public class SimpleComponentTest
 {

@@ -15,9 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package de.tudarmstadt.ukp.dkpro.lab.uima.engine.uimaas;
+package org.dkpro.lab.uima.engine.uimaas;
 
-import static de.tudarmstadt.ukp.dkpro.lab.Util.close;
+import static org.dkpro.lab.Util.close;
 import static org.dom4j.DocumentHelper.createDocument;
 import static org.dom4j.DocumentHelper.createElement;
 

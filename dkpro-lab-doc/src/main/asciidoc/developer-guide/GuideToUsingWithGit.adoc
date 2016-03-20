@@ -39,7 +39,7 @@ Now, DKPro Lab should be listed in your Eclipse Git Repository.  You have made a
 
 Then you make a Maven copy for your Package Explorer.
 
-   # In Eclipse's Git Repository Perspective, open DKPro Lab, open `Working Directory`, right-click `de.tudarmstadt.ukp.dkpro.lab`, "Import Maven Projects..."
+   # In Eclipse's Git Repository Perspective, open DKPro Lab, open `Working Directory`, right-click `org.dkpro.lab`, "Import Maven Projects..."
    # Optionally, add it to the working set of your choice, then click Finish.
 
 Congradulations!  You are all set to begin developing DKPro lab.

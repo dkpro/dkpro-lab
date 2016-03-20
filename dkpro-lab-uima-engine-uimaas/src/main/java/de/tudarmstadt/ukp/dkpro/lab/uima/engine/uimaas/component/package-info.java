@@ -19,4 +19,4 @@
 /**
  * (EXPERIMENTAL) Helper classes for using UIMA-AS.
  */
-package de.tudarmstadt.ukp.dkpro.lab.uima.engine.uimaas.component;
+package org.dkpro.lab.uima.engine.uimaas.component;

@@ -22,6 +22,6 @@
   * `$ LANG='en_US.UTF-8'` -- switch to English to work around [http://jira.codehaus.org/browse/MRELEASE-812 MRELEASE-812]
   * `$ mvn release:prepare -DautoVersionSubmodules=true` -- prepare the release
   * `$ mvn release:perform` -- perform the release
-  * `$ cd target/checkout/de.tudarmstadt.ukp.dkpro.lab`
+  * `$ cd target/checkout/org.dkpro.lab`
   * `$ mvn javadoc:aggregate`
   * Check out the *gh-pages* branch and place the new Javadoc under the appropriate release folder.
