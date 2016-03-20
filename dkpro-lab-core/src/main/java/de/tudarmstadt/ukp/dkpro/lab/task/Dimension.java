@@ -133,6 +133,10 @@ public abstract class Dimension<T>
 	@SuppressWarnings("unchecked")
 	public T get(Map<String, Object> aMap)
 	{
+	    if (getName() == null) {
+	        throw new IllegalStateException("Cannot use 'get' on anonmyous dimensions");
+	    }
+	    
 		return (T) aMap.get(getName());
 	}
 }

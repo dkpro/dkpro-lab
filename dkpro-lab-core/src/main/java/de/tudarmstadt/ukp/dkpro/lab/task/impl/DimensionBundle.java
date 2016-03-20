@@ -34,6 +34,14 @@ public class DimensionBundle<T>
 	private final Map<String, T>[] values;
 	private int current;
 
+    @SafeVarargs
+    public DimensionBundle(Map<String, T>... aValues)
+    {
+        super(null);
+        values = aValues;
+        current = -1;
+    }
+    
 	@SafeVarargs
     public DimensionBundle(String aName, Map<String, T>... aValues)
 	{
@@ -41,7 +49,6 @@ public class DimensionBundle<T>
 		values = aValues;
 		current = -1;
 	}
-
 
 	@SuppressWarnings("unchecked")
 	public DimensionBundle(String aName, Object[]... aValues)
@@ -107,7 +114,11 @@ public class DimensionBundle<T>
 		if (current >= 0 && current < values.length) {
 			Object id = values[current].get(KEY_BUNDLE_ID);
 			if (id != null) {
-				return Util.toString(id);
+			    if (getName() == null) {
+                    throw new IllegalStateException(
+                            "Bundle dimension must have a name if it declares a bundle ID");
+			    }
+                return Util.toString(id);
 			}
 		}
 		return null;

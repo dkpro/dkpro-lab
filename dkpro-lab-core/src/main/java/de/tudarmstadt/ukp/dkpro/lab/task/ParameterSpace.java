@@ -227,7 +227,7 @@ public class ParameterSpace implements Iterable<Map<String, Object>>
 					if (d instanceof DimensionBundle<?>) {
 						DimensionBundle<?> bundle = ((DimensionBundle<?>) d);
 						String bundleId = bundle.getBundleId();
-						if (bundleId != null) {
+						if (bundle.getName() != null && bundleId != null) {
 							config.put(bundle.getName(), bundle.getBundleId());
 						}
 						config.putAll(bundle.current());
