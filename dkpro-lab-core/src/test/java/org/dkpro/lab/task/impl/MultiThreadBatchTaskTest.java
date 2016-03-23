@@ -52,7 +52,8 @@ public class MultiThreadBatchTaskTest
         FileUtils.deleteQuietly(path);
         
         // Configure Lab to use MultiThreadBatchTaskEngine
-        Lab lab = Lab.getInstance();
+        // Use newInstance here to avoid leaking the reconfiguration into other unit tests
+        Lab lab = Lab.newInstance(Lab.DEFAULT_CONTEXT);
         oldEngine = ((DefaultTaskExecutionService) lab.getTaskExecutionService())
                 .getEngine(BatchTask.class);
         ((DefaultTaskExecutionService) lab.getTaskExecutionService()).registerEngine(
