@@ -19,11 +19,11 @@ package org.dkpro.lab.task.impl;
 
 import org.apache.commons.io.FileUtils;
 import org.dkpro.lab.Lab;
-import org.dkpro.lab.engine.ExecutionException;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.engine.TaskExecutionEngine;
 import org.dkpro.lab.engine.impl.DefaultTaskExecutionService;
 import org.dkpro.lab.engine.impl.MultiThreadBatchTaskEngine;
+import org.dkpro.lab.storage.UnresolvedImportException;
 import org.dkpro.lab.storage.impl.PropertiesAdapter;
 import org.dkpro.lab.task.*;
 import org.dkpro.lab.task.impl.DefaultBatchTask;
@@ -72,7 +72,7 @@ public class MultiThreadBatchTaskTest
                 BatchTask.class, oldEngine);
     }
 
-    @Test(expected = ExecutionException.class)
+    @Test(expected = UnresolvedImportException.class)
     public void importTest()
             throws Exception
     {
@@ -204,7 +204,7 @@ public class MultiThreadBatchTaskTest
         Lab.getInstance().run(outerTask);
     }
 
-    @Test(expected = ExecutionException.class)
+    @Test(expected = UnresolvedImportException.class)
     public void testUnresolvable()
             throws Exception
     {
