@@ -45,7 +45,7 @@
 		<uima.core.version>2.8.1</uima.core.version>
 		<uima.as.version>2.4.0</uima.as.version>
 		<uima.fit.version>2.1.0</uima.fit.version>
-		<spring.version>3.1.2.RELEASE</spring.version>
+		<spring.version>3.2.16.RELEASE</spring.version>
 		<activemq.version>5.4.2</activemq.version>
 		<batik.version>1.7</batik.version>
 		<slf4j.version>1.6.1</slf4j.version>
