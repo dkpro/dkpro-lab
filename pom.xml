@@ -21,7 +21,7 @@
 	<parent>
 		<groupId>org.dkpro</groupId>
 		<artifactId>dkpro-parent-pom</artifactId>
-		<version>12</version>
+		<version>13-SNAPSHOT</version>
 	</parent>
 	<groupId>org.dkpro.lab</groupId>
 	<artifactId>dkpro-lab</artifactId>
@@ -63,9 +63,19 @@
         <!-- <module>dkpro-lab-uima-engine-uimaas</module> -->
         <module>dkpro-lab-doc</module>
 	</modules>
-	<!-- 
-	  - For uimaFIT snapshots
 	<repositories>
+        <repository>
+            <id>ukp-oss-snapshots</id>
+            <url>http://zoidberg.ukp.informatik.tu-darmstadt.de/artifactory/public-snapshots</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <!-- 
+          - For uimaFIT snapshots
 		<repository>
 			<id>apache.snapshots</id>
 			<name>Apache Snapshot Repository</name>
@@ -74,8 +84,8 @@
 				<enabled>false</enabled>
 			</releases>
 		</repository>
+        -->
 	</repositories>
-	  -->
 	<dependencyManagement>
 		<dependencies>
 			<!-- MODULES -->
