@@ -1,22 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-	Copyright 2011
-	Ubiquitous Knowledge Processing (UKP) Lab
-	Technische Universität Darmstadt
-
-	Licensed under the Apache License, Version 2.0 (the "License");
-	you may not use this file except in compliance with the License.
-	You may obtain a copy of the License at
-
-	http://www.apache.org/licenses/LICENSE-2.0
-
-	Unless required by applicable law or agreed to in writing, software
-	distributed under the License is distributed on an "AS IS" BASIS,
-	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-	See the License for the specific language governing permissions and
-	limitations under the License.
--->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<!-- Copyright 2011 Ubiquitous Knowledge Processing (UKP) Lab Technische
+	Universität Darmstadt Licensed under the Apache License, Version 2.0 (the
+	"License"); you may not use this file except in compliance with the License.
+	You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+	Unless required by applicable law or agreed to in writing, software distributed
+	under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
+	OR CONDITIONS OF ANY KIND, either express or implied. See the License for
+	the specific language governing permissions and limitations under the License. -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.dkpro</groupId>
@@ -47,7 +39,7 @@
 		<uima.fit.version>2.1.0</uima.fit.version>
 		<spring.version>3.2.16.RELEASE</spring.version>
 		<activemq.version>5.4.2</activemq.version>
-		<batik.version>1.7</batik.version>
+		<batik.version>1.8</batik.version>
 		<slf4j.version>1.6.1</slf4j.version>
 		<xalan.version>2.7.1</xalan.version>
 		<xerces.version>2.9.1</xerces.version>
@@ -60,31 +52,23 @@
 		<module>dkpro-lab-uima</module>
 		<module>dkpro-lab-uima-engine-simple</module>
 		<module>dkpro-lab-uima-engine-cpe</module>
-        <!-- <module>dkpro-lab-uima-engine-uimaas</module> -->
-        <module>dkpro-lab-doc</module>
+		<!-- <module>dkpro-lab-uima-engine-uimaas</module> -->
+		<module>dkpro-lab-doc</module>
 	</modules>
 	<repositories>
-        <repository>
-            <id>ukp-oss-snapshots</id>
-            <url>http://zoidberg.ukp.informatik.tu-darmstadt.de/artifactory/public-snapshots</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-        <!-- 
-          - For uimaFIT snapshots
 		<repository>
-			<id>apache.snapshots</id>
-			<name>Apache Snapshot Repository</name>
-			<url>http://repository.apache.org/snapshots</url>
+			<id>ukp-oss-snapshots</id>
+			<url>http://zoidberg.ukp.informatik.tu-darmstadt.de/artifactory/public-snapshots</url>
 			<releases>
 				<enabled>false</enabled>
 			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
 		</repository>
-        -->
+		<!-- - For uimaFIT snapshots <repository> <id>apache.snapshots</id> <name>Apache
+			Snapshot Repository</name> <url>http://repository.apache.org/snapshots</url>
+			<releases> <enabled>false</enabled> </releases> </repository> -->
 	</repositories>
 	<dependencyManagement>
 		<dependencies>
@@ -124,7 +108,7 @@
 				<artifactId>dkpro-lab-uima-engine-simple</artifactId>
 				<version>0.12.0-SNAPSHOT</version>
 			</dependency>
-			
+
 			<!-- UIMA/UIMAFIT -->
 			<dependency>
 				<groupId>org.apache.uima</groupId>
@@ -156,7 +140,7 @@
 				<artifactId>uimafit-cpe</artifactId>
 				<version>${uima.fit.version}</version>
 			</dependency>
-			
+
 			<!-- LOGGING -->
 			<dependency>
 				<groupId>org.slf4j</groupId>
@@ -196,18 +180,18 @@
 					</exclusion>
 				</exclusions>
 			</dependency>
-			
+
 			<!-- SPRING FRAMEWORK -->
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-core</artifactId>
 				<version>${spring.version}</version>
 			</dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-beans</artifactId>
-                <version>${spring.version}</version>
-            </dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-beans</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-context</artifactId>
@@ -253,7 +237,7 @@
 				<artifactId>spring-web</artifactId>
 				<version>${spring.version}</version>
 			</dependency>
-			
+
 			<!-- PDF RENDERING -->
 			<dependency>
 				<groupId>org.apache.xmlgraphics</groupId>
@@ -273,14 +257,14 @@
 			<dependency>
 				<groupId>org.apache.xmlgraphics</groupId>
 				<artifactId>fop</artifactId>
-				<version>0.95</version>
+				<version>2.1</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.avalon.framework</groupId>
 				<artifactId>avalon-framework-impl</artifactId>
 				<version>4.3.1</version>
 			</dependency>
-			
+
 			<!-- XML -->
 			<dependency>
 				<groupId>xalan</groupId>
@@ -297,7 +281,7 @@
 				<artifactId>xercesImpl</artifactId>
 				<version>${xerces.version}</version>
 			</dependency>
-			
+
 			<!-- MISC -->
 			<dependency>
 				<groupId>commons-lang</groupId>
@@ -317,99 +301,40 @@
 			</dependency>
 			<dependency>
 				<groupId>org.apache.commons</groupId>
-				<artifactId>commons-math</artifactId>
-				<version>2.1</version>
+				<artifactId>commons-math3</artifactId>
+				<version>3.6.1</version>
 			</dependency>
 			<dependency>
 				<groupId>commons-io</groupId>
 				<artifactId>commons-io</artifactId>
-				<version>2.1</version>
+				<version>2.4</version>
 			</dependency>
 			<dependency>
 				<groupId>org.codehaus.groovy</groupId>
 				<artifactId>groovy</artifactId>
 				<version>2.2.2</version>
 			</dependency>
-			<!--  
-			  - UIMA-AS module does currently not work
-			<dependency>
-				<groupId>org.dkpro.lab</groupId>
-				<artifactId>dkpro-lab-uima-engine-uimaas</artifactId>
-				<version>0.10.0-SNAPSHOT</version>
-			</dependency>
-			
-			<dependency>
-				<groupId>org.apache.uima</groupId>
-				<artifactId>uimaj-as-core</artifactId>
-				<version>${uima.as.version}</version>
-				<exclusions>
-					<exclusion>
-						<artifactId>spring</artifactId>
-						<groupId>org.springframework</groupId>
-					</exclusion>
-				</exclusions>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.uima</groupId>
-				<artifactId>uimaj-as-jms</artifactId>
-				<version>${uima.as.version}</version>
-				<exclusions>
-					<exclusion>
-						<artifactId>spring</artifactId>
-						<groupId>org.springframework</groupId>
-					</exclusion>
-				</exclusions>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.uima</groupId>
-				<artifactId>uimaj-as-activemq</artifactId>
-				<version>${uima.as.version}</version>
-				<exclusions>
-					<exclusion>
-						<artifactId>spring</artifactId>
-						<groupId>org.springframework</groupId>
-					</exclusion>
-				</exclusions>
-			</dependency>
-			
-			<dependency>
-				<groupId>dom4j</groupId>
-				<artifactId>dom4j</artifactId>
-				<version>1.6.1</version>
-			</dependency>
-
-
-			<dependency>
-				<groupId>org.apache.activemq</groupId>
-				<artifactId>activemq-all</artifactId>
-				<version>${activemq.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.activemq</groupId>
-				<artifactId>activemq-core</artifactId>
-				<version>${activemq.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.activemq</groupId>
-				<artifactId>activemq-jaas</artifactId>
-				<version>${activemq.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.activemq</groupId>
-				<artifactId>activemq-web</artifactId>
-				<version>${activemq.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.activemq</groupId>
-				<artifactId>activemq-spring</artifactId>
-				<version>${activemq.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.activemq</groupId>
-				<artifactId>kahadb</artifactId>
-				<version>${activemq.version}</version>
-			</dependency>
-			-->
+			<!-- - UIMA-AS module does currently not work <dependency> <groupId>org.dkpro.lab</groupId>
+				<artifactId>dkpro-lab-uima-engine-uimaas</artifactId> <version>0.10.0-SNAPSHOT</version>
+				</dependency> <dependency> <groupId>org.apache.uima</groupId> <artifactId>uimaj-as-core</artifactId>
+				<version>${uima.as.version}</version> <exclusions> <exclusion> <artifactId>spring</artifactId>
+				<groupId>org.springframework</groupId> </exclusion> </exclusions> </dependency>
+				<dependency> <groupId>org.apache.uima</groupId> <artifactId>uimaj-as-jms</artifactId>
+				<version>${uima.as.version}</version> <exclusions> <exclusion> <artifactId>spring</artifactId>
+				<groupId>org.springframework</groupId> </exclusion> </exclusions> </dependency>
+				<dependency> <groupId>org.apache.uima</groupId> <artifactId>uimaj-as-activemq</artifactId>
+				<version>${uima.as.version}</version> <exclusions> <exclusion> <artifactId>spring</artifactId>
+				<groupId>org.springframework</groupId> </exclusion> </exclusions> </dependency>
+				<dependency> <groupId>dom4j</groupId> <artifactId>dom4j</artifactId> <version>1.6.1</version>
+				</dependency> <dependency> <groupId>org.apache.activemq</groupId> <artifactId>activemq-all</artifactId>
+				<version>${activemq.version}</version> </dependency> <dependency> <groupId>org.apache.activemq</groupId>
+				<artifactId>activemq-core</artifactId> <version>${activemq.version}</version>
+				</dependency> <dependency> <groupId>org.apache.activemq</groupId> <artifactId>activemq-jaas</artifactId>
+				<version>${activemq.version}</version> </dependency> <dependency> <groupId>org.apache.activemq</groupId>
+				<artifactId>activemq-web</artifactId> <version>${activemq.version}</version>
+				</dependency> <dependency> <groupId>org.apache.activemq</groupId> <artifactId>activemq-spring</artifactId>
+				<version>${activemq.version}</version> </dependency> <dependency> <groupId>org.apache.activemq</groupId>
+				<artifactId>kahadb</artifactId> <version>${activemq.version}</version> </dependency> -->
 		</dependencies>
 	</dependencyManagement>
 	<scm>
@@ -418,30 +343,30 @@
 		<url>https://github.com/dkpro/dkpro-lab</url>
 	</scm>
 	<build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.5.1</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <version>2.19.1</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.rat</groupId>
-                    <artifactId>apache-rat-plugin</artifactId>
-                    <version>0.11</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>build-helper-maven-plugin</artifactId>
-                    <version>1.10</version>
-                </plugin>
-            </plugins>
-        </pluginManagement>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.5.1</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>2.19.1</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.rat</groupId>
+					<artifactId>apache-rat-plugin</artifactId>
+					<version>0.11</version>
+				</plugin>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>build-helper-maven-plugin</artifactId>
+					<version>1.10</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -471,12 +396,8 @@
 							<title>Internal APIs - not for public use</title>
 							<packages>org.dkpro.lab.engine.impl*:org.dkpro.lab.logging.impl*:org.dkpro.lab.resteasy*:org.dkpro.lab.storage.filesystem*</packages>
 						</group>
-						<!-- 
-						<group>
-							<title>EXPERIMENTAL - may not be useful at all</title>
-							<packages>org.dkpro.lab.uima.engine.uimaas*</packages>
-						</group>
-						-->
+						<!-- <group> <title>EXPERIMENTAL - may not be useful at all</title>
+							<packages>org.dkpro.lab.uima.engine.uimaas*</packages> </group> -->
 					</groups>
 				</configuration>
 			</plugin>
@@ -491,13 +412,9 @@
 						</goals>
 						<configuration>
 							<rules>
-							    <!-- 
-							      - Currently does not build on JDK 8
-							      - See: https://code.google.com/p/dkpro-lab/issues/detail?id=52
-							      -
-							      - Min: DKPro Core 1.6.0 requires Java 7
-							      - Max: Currently does not build on Java 8
-							      -->
+								<!-- - Currently does not build on JDK 8 - See: https://code.google.com/p/dkpro-lab/issues/detail?id=52
+									- - Min: DKPro Core 1.6.0 requires Java 7 - Max: Currently does not build
+									on Java 8 -->
 								<requireJavaVersion>
 									<version>[1.7.0,)</version>
 								</requireJavaVersion>
@@ -556,14 +473,11 @@
 								<artifactId>groovy-eclipse-compiler</artifactId>
 								<version>2.9.2-01</version>
 							</dependency>
-							<!--  
-							  Need to add this new dependency in Groovy 2.8.0+
-							  http://groovy.codehaus.org/Groovy-Eclipse+2.8.0+New+and+Noteworthy
-							-->
+							<!-- Need to add this new dependency in Groovy 2.8.0+ http://groovy.codehaus.org/Groovy-Eclipse+2.8.0+New+and+Noteworthy -->
 							<dependency>
-							     <groupId>org.codehaus.groovy</groupId>
-							     <artifactId>groovy-eclipse-batch</artifactId>
-							     <version>2.4.3-01</version>
+								<groupId>org.codehaus.groovy</groupId>
+								<artifactId>groovy-eclipse-batch</artifactId>
+								<version>2.4.3-01</version>
 							</dependency>
 						</dependencies>
 					</plugin>
