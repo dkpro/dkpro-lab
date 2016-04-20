@@ -26,6 +26,9 @@
   <artifactId>dkpro-lab-doc</artifactId>
   <packaging>pom</packaging>
   <name>DKPro Lab - Documentation</name>
+  <properties>
+    <maven.deploy.skip>true</maven.deploy.skip>
+  </properties>  
   <build>
     <plugins>
       <plugin>
