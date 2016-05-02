@@ -8,13 +8,21 @@
 #
 # Possible status: "stable", "unstable"
 
+# stable versions
+- version: 0.12.0
+  date: 2016-04-20
+  status: stable
+  groupId: org.dkpro.lab
+  artifactId: dkpro-lab
+
 - version: 0.11.0
   date: 2014-06-18
   status: stable
   groupId: de.tudarmstadt.ukp.dkpro.lab
   artifactId: dkpro-lab
 
-- version: 0.12.0-SNAPSHOT
+# unstable versions
+- version: 0.13.0-SNAPSHOT
   status: unstable
   groupId: de.tudarmstadt.ukp.dkpro.lab
   artifactId: dkpro-lab
