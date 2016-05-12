@@ -226,6 +226,7 @@ public class Util
 	 *
 	 * @param aIn the source.
 	 * @param aOut the target.
+	 * @param aLink whether to create a symbolic link instead of copying
 	 * @throws IOException if something goes wrong.
 	 */
 	public static void copy(File aIn, File aOut, boolean aLink)
