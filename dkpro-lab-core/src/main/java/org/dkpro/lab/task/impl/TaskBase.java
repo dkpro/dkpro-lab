@@ -26,11 +26,11 @@ import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import javax.ws.rs.core.UriBuilder;
 
@@ -56,14 +56,14 @@ public class TaskBase
 	private Map<String, String> imports;
 	private Map<String, String> properties;
 	private Map<String, String> discriminators;
-	private Set<Class<? extends Report>> reports;
+	private List<Class<? extends Report>> reports;
 	
 	private boolean initialized = false;
 
 	{
 		properties = new HashMap<String, String>();
 		discriminators = new HashMap<String, String>();
-		reports = new HashSet<Class<? extends Report>>();
+		reports = new ArrayList<Class<? extends Report>>();
 		imports = new HashMap<String, String>();
 	}
 
@@ -357,13 +357,13 @@ public class TaskBase
 		reports.remove(aReport);
 	}
 
-	public void setReports(Set<Class<? extends Report>> aReports)
+	public void setReports(List<Class<? extends Report>> aReports)
 	{
-		reports = new HashSet<Class<? extends Report>>(aReports);
+		reports = new ArrayList<Class<? extends Report>>(aReports);
 	}
 
 	@Override
-	public Set<Class<? extends Report>> getReports()
+	public List<Class<? extends Report>> getReports()
 	{
 		return reports;
 	}

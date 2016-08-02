@@ -20,8 +20,8 @@ package org.dkpro.lab.task;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.reporting.Report;
@@ -192,5 +192,5 @@ public interface Task
 
 	void removeReport(Class<? extends Report> aReport);
 
-	Set<Class<? extends Report>> getReports();	
+	List<Class<? extends Report>> getReports();	
 }
