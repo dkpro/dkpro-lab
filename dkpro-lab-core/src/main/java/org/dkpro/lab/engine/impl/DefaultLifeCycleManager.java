@@ -19,8 +19,6 @@ package org.dkpro.lab.engine.impl;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -126,14 +124,6 @@ public class DefaultLifeCycleManager
 		aContext.message("Running reports for task ["+aConfiguration.getType()+"]");
 		List<Class<? extends Report>> reports = new ArrayList<Class<? extends Report>>(
 				aConfiguration.getReports());
-//		Collections.sort(reports, new Comparator<Class<?>>()
-//		{
-//			@Override
-//			public int compare(Class<?> aO1, Class<?> aO2)
-//			{
-//				return aO1.getName().compareTo(aO2.getName());
-//			}
-//		});
 		int i = 1;
 		for (Class<? extends Report> reportClass : reports) {
 			for (int g = 0; g < 3; g++) {
