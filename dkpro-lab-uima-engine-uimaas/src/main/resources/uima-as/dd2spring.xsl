@@ -52,6 +52,8 @@
                  vm://localhost as the brokerURL broker
       11/xx/2007 NOT YET DONE rename pool elements for consistency between cas multiplier and main cas pool
       further updates moved to SVN comments
+      03/02/2016 Modified xbean attribute from singleton="true|false" to scope="singleton|prototype" to make
+                 it work with new version of Spring bundled with Activemq 5.13.1
     --> 
 
   <!--============================================================-->       
@@ -158,7 +160,7 @@
       <xsl:for-each select="$uniqueErrorConfigDetails/*">
 
         <bean id="{f:getErrorConfigDetailID(.)}"
-          class="org.apache.uima.aae.error.Threshold" singleton="true">
+          class="org.apache.uima.aae.error.Threshold" scope="singleton">
           
           <xsl:if test="@maxRetries">
             <property name="maxRetries" value="{@maxRetries}"/>
@@ -464,6 +466,12 @@
         <xsl:if test="$aeDelegate/u:casMultiplier/@processParentLast">
           <property name="processParentLast" value="{$aeDelegate/u:casMultiplier/@processParentLast}"/>
         </xsl:if>
+
+        <!-- jira UIMA-2735 -->
+        <xsl:if test="$aeDelegate/u:casMultiplier/@disableJCasCache">
+          <property name="disableJCasCache" value="{$aeDelegate/u:casMultiplier/@disableJCasCache}"/>
+        </xsl:if>
+        
         
         <xsl:sequence select="f:generateLineComment('Timeouts', 5)"/>
         <property name="metadataRequestTimeout"
@@ -624,7 +632,7 @@
     </xsl:if>
     
     <xsl:sequence select="f:generateLineComment('map for delegate keys', 3)"/>
-    <bean id="{$delegateMapID}" class="java.util.HashMap" singleton="true">
+    <bean id="{$delegateMapID}" class="java.util.HashMap" >
       <constructor-arg>
         <map>
           <xsl:for-each
@@ -710,7 +718,7 @@
 
            <xsl:variable name="initialHeapSize" select="if (../../u:casPool/@initialFsHeapSize eq 'defaultFsHeapSize') 
              then '40000' else ../../u:casPool/@initialFsHeapSize"/>
-           <constructor-arg index="9" value="{$initialHeapSize}"/> 
+           <constructor-arg index="9" value="{$initialHeapSize}"/>           
             
           </bean>
         </xsl:when>
@@ -748,6 +756,12 @@
             <xsl:if test="u:casMultiplier/@initialFsHeapSize">
               <xsl:sequence select="f:generateLineComment('CAS Multiplier initial heap size', 5)"/>
               <constructor-arg index="8" value="{u:casMultiplier/@initialFsHeapSize}"/>
+            </xsl:if>
+            
+            <!-- https://issues.apache.org/jira/browse/UIMA-2735 -->
+            <xsl:if test="u:casMultiplier/@disableJCasCache">
+              <xsl:sequence select="f:generateLineComment('CAS Multiplier disableJcasCache', 5)"/>
+              <constructor-arg index="9" value="{u:casMultiplier/@disableJCasCache}" />
             </xsl:if>
             
             <xsl:if test="parent::u:service">
@@ -797,7 +811,7 @@
           <xsl:with-param name="inputOrReturn" select="'input'"/>
           <xsl:with-param name="kind" select="'primitive'"/>  <!-- used in ctrl id name -->
           <xsl:with-param name="msgHandlerChainID" select="f:getMetaMsgHandlerID(., 'primitive')"/>
-          <xsl:with-param name="nbrConcurrentConsumers" select="u:scaleout/@numberOfInstances"/> 
+          <xsl:with-param name="nbrConcurrentConsumers" select="fn:string(u:scaleout/@numberOfInstances)"/> 
           <xsl:with-param name="remote" select="()"/>
           <xsl:with-param name="poolingTaskExecutor" select="$poolingTaskExecutorID"/>     
         </xsl:call-template>
@@ -1075,7 +1089,7 @@
         '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'),3)"/>    
       <bean id="{f:getDestinationResolverID($aeNameUnique, $remote/@key)}"
         class="org.apache.uima.adapter.jms.activemq.TempDestinationResolver"
-        singleton="false">
+        scope="prototype">
         <property name="connectionFactory" ref="{$queueFactoryID}-reply"/>
       </bean>
     </xsl:if>
@@ -1318,6 +1332,7 @@
         class="org.apache.activemq.ActiveMQConnectionFactory">
         <property name="brokerURL" value="{@brokerURL}"/>
         <property name="prefetchPolicy" ref="prefetchPolicy"/>
+        
       </bean>
     </xsl:for-each>
     
@@ -1330,20 +1345,22 @@
         class="org.apache.activemq.ActiveMQConnectionFactory">
         <property name="brokerURL" value="{@brokerURL}"/>
         <property name="prefetchPolicy" ref="prefetchPolicy-reply"/>
+          
       </bean>
     </xsl:for-each>
         
               <!-- Creates an instance of the ResourceManager -->
    <xsl:sequence select="f:generateLineComment('Creates an instance of the ResourceManager',3)"/>
    <bean id="resourceManager" class="org.apache.uima.aae.UimaClassFactory"
-    factory-method="produceResourceManager" singleton="true"/>
+    factory-method="produceResourceManager" scope="singleton"/>
 
       <!-- Creates an instance of the CasManager -->
    <xsl:sequence select="f:generateLineComment('Creates an instance of the CasManager',3)"/>
-   <bean id="casManager" class="org.apache.uima.aae.AsynchAECasManager_impl" singleton="true" >
+   <bean id="casManager" class="org.apache.uima.aae.AsynchAECasManager_impl"  >
       <constructor-arg index="0" ref="resourceManager"/>
       <xsl:sequence select="f:generateLineComment('Defines how many CASes will be in the CAS pool',5)"/>
       <property name="casPoolSize" value="{u:casPool/@numberOfCASes}" />
+      <property name="disableJCasCache" value="{u:casPool/@disableJCasCache}" />
       <xsl:if test="u:casPool/@initialFsHeapSize">
         <xsl:sequence select="f:generateLineComment('Initial heap size for CASes',5)"/>
         <property name="initialFsHeapSize" value="{if (u:casPool/@initialFsHeapSize eq 'defaultFsHeapSize') 
@@ -1464,10 +1481,10 @@
           <xsl:choose>
             <xsl:when test=             "u:service/u:analysisEngine[(not(@async)) or (@async = ('no', 'false'))]/u:scaleout/@numberOfInstances">
               <u:casPool numberOfCASes="{u:service/u:analysisEngine[(not(@async)) or (@async = ('no', 'false'))]/u:scaleout/@numberOfInstances}"
-                 initialFsHeapSize="defaultFsHeapSize"/>
+                 initialFsHeapSize="defaultFsHeapSize" disableJCasCache="false" />
             </xsl:when>
             <xsl:otherwise>
-              <u:casPool numberOfCASes="1" initialFsHeapSize="defaultFsHeapSize"/>
+              <u:casPool numberOfCASes="1" initialFsHeapSize="defaultFsHeapSize" disableJCasCache="false" />
             </xsl:otherwise>
           </xsl:choose>
         </xsl:when>
@@ -1484,7 +1501,11 @@
   <!-- allow old services for now -->
   <xsl:template mode="addDefaults" match="u:services">
     <!--xsl:sequence select="f:validate(.)"/-->
-    <xsl:apply-templates mode="addDefaults"/>
+    <xsl:apply-templates mode="addDefaults">
+      <!-- keyPath is the list of keys with / inbetween, from the associated AE descriptor expansion, 
+           for delegates, used to identify a particular one in case of errors -->
+      <xsl:with-param name="keyPath"  tunnel="yes" select="''"/>
+    </xsl:apply-templates>
   </xsl:template>          
 
   <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
@@ -1500,9 +1521,9 @@
     <xsl:variable name="isTopLvlSync" as="xs:boolean" select=
       "if (../u:service/u:analysisEngine[(not(@async)) or (@async = ('no', 'false'))]) then fn:true() else fn:false()"/>
     
-    <xsl:variable name="nbrInstances" select="../u:service/u:analysisEngine/u:scaleout/@numberOfInstances"/>
+    <xsl:variable name="nbrInstances" select="fn:string(../u:service/u:analysisEngine/u:scaleout/@numberOfInstances)"/>
     
-    <xsl:variable name="casPoolSize" as="xs:integer">      
+    <xsl:variable name="casPoolSize">      
       <xsl:choose>
         <xsl:when test="$isTopLvlSync and 
           $nbrInstances and
@@ -1511,19 +1532,21 @@
           <xsl:sequence select="f:msgWithLineNumber(
                 'WARN',
                 ('Top level Async Primitive specifies a scaleout of', $nbrInstances,
-                 ', but also specifies a Cas Pool size of', ./@numberOfCASes,
+                 ', but also specifies a Cas Pool size of', fn:string(./@numberOfCASes),
                  '.  The Cas Pool size is being forced to be the same as the scaleout.'), 
                 .)"/>
           <xsl:sequence select="$nbrInstances"/>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:sequence select="if (./@numberOfCASes) then ./@numberOfCASes else '1'"/>
+          <xsl:sequence select="if (./@numberOfCASes) then fn:string(./@numberOfCASes) else '1'"/>
         </xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
 
     <u:casPool numberOfCASes="{$casPoolSize}"
-               initialFsHeapSize="{if (./@initialFsHeapSize) then ./@initialFsHeapSize else 'defaultFsHeapSize'}"/>
+               initialFsHeapSize="{if (./@initialFsHeapSize) then ./@initialFsHeapSize else 'defaultFsHeapSize'}"
+               disableJCasCache="{if (./@disableJCasCache) then ./@disableJCasCache else 'false'}" 
+               />
   </xsl:template>
     
   <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
@@ -1687,6 +1710,7 @@
     <xsl:param tunnel="yes" name="local_ae_descriptor"/> 
     <xsl:param tunnel="yes" name="defaultErrorConfig"/>
     <xsl:param tunnel="yes" name="local_ae_descriptor_file_path"/>
+    <xsl:param tunnel="yes" name="keyPath"/> 
    
     <!--xsl:message select="'******************start local ae descriptor'"/>
     <xsl:message select="$local_ae_descriptor"/>
@@ -1716,7 +1740,7 @@
     
     <xsl:if test="@async = ('yes', 'no')">
       <xsl:sequence select="f:msgWithLineNumber('WARNING',
-             ('deployment descriptor for analysisEngine:', $key,
+             ('deployment descriptor for analysisEngine:', $keyPath,
              'specifies', @async, ' but the async value should be true or false'),
              .)"/>
     </xsl:if>
@@ -1726,7 +1750,7 @@
         <xsl:when test="(string(@async) = ('yes','true')) and 
                         not(f:isAggr($local_ae_descriptor))">
           <xsl:sequence select="f:msgWithLineNumber('ERROR',
-             ('deployment descriptor for analysisEngine:', $key,
+             ('deployment descriptor for analysisEngine:', $keyPath,
              'specifies async=&quot;true&quot; but the analysis engine is a primitive'),
              .)"/>
           <xsl:value-of select="'false'"/>
@@ -1734,14 +1758,14 @@
         <xsl:when test="(string(@async) = ('yes','true')) and 
                         f:isCPP($local_ae_descriptor)">
           <xsl:sequence select="f:msgWithLineNumber('ERROR',
-             ('deployment descriptor for analysisEngine:', $key,
+             ('deployment descriptor for analysisEngine:', $keyPath,
              'specifies async=''true''; but this isn''t supported for CPP components'),
              .)"/>
           <xsl:value-of select="'false'"/>
         </xsl:when>
         <xsl:when test="not(string(@async) = ('yes', 'no', 'true', 'false', ''))">
           <xsl:sequence select="f:msgWithLineNumber('ERROR',
-             ('deployment descriptor for analysisEngine:', $key,
+             ('deployment descriptor for analysisEngine:', $keyPath,
              'specifies', concat('async=&quot;', string(@async),
                    '&quot;, but only true or false are allowed as values.')),
              .)"/>
@@ -1757,7 +1781,7 @@
     
     <xsl:if test="(string($async) = ('false', 'no')) and u:delegates">
       <xsl:sequence select="f:msgWithLineNumber('ERROR',
-        ('deployment descriptor for analysisEngine:', $key,
+        ('deployment descriptor for analysisEngine:', $keyPath,
          'specifies false for the async attribute, but contains a delegates element, which is not allowed in this case.'), .)"/>
     </xsl:if>
      
@@ -1790,7 +1814,7 @@
       <xsl:choose>
         <xsl:when test="(string($async) = 'false') and @inputQueueScaleout">
           <xsl:sequence select="f:msgWithLineNumber('WARN',
-              ('deployment descriptor for analysisEngine:', $key,
+              ('deployment descriptor for analysisEngine:', $keyPath,
                'specifies', concat('inputQueueScaleout=&quot;', string(@inputQueueScaleout),
                '&quot;, this is ignored for async=&quot;false&quot; analysisEngine specifications.'),
                'Use the scaleout numberOfInstances=xx element instead for this, for primitives.'),
@@ -1829,7 +1853,7 @@
                    ('casMultiplier settings for poolSize (', u:casMultiplier/@poolSize, 
                     ') and initialFsHeapSize (', u:casMultiplier/@initialFsHeapSize, ')',
                     $nl, 'will be ignored',
-                    'for the analysisEngine with key=', $key, $nl,
+                    'for the analysisEngine with key=', $keyPath, $nl,
                     'because the pool specs are set using the contained delegate cas multiplier specification.'
                    ),
                    .)"/>       
@@ -1850,6 +1874,7 @@
                 <xsl:when test="(string($async) eq 'true') and not(parent::u:service)">
                   <u:casMultiplier 
                     processParentLast="{if (u:casMultiplier/@processParentLast) then u:casMultiplier/@processParentLast else 'false'}"
+                    disableJCasCache="{if (u:casMultiplier/@disableJCasCache) then u:casMultiplier/@disableJCasCache else 'false'}"
                   />
                 </xsl:when>
                 <!--  top level async: no cas multiplier settings are used
@@ -1861,7 +1886,8 @@
                       a Second Input Q is built for messages from remote cas 
                       Multipliers, at the top level -->
                 <xsl:when test="string($async) eq 'true'">
-                  <u:casMultiplier/>                  
+                  <u:casMultiplier 
+                      disableJCasCache="{if (u:casMultiplier/@disableJCasCache) then u:casMultiplier/@disableJCasCache else 'false'}"/>                  
                 </xsl:when>
                 
                 <!-- case async = false and not top level -->
@@ -1869,12 +1895,14 @@
                   <u:casMultiplier poolSize="{if (u:casMultiplier/@poolSize) then u:casMultiplier/@poolSize else '1'}"
                           initialFsHeapSize="{if (u:casMultiplier/@initialFsHeapSize) then u:casMultiplier/@initialFsHeapSize else '2000000'}"
                           processParentLast="{if (u:casMultiplier/@processParentLast) then u:casMultiplier/@processParentLast else 'false'}"
+                          disableJCasCache= "{if (u:casMultiplier/@disableJCasCache)  then u:casMultiplier/@disableJCasCache  else 'false'}" 
                   />  
                 </xsl:when>
                 <!-- case async = false, top level -->
                 <xsl:otherwise>
                   <u:casMultiplier poolSize="{if (u:casMultiplier/@poolSize) then u:casMultiplier/@poolSize else '1'}"
                           initialFsHeapSize="{if (u:casMultiplier/@initialFsHeapSize) then u:casMultiplier/@initialFsHeapSize else '2000000'}"
+                          disableJCasCache="{if (u:casMultiplier/@disableJCasCache) then u:casMultiplier/@disableJCasCache else 'false'}"
                   />  
                 </xsl:otherwise>             
               </xsl:choose>
@@ -1887,7 +1915,7 @@
             <xsl:when test="(string($async) eq 'true') and
                             (not(parent::u:service))">
              <xsl:sequence select="f:msgWithLineNumber('WARN',
-               ('Deployment descriptor for analysisEngine:', $key,
+               ('Deployment descriptor for analysisEngine:', $keyPath,
                'is for a non-top-level CAS Multiplier (or Collection Reader wrapped as a CAS Multiplier).', $nl,
                'However, the &lt;casMultiplier> element is missing.', $nl,
                'The &lt;casMultiplier> element is only used here for specifying the processParentLast attribute.', $nl,
@@ -1910,11 +1938,11 @@
               <u:casMultiplier/>             
             </xsl:when>
             
-            <!-- async = false, not top level -->
+            <!-- async = false, and not top level -->
             <xsl:when test="not(parent::u:service)">
               <xsl:sequence select="f:msgWithLineNumber('WARN',
-             ('deployment descriptor for analysisEngine:', $key,
-             'is for a synchronous CAS Multiplier (not top level) (or Collection Reader wrapped as a CAS Multiplier).', $nl,
+             ('Deployment descriptor for analysisEngine:', $key, $keyPath,
+             ' is for a synchronous CAS Multiplier (not top level) (or Collection Reader wrapped as a CAS Multiplier).', $nl,
              'However, the &lt;casMultiplier> element is missing.', $nl,
                 'Defaulting to a poolSize of 1, initialFsHeapSize of 2,000,000.', $nl,
                 'Defaulting to a processParentLast to false for this case, to',
@@ -1938,7 +1966,7 @@
         <xsl:otherwise>  <!-- is not a cas multiplier -->
           <xsl:if test="u:casMultiplier">
             <xsl:sequence select="f:msgWithLineNumber('ERROR',
-             ('deployment descriptor for analysisEngine:', $key,
+             ('deployment descriptor for analysisEngine:', $keyPath,
              'specifies a casMultiplier element, but the analysisEngine is not a CAS multiplier'),
              .)"/>
           </xsl:if>
@@ -1996,7 +2024,7 @@
           <xsl:when test="u:scaleout">
             <!--xsl:message select="'*** defaulting scaleout'"/>
             <xsl:message select="u:scaleout"/-->
-            <u:scaleout numberOfInstances="{if (u:scaleout/@numberOfInstances) then u:scaleout/@numberOfInstances else 1}"/>
+            <u:scaleout numberOfInstances="{if (u:scaleout/@numberOfInstances) then fn:string(u:scaleout/@numberOfInstances) else 1}"/>
           </xsl:when>
           <xsl:otherwise>
             <u:scaleout numberOfInstances="1"/>
@@ -2014,7 +2042,8 @@
     <xsl:param name="ddDelegates"/>  <!-- analysisEngine(s) or remoteAnalysisEngine(s) -->
     <xsl:param tunnel="yes" name="defaultErrorConfig"/>
     <xsl:param tunnel="yes" name="local_ae_descriptor"/>
-    <xsl:param tunnel="yes" name="local_ae_descriptor_file_path"/>                 
+    <xsl:param tunnel="yes" name="local_ae_descriptor_file_path"/>
+    <xsl:param tunnel="yes" name="keyPath"/>              
 
     <xsl:variable name="nextLevelDefaultErrorConfig" select=
           "if ($defaultErrorConfig eq 'topAe') then 'topDelegate' else 'none'"/>        
@@ -2041,9 +2070,10 @@
     
     <u:delegates>
       <xsl:for-each select="$delegatesFromLocalAeDescriptor">
+        
         <xsl:variable name="delegateAE" select="f:getDelegatePart($local_ae_descriptor, @key)"/>
-        <!--xsl:message select="('*** Remote test default', @key)"/>
-        <xsl:message select="$ddDelegates"/-->
+        <!--sl:message select="('*** debug delegate from localAE:', @key)"/-->
+        <!--xsl:message select="$ddDelegates"/-->
         <xsl:variable name="aeOrRemote" as="node()">
           <xsl:choose>
             <xsl:when test="$ddDelegates[string(@key) = string(current()/@key)]">             
@@ -2066,11 +2096,12 @@
         <!--xsl:message select="$aeOrRemote"/-->
         
         <xsl:variable name="aePath" select="f:fixupPath(u:import, $local_ae_descriptor_file_path[2])"/>
-          
+        
         <xsl:apply-templates mode="addDefaults" select="$aeOrRemote">
           <xsl:with-param tunnel="yes" name="defaultErrorConfig" select="$nextLevelDefaultErrorConfig"/>
           <xsl:with-param tunnel="yes" name="local_ae_descriptor" select="$delegateAE"/>
           <xsl:with-param tunnel="yes" name="local_ae_descriptor_file_path" select="$aePath"/>
+          <xsl:with-param tunnel="yes" name="keyPath" select="if ($keyPath eq '') then @key else concat($keyPath, '/', @key)"/>
         </xsl:apply-templates>
       </xsl:for-each>
     </u:delegates>
@@ -2280,6 +2311,7 @@
         <u:casMultiplier poolSize="{if (u:casMultiplier/@poolSize) then u:casMultiplier/@poolSize else '1'}"
                 initialFsHeapSize="{if (u:casMultiplier/@initialFsHeapSize) then u:casMultiplier/@initialFsHeapSize else '2000000'}"
                 processParentLast="{if (u:casMultiplier/@processParentLast) then u:casMultiplier/@processParentLast else 'false'}"
+                disableJCasCache= "{if (u:casMultiplier/@disableJCasCache)  then u:casMultiplier/@disableJCasCache  else 'false'}"
                 />
       </xsl:if>
       <xsl:variable name="tmp">
@@ -2362,7 +2394,7 @@
   <!--============================================================-->       
   <!--|            Functions                                     |-->       
   <!--============================================================-->
-  
+ 
   <xsl:function name="f:getImport">
     <xsl:param name="importNode"/>
     <xsl:choose>
@@ -2370,7 +2402,12 @@
         <xsl:sequence select="document($importNode/@location)"/>
       </xsl:when>
       <xsl:when test="$importNode/@name">
-        <xsl:sequence select="document(x1:resolveByName($importNode/@name))"/>
+    <xsl:variable name="result" select="x1:resolveByName($importNode/@name)"/>
+    <xsl:if test="not($result)">
+      <xsl:sequence select=
+            "f:msgWithLineNumber('ERROR', ('ERROR cannot import by', $importNode/@name), $importNode)"/>
+    </xsl:if>
+    <xsl:sequence select="document($result)"/>
       </xsl:when>
       <xsl:otherwise>
         <xsl:sequence select=
@@ -2695,7 +2732,7 @@
     <xsl:if test="not($result)">
       <xsl:sequence select="f:msgWithLineNumber(
         'ERROR', 
-        ('ERROR cannot load delegate descriptor with key', $key),
+        ('ERROR cannot load delegate descriptor with', $key),
         $local_ae_descriptor)"/> 
     </xsl:if>
     <xsl:sequence select="$result"/>
@@ -2842,7 +2879,7 @@
       <u:version i:maxone=""/>
       <u:vendor i:maxone=""/>
       <u:deployment i:maxone="" i:required="" protocol="" provider="">
-        <u:casPool i:maxone="" numberOfCASes=""  initialFsHeapSize=""/>
+          <u:casPool i:maxone="" numberOfCASes=""  initialFsHeapSize="" disableJCasCache=""/>
         
           <u:service i:required="">
             <u:custom name="" value=""/>
@@ -2858,7 +2895,7 @@
                 inputQueueScaleout="">
               <u:scaleout i:maxone="" numberOfInstances=""/>
                 <!-- top level cas multiplier can't specify processParentLast -->
-              <u:casMultiplier i:maxone="" poolSize="" initialFsHeapSize=""/>
+              <u:casMultiplier i:maxone="" poolSize="" initialFsHeapSize="" disableJCasCache="" />
               <u:asyncPrimitiveErrorConfiguration i:maxone="">
                 <u:processCasErrors i:maxone="" 
                   thresholdCount="" thresholdWindow="" thresholdAction=""/>
@@ -2873,7 +2910,7 @@
               <u:delegates i:maxone="">
                 <u:analysisEngine/>
                 <u:remoteAnalysisEngine key="" remoteReplyQueueScaleout="">
-                  <u:casMultiplier i:maxone="" poolSize="" initialFsHeapSize="" processParentLast=""/>
+                  <u:casMultiplier i:maxone="" poolSize="" initialFsHeapSize="" processParentLast="" disableJCasCache="" />
                   <u:inputQueue i:maxone="" i:required="" brokerURL="" endpoint="" queueName=""/>
                   <u:replyQueue i:maxone="" location=""/>
                   <u:serializer i:maxone="" method=""/>
@@ -2991,11 +3028,22 @@
     </xsl:for-each>
    </xsl:function>
 
+  <!-- Terminate processing on first error -->
   <xsl:function name="f:msgWithLineNumber">
     <xsl:param name="kind"/>
     <xsl:param name="msg"/>  <!-- can be multi-element sequence -->
     <xsl:param name="node"/>
-    <xsl:message>
+    <xsl:variable name="yesno">
+      <xsl:choose>
+        <xsl:when test="$kind eq 'ERROR'">
+          <xsl:sequence select="'yes'"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:sequence select="'no'"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:message terminate="{$yesno}">
       *** <xsl:sequence select="concat($kind,':')"/> line-number: <xsl:sequence select="saxon:line-number($node)"/>
       <xsl:sequence select="$msg"/> 
     </xsl:message>

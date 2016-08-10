@@ -27,7 +27,7 @@ import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.util.CasCreationUtils;
 import org.junit.Test;
-
+import org.dkpro.lab.support.slf4j.Logging;
 import org.dkpro.lab.uima.engine.uimaas.component.SimpleBroker;
 import org.dkpro.lab.uima.engine.uimaas.component.SimpleClient;
 import org.dkpro.lab.uima.engine.uimaas.component.SimpleService;
@@ -37,6 +37,11 @@ public class SimpleComponentTest
 	@Test
 	public void test() throws Exception
 	{
+	    // Ok, so this is how we tell UIMA-AS not to till the JVM... *sigh*
+	    System.setProperty("dontKill","");  
+	    
+	    Logging.initialize();
+	    
 		SimpleBroker broker = new SimpleBroker();
 		SimpleService service = new SimpleService("myAnalysisEngine",
 		        createEngineDescription(Annotator.class));
@@ -50,11 +55,12 @@ public class SimpleComponentTest
 		cas.setDocumentText("This is a test.");
 		client.process(cas);
 
+		assertEquals("en", cas.getDocumentLanguage());
+
 		client.stop();
 		service.stop();
 		broker.stop();
 
-		assertEquals("en", cas.getDocumentLanguage());
 	}
 
 	public static final class Annotator

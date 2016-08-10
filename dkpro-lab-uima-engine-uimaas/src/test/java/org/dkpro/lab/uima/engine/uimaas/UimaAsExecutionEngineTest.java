@@ -57,6 +57,7 @@ import org.dkpro.lab.engine.TaskExecutionService;
 import org.dkpro.lab.storage.StorageService;
 import org.dkpro.lab.storage.StreamReader;
 import org.dkpro.lab.storage.filesystem.FileSystemStorageService;
+import org.dkpro.lab.support.slf4j.Logging;
 import org.dkpro.lab.task.TaskContextMetadata;
 import org.dkpro.lab.uima.engine.uimaas.component.SimpleBroker;
 import org.dkpro.lab.uima.task.TaskContextProvider;
@@ -80,6 +81,11 @@ public class UimaAsExecutionEngineTest
 	@BeforeClass
 	public static void init() throws ResourceInitializationException
 	{
+        // Ok, so this is how we tell UIMA-AS not to till the JVM... *sigh*
+        System.setProperty("dontKill","");  
+	    
+        Logging.initialize();
+        
 		broker = new SimpleBroker();
 		broker.start();
 	}
