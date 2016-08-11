@@ -17,16 +17,20 @@
  ******************************************************************************/
 package org.dkpro.lab.uima.engine.uimaas;
 
+import static org.dkpro.lab.Util.close;
 import static org.dkpro.lab.Util.getUrlAsFile;
 import static org.apache.uima.UIMAFramework.newDefaultResourceManager;
 import static org.apache.uima.fit.factory.ExternalResourceFactory.bindResource;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.uima.UIMAFramework;
@@ -39,7 +43,11 @@ import org.apache.uima.collection.EntityProcessStatus;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.ResourceProcessException;
-
+import org.apache.uima.resource.metadata.ResourceMetaData;
+import org.apache.uima.resourceSpecifier.factory.DeploymentDescriptorFactory;
+import org.apache.uima.resourceSpecifier.factory.ServiceContext;
+import org.apache.uima.resourceSpecifier.factory.UimaASPrimitiveDeploymentDescriptor;
+import org.apache.uima.resourceSpecifier.factory.impl.ServiceContextImpl;
 import org.dkpro.lab.engine.ExecutionException;
 import org.dkpro.lab.engine.LifeCycleException;
 import org.dkpro.lab.engine.TaskContext;
@@ -48,6 +56,7 @@ import org.dkpro.lab.engine.TaskExecutionEngine;
 import org.dkpro.lab.task.Task;
 import org.dkpro.lab.uima.task.TaskContextProvider;
 import org.dkpro.lab.uima.task.UimaTask;
+import org.xml.sax.SAXException;
 
 /**
  * UIMA AS-based execution engine. An {@link UimaTask} is be executed using the UIMA AS framework.
@@ -145,14 +154,28 @@ public class UimaAsExecutionEngine
 		// Create Asynchronous Engine API
 		uimaAsEngine = new BaseUIMAAsynchronousEngine_impl();
 
-		// Create service descriptor
-		AsDeploymentDescription deploymentDescription = new AsDeploymentDescription(configuration
-				.getAnalysisEngineDescription(ctx), endpoint, brokerUrl);
+		// Save the AED to a file because UIMA-AS cannot have an AED direclty embedded in its
+		// descriptor
+		AnalysisEngineDescription topDescriptor = configuration.getAnalysisEngineDescription(ctx);
+		ResourceMetaData topMetaData = topDescriptor.getMetaData();
+		File topDescriptorFile = File.createTempFile(getClass()
+                .getSimpleName(), ".xml");
+        topDescriptorFile.deleteOnExit();
+        try (OutputStream os = new FileOutputStream(topDescriptorFile)) {
+            topDescriptor.toXML(os);
+        }
 
+        // Create service descriptor
+        ServiceContext context = new ServiceContextImpl(topMetaData.getName(),
+                topMetaData.getDescription(), topDescriptorFile.getAbsolutePath(), endpoint,
+                brokerUrl);
+        UimaASPrimitiveDeploymentDescriptor dd = DeploymentDescriptorFactory
+                .createPrimitiveDeploymentDescriptor(context);
+
+        // Store service descriptor also to a temporary file
 		File deploymentDescriptionFile = File.createTempFile(getClass().getSimpleName(), ".xml");
 		deploymentDescriptionFile.deleteOnExit();
-		deploymentDescription.toXML(deploymentDescriptionFile);
-		deploymentDescription.toXML(System.out);
+		dd.save(deploymentDescriptionFile);
 
 		Map<String, Object> serviceCtx = new HashMap<String, Object>();
 		serviceCtx.put(UimaAsynchronousEngine.DD2SpringXsltFilePath, getUrlAsFile(
@@ -171,7 +194,7 @@ public class UimaAsExecutionEngine
 	{
 		Map<String, Object> clientCtx = new HashMap<String, Object>();
 		clientCtx.put(UimaAsynchronousEngine.ServerUri, brokerUrl);
-		clientCtx.put(UimaAsynchronousEngine.Endpoint, endpoint);
+		clientCtx.put(UimaAsynchronousEngine.ENDPOINT, endpoint);
 		clientCtx.put(UimaAsynchronousEngine.Timeout, timeout * 1000);
 		clientCtx.put(UimaAsynchronousEngine.GetMetaTimeout, getmeta_timeout * 1000);
 		clientCtx.put(UimaAsynchronousEngine.CpcTimeout, cpc_timeout * 1000);
