@@ -21,6 +21,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.Properties;
 
+import org.dkpro.lab.conversion.ConversionService;
 import org.dkpro.lab.engine.TaskContextFactory;
 import org.dkpro.lab.engine.TaskExecutionService;
 import org.dkpro.lab.logging.LoggingService;
@@ -33,35 +34,35 @@ import org.springframework.dao.DataAccessResourceFailureException;
 
 public class Lab
 {
-	public static final String DEFAULT_CONTEXT = "/META-INF/spring/context.xml";
+    public static final String DEFAULT_CONTEXT = "/META-INF/spring/context.xml";
 
-//	{
-//		java.util.logging.Logger rootLogger = LogManager.getLogManager().getLogger("");
-//		Handler[] handlers = rootLogger.getHandlers();
-//		for (int i = 0; i < handlers.length; i++) {
-//			rootLogger.removeHandler(handlers[i]);
-//		}
-//		SLF4JBridgeHandler.install();
-//	}
+    // {
+    // java.util.logging.Logger rootLogger = LogManager.getLogManager().getLogger("");
+    // Handler[] handlers = rootLogger.getHandlers();
+    // for (int i = 0; i < handlers.length; i++) {
+    // rootLogger.removeHandler(handlers[i]);
+    // }
+    // SLF4JBridgeHandler.install();
+    // }
 
-	private static Lab instance;
+    private static Lab instance;
 
-	private ApplicationContext context;
+    private ApplicationContext context;
 
-	public static synchronized Lab getInstance()
-	{
-		if (instance == null) {
-			instance = newInstance(DEFAULT_CONTEXT);
-		}
-		return instance;
-	}
+    public static synchronized Lab getInstance()
+    {
+        if (instance == null) {
+            instance = newInstance(DEFAULT_CONTEXT);
+        }
+        return instance;
+    }
 
-	public static Lab newInstance(String aContext)
-	{
-		Lab lab = new Lab();
-		lab.context = new ClassPathXmlApplicationContext(aContext, lab.getClass());
-		return lab;
-	}
+    public static Lab newInstance(String aContext)
+    {
+        Lab lab = new Lab();
+        lab.context = new ClassPathXmlApplicationContext(aContext, lab.getClass());
+        return lab;
+    }
 
     public void setProperty(String aKey, String aValue)
     {
@@ -73,79 +74,84 @@ public class Lab
         return context.getBean("Properties", Properties.class).getProperty(aKey);
     }
 
-	public TaskExecutionService getTaskExecutionService()
-	{
-		return (TaskExecutionService) context.getBean("TaskExecutionService");
-	}
+    public TaskExecutionService getTaskExecutionService()
+    {
+        return (TaskExecutionService) context.getBean("TaskExecutionService");
+    }
 
-	public StorageService getStorageService()
-	{
-		return (StorageService) context.getBean("StorageService");
-	}
+    public StorageService getStorageService()
+    {
+        return (StorageService) context.getBean("StorageService");
+    }
 
-	public LoggingService getLoggingService()
-	{
-		return (LoggingService) context.getBean("LoggingService");
-	}
+    public ConversionService getConversionService()
+    {
+        return (ConversionService) context.getBean("ConversionService");
+    }
 
-	public TaskContextFactory getTaskContextFactory()
-	{
-		return (TaskContextFactory) context.getBean("TaskContextFactory");
-	}
+    public LoggingService getLoggingService()
+    {
+        return (LoggingService) context.getBean("LoggingService");
+    }
 
-	public void runAll(Task... aConfigurations)
-		throws Exception
-	{
-		for (Task task : aConfigurations) {
-			run(task);
-		}
-	}
+    public TaskContextFactory getTaskContextFactory()
+    {
+        return (TaskContextFactory) context.getBean("TaskContextFactory");
+    }
 
-	public String run(Task aConfiguration)
-		throws Exception
-	{
-		return getTaskExecutionService().run(aConfiguration);
-	}
+    public void runAll(Task... aConfigurations)
+        throws Exception
+    {
+        for (Task task : aConfigurations) {
+            run(task);
+        }
+    }
 
-	public String runAsking(Task aConfiguration)
-		throws Exception
-	{
-		boolean found;
-		TaskContextMetadata meta = null;
-		try {
-			meta = getStorageService().getLatestContext(aConfiguration.getType(),
-					aConfiguration.getDescriminators());
-			found = true;
-		}
-		catch (DataAccessResourceFailureException e) {
-			found = false;
-		}
+    public String run(Task aConfiguration)
+        throws Exception
+    {
+        return getTaskExecutionService().run(aConfiguration);
+    }
 
-		boolean execute = true;
-		if (found) {
-			InputStreamReader converter = new InputStreamReader(System.in);
-			BufferedReader in = new BufferedReader(converter);
-			String line = "";
-			while (line != null) {
-				System.out.println("[" + aConfiguration.getType() + "] has already been executed in" +
-				" this configuration. Do you wish to execute it again? (y/n)");
-				line = in.readLine().toLowerCase();
-				if ("y".equals(line)) {
-					execute = true;
-					break;
-				}
-				if ("n".equals(line)) {
-					execute = false;
-					break;
-				}
-			}
-		}
+    public String runAsking(Task aConfiguration)
+        throws Exception
+    {
+        boolean found;
+        TaskContextMetadata meta = null;
+        try {
+            meta = getStorageService().getLatestContext(aConfiguration.getType(),
+                    aConfiguration.getDescriminators());
+            found = true;
+        }
+        catch (DataAccessResourceFailureException e) {
+            found = false;
+        }
 
-		if (execute) {
-			return getTaskExecutionService().run(aConfiguration);
-		}
-		else {
-			return meta.getId();
-		}
-	}
+        boolean execute = true;
+        if (found) {
+            InputStreamReader converter = new InputStreamReader(System.in);
+            BufferedReader in = new BufferedReader(converter);
+            String line = "";
+            while (line != null) {
+                System.out.println("[" + aConfiguration.getType() + "] has already been executed in"
+                        + " this configuration. Do you wish to execute it again? (y/n)");
+                line = in.readLine().toLowerCase();
+                if ("y".equals(line)) {
+                    execute = true;
+                    break;
+                }
+                if ("n".equals(line)) {
+                    execute = false;
+                    break;
+                }
+            }
+        }
+
+        if (execute) {
+            return getTaskExecutionService().run(aConfiguration);
+        }
+        else {
+            return meta.getId();
+        }
+    }
 }

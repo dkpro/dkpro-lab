@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.net.URI;
 
+import org.dkpro.lab.conversion.ConversionService;
 import org.dkpro.lab.logging.LoggingService;
 import org.dkpro.lab.storage.StorageService;
 import org.dkpro.lab.storage.StreamReader;
@@ -43,6 +44,11 @@ public interface TaskContext
 	 * Get the storage service.
 	 */
 	StorageService getStorageService();
+	
+	   /**
+     * Get the storage service.
+     */
+    ConversionService getConversionService();
 
 	/**
 	 * Get the life-cycle manager.

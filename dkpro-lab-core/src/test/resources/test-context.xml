@@ -15,6 +15,10 @@
 	<bean id="LoggingService"
 		class="org.dkpro.lab.logging.impl.DefaultLoggingService">
 	</bean>
+	
+	<bean id="ConversionService"
+		class="org.dkpro.lab.conversion.impl.DefaultConversionService">
+	</bean>
 
 	<bean id="StorageService"
 		class="org.dkpro.lab.storage.filesystem.FileSystemStorageService">
@@ -25,6 +29,7 @@
 	<bean id="TaskContextFactory"
 		class="org.dkpro.lab.engine.impl.DefaultTaskContextFactory">
 		<property name="storageService" ref="StorageService" />
+		<property name="conversionService" ref="ConversionService" />
 		<property name="loggingService" ref="LoggingService" />
 		<property name="lifeCycleManager" ref="LifeCycleManager"/>
 		<property name="executionService" ref="TaskExecutionService"/>

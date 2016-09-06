@@ -30,6 +30,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
 
+import org.dkpro.lab.conversion.ConversionService;
 import org.dkpro.lab.engine.LifeCycleManager;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.engine.TaskContextFactory;
@@ -52,6 +53,7 @@ public class DefaultTaskContext
 
 	private LoggingService loggingService;
 	private StorageService storageService;
+	private ConversionService conversionService;
 	private LifeCycleManager lifeCycleManager;
 	private TaskContextMetadata metadata;
 	private TaskExecutionService executionService;
@@ -119,6 +121,17 @@ public class DefaultTaskContext
 	{
 		return loggingService;
 	}
+	
+	public void setConversionService(ConversionService aConversionService)
+    {
+        conversionService = aConversionService;
+    }
+
+    @Override
+    public ConversionService getConversionService()
+    {
+        return conversionService;
+    }
 
 	public void setLifeCycleManager(LifeCycleManager aLifeCycleManager)
 	{

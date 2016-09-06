@@ -38,6 +38,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dkpro.lab.Util;
+import org.dkpro.lab.conversion.ConversionService;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.reporting.Report;
 import org.dkpro.lab.storage.StorageService;
@@ -59,6 +60,8 @@ public class TaskBase
 	private List<Class<? extends Report>> reports;
 	
 	private boolean initialized = false;
+
+    private TaskContext aContext;
 
 	{
 		properties = new HashMap<String, String>();
@@ -93,6 +96,7 @@ public class TaskBase
 	@Override
 	public void initialize(TaskContext aContext)
 	{
+        this.aContext = aContext;
         initialized = true;
 	}
 	
@@ -411,6 +415,14 @@ public class TaskBase
                                 "Discriminator/property name must be unique and cannot be used "
                                 + "on multiple fields in the same class [" + name + "]");
 					}
+					
+					//Override with conversion service information if available
+                    Object object = field.get(this);
+                    ConversionService cs = aContext.getConversionService();
+                    if(cs.isRegistered(object)){
+                        props.put(name, cs.getDiscriminableValue(object));
+                    }
+					
 					log.debug("Found "+aAnnotation.getSimpleName()+" ["+name+"]: "+value);
 				}
 			}
