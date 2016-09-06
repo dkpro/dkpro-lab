@@ -41,6 +41,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dkpro.lab.ProgressMeter;
 import org.dkpro.lab.Util;
+import org.dkpro.lab.conversion.ConversionService;
 import org.dkpro.lab.engine.ExecutionException;
 import org.dkpro.lab.engine.LifeCycleException;
 import org.dkpro.lab.engine.LifeCycleManager;
@@ -63,7 +64,7 @@ import org.springframework.dao.DataAccessResourceFailureException;
 
 public class BatchTaskEngine
     implements TaskExecutionEngine
-{    
+{
     private TaskContextFactory contextFactory;
 
     private final Log log = LogFactory.getLog(getClass());
@@ -78,8 +79,8 @@ public class BatchTaskEngine
         throws ExecutionException, LifeCycleException
     {
         if (!(aConfiguration instanceof BatchTask)) {
-            throw new ExecutionException("This engine can only execute ["
-                    + BatchTask.class.getName() + "]");
+            throw new ExecutionException(
+                    "This engine can only execute [" + BatchTask.class.getName() + "]");
         }
 
         // Create persistence service for injection into analysis components
@@ -97,7 +98,7 @@ public class BatchTaskEngine
                 BatchTask cfg = (BatchTask) aConfiguration;
 
                 ParameterSpace parameterSpace = cfg.getParameterSpace();
-                
+
                 // Try to calculate the parameter space size.
                 int estimatedSize = 1;
                 for (Dimension<?> d : parameterSpace.getDimensions()) {
@@ -111,7 +112,7 @@ public class BatchTaskEngine
 
                 // A subtask execution may apply to multiple parameter space coordinates!
                 Set<String> executedSubtasks = new LinkedHashSet<String>();
-                
+
                 ProgressMeter progress = new ProgressMeter(estimatedSize);
                 for (Map<String, Object> config : parameterSpace) {
                     if (cfg.getConfiguration() != null) {
@@ -121,22 +122,22 @@ public class BatchTaskEngine
                             }
                         }
                     }
-                    
+
                     log.info("== Running new configuration [" + ctx.getId() + "] ==");
                     List<String> keys = new ArrayList<String>(config.keySet());
                     for (String key : keys) {
-                        log.info("[" + key + "]: ["
-                                + StringUtils.abbreviateMiddle(Util.toString(config.get(key)), "…", 150)
-                                + "]");
+                        log.info("[" + key + "]: [" + StringUtils
+                                .abbreviateMiddle(Util.toString(config.get(key)), "…", 150) + "]");
                     }
-                    
+
                     executeConfiguration(cfg, ctx, config, executedSubtasks);
 
                     progress.next();
                     log.info("Completed configuration " + progress);
                 }
 
-                // Set the subtask property and persist again, so the property is available to reports
+                // Set the subtask property and persist again, so the property is available to
+                // reports
                 cfg.setAttribute(SUBTASKS_KEY, executedSubtasks.toString());
                 cfg.persist(ctx);
             }
@@ -165,13 +166,13 @@ public class BatchTaskEngine
             }
         }
     }
-    
+
     @Override
     public void setContextFactory(TaskContextFactory aContextFactory)
     {
         contextFactory = aContextFactory;
     }
-    
+
     /**
      * Locate the latest task execution compatible with the given task configuration.
      * 
@@ -184,7 +185,7 @@ public class BatchTaskEngine
      */
     protected void executeConfiguration(BatchTask aConfiguration, TaskContext aContext,
             Map<String, Object> aConfig, Set<String> aExecutedSubtasks)
-        throws ExecutionException, LifeCycleException
+                throws ExecutionException, LifeCycleException
     {
         if (log.isTraceEnabled()) {
             // Show all subtasks executed so far
@@ -203,7 +204,7 @@ public class BatchTaskEngine
         if (aConfiguration.getScope() != null) {
             scope.addAll(aConfiguration.getScope());
         }
-        
+
         // Configure subtasks
         for (Task task : aConfiguration.getTasks()) {
             aContext.getLifeCycleManager().configure(aContext, task, aConfig);
@@ -219,24 +220,24 @@ public class BatchTaskEngine
             try {
                 // Check if a subtask execution compatible with the present configuration has
                 // does already exist ...
-                TaskContextMetadata execution = getExistingExecution(aConfiguration, aContext,
-                        task, aConfig, aExecutedSubtasks);
+                TaskContextMetadata execution = getExistingExecution(aConfiguration, aContext, task,
+                        aConfig, aExecutedSubtasks);
                 if (execution == null) {
                     // ... otherwise execute it with the present configuration
                     log.info("Executing task [" + task.getType() + "]");
-                    
-                    // set scope here so that the inherited scopes are considered 
+
+                    // set scope here so that the inherited scopes are considered
                     // set scope here so that tasks added to scope in this loop are considered
                     if (task instanceof BatchTask) {
                         ((BatchTask) task).setScope(scope);
                     }
-                    
+
                     execution = runNewExecution(aContext, task, aConfig, aExecutedSubtasks);
-                }                    
+                }
                 else {
                     log.debug("Using existing execution [" + execution.getId() + "]");
                 }
-                
+
                 // Record new/existing execution
                 aExecutedSubtasks.add(execution.getId());
                 scope.add(execution.getId());
@@ -245,10 +246,10 @@ public class BatchTaskEngine
             }
             catch (UnresolvedImportException e) {
                 // Add task back to queue
-                log.debug("Deferring execution of task [" + task.getType() + "]: "
-                        + e.getMessage());
+                log.debug(
+                        "Deferring execution of task [" + task.getType() + "]: " + e.getMessage());
                 queue.add(task);
-                
+
                 // Detect endless loop
                 if (loopDetection.contains(task)) {
                     StringBuilder details = new StringBuilder();
@@ -257,17 +258,18 @@ public class BatchTaskEngine
                         details.append(r.getMessage());
                     }
 
-                    // throw an UnresolvedImportException in case there is an outer BatchTask which needs to be executed first 
+                    // throw an UnresolvedImportException in case there is an outer BatchTask which
+                    // needs to be executed first
                     throw new UnresolvedImportException(e, details.toString());
                 }
-                
+
                 // Record failed execution
                 loopDetection.add(task);
                 deferralReasons.add(e);
             }
         }
     }
-    
+
     /**
      * Locate the latest task execution compatible with the given task configuration.
      * 
@@ -290,13 +292,23 @@ public class BatchTaskEngine
         Map<String, String> config = new HashMap<String, String>();
         for (Entry<String, Object> e : aConfig.entrySet()) {
             config.put(e.getKey(), Util.toString(e.getValue()));
+
+            // If the conversion service has a registered value override the constraint here
+            // accordingly
+            Object object = e.getValue();
+            ConversionService cs = aContext.getConversionService();
+            if (cs.isRegistered(object)) {
+                config.put(e.getKey(), cs.getDiscriminableValue(object));
+            }
         }
 
         StorageService storage = aContext.getStorageService();
         List<TaskContextMetadata> metas = storage.getContexts(aType, aDiscriminators);
         for (TaskContextMetadata meta : metas) {
-            Map<String, String> discriminators = storage.retrieveBinary(meta.getId(),
-                    Task.DISCRIMINATORS_KEY, new PropertiesAdapter()).getMap();
+            Map<String, String> discriminators = storage
+                    .retrieveBinary(meta.getId(), Task.DISCRIMINATORS_KEY, new PropertiesAdapter())
+                    .getMap();
+
             // Check if the task is compatible with the current configuration. To do this, we
             // interpret the discriminators as constraints on the current configuration.
             if (ImportUtil.matchConstraints(discriminators, config, false)) {
@@ -318,18 +330,18 @@ public class BatchTaskEngine
      *            the current parameter configuration.
      * @return the context meta data.
      */
-    protected TaskContextMetadata runNewExecution(TaskContext aContext, Task aTask, Map<String, Object> aConfig,
-            Set<String> aScope)
-        throws ExecutionException, LifeCycleException
+    protected TaskContextMetadata runNewExecution(TaskContext aContext, Task aTask,
+            Map<String, Object> aConfig, Set<String> aScope)
+                throws ExecutionException, LifeCycleException
     {
         TaskExecutionService execService = aContext.getExecutionService();
         TaskExecutionEngine engine = execService.createEngine(aTask);
-        engine.setContextFactory(new ScopedTaskContextFactory(execService
-                .getContextFactory(), aConfig, aScope));
+        engine.setContextFactory(
+                new ScopedTaskContextFactory(execService.getContextFactory(), aConfig, aScope));
         String uuid = engine.run(aTask);
         return aContext.getStorageService().getContext(uuid);
     }
-    
+
     /**
      * Locate the latest task execution compatible with the given task configuration.
      * 
@@ -377,8 +389,8 @@ public class BatchTaskEngine
                     return meta;
                 }
             default:
-                throw new IllegalStateException("Unknown executionPolicy ["
-                        + aConfiguration.getExecutionPolicy() + "]");
+                throw new IllegalStateException(
+                        "Unknown executionPolicy [" + aConfiguration.getExecutionPolicy() + "]");
             }
         }
         catch (TaskContextNotFoundException e) {
@@ -436,6 +448,7 @@ public class BatchTaskEngine
             ctx.setExecutionService(getExecutionService());
             ctx.setLifeCycleManager(getLifeCycleManager());
             ctx.setStorageService(getStorageService());
+            ctx.setConversionService(getConversionService());
             ctx.setLoggingService(getLoggingService());
             ctx.setMetadata(aMetadata);
             ctx.setConfig(config);
@@ -484,6 +497,12 @@ public class BatchTaskEngine
         {
             return contextFactory.getExecutionService();
         }
+
+        @Override
+        public ConversionService getConversionService()
+        {
+            return contextFactory.getConversionService();
+        }
     }
 
     private class ScopedTaskContext
@@ -530,13 +549,13 @@ public class BatchTaskEngine
                 }
             }
             else {
-                throw new DataAccessResourceFailureException("Unknown scheme in import [" + aUri
-                        + "]");
+                throw new DataAccessResourceFailureException(
+                        "Unknown scheme in import [" + aUri + "]");
             }
 
             if (!scope.contains(meta.getId())) {
-                throw new UnresolvedImportException(this, aUri.toString(), "Resolved context ["
-                        + meta.getId() + "] not in scope " + scope);
+                throw new UnresolvedImportException(this, aUri.toString(),
+                        "Resolved context [" + meta.getId() + "] not in scope " + scope);
             }
 
             return meta;
