@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2011
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  *
@@ -57,6 +57,8 @@ public class TaskBase
 	private Map<String, String> imports;
 	private Map<String, String> attributes;
 	private Map<String, String> discriminators;
+	private Map<String, String> analyzedAttributes;
+    private Map<String, String> analyzedDiscriminators;
 	private List<Class<? extends Report>> reports;
 	
 	private boolean initialized = false;
@@ -65,7 +67,9 @@ public class TaskBase
 
 	{
 		attributes = new HashMap<String, String>();
+		analyzedAttributes = new HashMap<String, String>();
 		discriminators = new HashMap<String, String>();
+		analyzedDiscriminators = new HashMap<String, String>();
 		reports = new ArrayList<Class<? extends Report>>();
 		imports = new HashMap<String, String>();
 	}
@@ -109,10 +113,10 @@ public class TaskBase
 	@Override
 	public final void analyze()
 	{
-        attributes = new HashMap<String, String>();
-        discriminators = new HashMap<String, String>();
-        analyze(getClass(), Property.class, attributes);
-        analyze(getClass(), Discriminator.class, discriminators);
+	    analyzedAttributes = new HashMap<String, String>();
+        analyzedDiscriminators = new HashMap<String, String>();
+        analyze(getClass(), Property.class, analyzedAttributes);
+        analyze(getClass(), Discriminator.class, analyzedDiscriminators);
 	}
 	
 	@Override
@@ -138,6 +142,7 @@ public class TaskBase
 	@Override
 	public void setAttribute(String aKey, String aValue)
 	{
+	    
 		if (aKey == null) {
 			throw new IllegalArgumentException("Must specify a key");
 		}
@@ -152,13 +157,22 @@ public class TaskBase
 	@Override
 	public String getAttribute(String aKey)
 	{
+	    String value = analyzedAttributes.get(aKey);
+	    if(value != null){
+	        return value;
+	    }
+	    
 		return attributes.get(aKey);
 	}
 
 	@Override
 	public Map<String, String> getAttributes()
 	{
-		return attributes;
+	    Map<String, String> allAttributes = new HashMap<>();
+	    allAttributes.putAll(attributes);
+	    allAttributes.putAll(analyzedAttributes);
+	    
+		return allAttributes;
 	}
 
 	@Override
@@ -178,13 +192,21 @@ public class TaskBase
 	@Override
 	public String getDescriminator(String aKey)
 	{
+	    String value = analyzedDiscriminators.get(aKey);
+	    if(value != null){
+	        return value;
+	    }
+	    
 		return discriminators.get(aKey);
 	}
 
 	@Override
 	public Map<String, String> getDescriminators()
 	{
-		return discriminators;
+	    Map<String,String> allDiscriminators = new HashMap<>();
+        allDiscriminators.putAll(discriminators);
+        allDiscriminators.putAll(analyzedDiscriminators);
+		return allDiscriminators;
 	}
 
 	@Override
