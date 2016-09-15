@@ -55,7 +55,7 @@ public class TaskBase
 
 	private String type;
 	private Map<String, String> imports;
-	private Map<String, String> properties;
+	private Map<String, String> attributes;
 	private Map<String, String> discriminators;
 	private List<Class<? extends Report>> reports;
 	
@@ -64,7 +64,7 @@ public class TaskBase
     private TaskContext aContext;
 
 	{
-		properties = new HashMap<String, String>();
+		attributes = new HashMap<String, String>();
 		discriminators = new HashMap<String, String>();
 		reports = new ArrayList<Class<? extends Report>>();
 		imports = new HashMap<String, String>();
@@ -109,9 +109,9 @@ public class TaskBase
 	@Override
 	public final void analyze()
 	{
-        properties = new HashMap<String, String>();
+        attributes = new HashMap<String, String>();
         discriminators = new HashMap<String, String>();
-        analyze(getClass(), Property.class, properties);
+        analyze(getClass(), Property.class, attributes);
         analyze(getClass(), Discriminator.class, discriminators);
 	}
 	
@@ -142,23 +142,23 @@ public class TaskBase
 			throw new IllegalArgumentException("Must specify a key");
 		}
 		if (aValue == null) {
-			properties.remove(aKey);
+			attributes.remove(aKey);
 		}
 		else {
-			properties.put(aKey, aValue);
+			attributes.put(aKey, aValue);
 		}
 	}
 
 	@Override
 	public String getAttribute(String aKey)
 	{
-		return properties.get(aKey);
+		return attributes.get(aKey);
 	}
 
 	@Override
 	public Map<String, String> getAttributes()
 	{
-		return properties;
+		return attributes;
 	}
 
 	@Override
@@ -382,7 +382,7 @@ public class TaskBase
                             + getClass().getName() + "]?");
         }
 	    
-		aContext.storeBinary(PROPERTIES_KEY, new PropertiesAdapter(getAttributes(), "Task properties"));
+		aContext.storeBinary(ATTRIBUTES_KEY, new PropertiesAdapter(getAttributes(), "Task properties"));
 
 		aContext.storeBinary(DISCRIMINATORS_KEY, new PropertiesAdapter(getResolvedDescriminators(aContext)));
 	}

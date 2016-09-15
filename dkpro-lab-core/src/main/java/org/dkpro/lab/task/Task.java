@@ -31,7 +31,7 @@ import org.dkpro.lab.reporting.Report;
  */
 public interface Task
 {
-	public static final String PROPERTIES_KEY = "PROPERTIES.txt";
+	public static final String ATTRIBUTES_KEY = "ATTRIBUTES.txt";
 	public static final String DISCRIMINATORS_KEY = "DISCRIMINATORS.txt";
 
 	String getType();

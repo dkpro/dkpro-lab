@@ -43,7 +43,7 @@ public abstract class ReportBase
 	implements Report
 {
 	private TaskContext context;
-	private Map<String, String> properties;
+	private Map<String, String> attributes;
 	private Map<String, String> discriminators;
 
 	@Override
@@ -58,14 +58,14 @@ public abstract class ReportBase
 	}
 
 	/**
-	 * Convenience method to fetch the properties stored in the task context.
+	 * Convenience method to fetch the attributes stored in the task context.
 	 */
-	public Map<String, String> getProperties()
+	public Map<String, String> getAttributes()
 	{
-		if (properties == null) {
-			properties = retrieveBinary(Task.PROPERTIES_KEY, new PropertiesAdapter()).getMap();
+		if (attributes == null) {
+			attributes = retrieveBinary(Task.ATTRIBUTES_KEY, new PropertiesAdapter()).getMap();
 		}
-		return properties;
+		return attributes;
 	}
 
 	/**
@@ -136,7 +136,7 @@ public abstract class ReportBase
 	 */
 	protected String getContextLabel(String aContextId)
 	{
-		String func = getProperties().get(TASK_LABEL_FUNC_PROP);
+		String func = getAttributes().get(TASK_LABEL_FUNC_PROP);
 		String result = null;
 		if (func != null) {
 			LabelFunction lf;
