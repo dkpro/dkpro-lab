@@ -192,5 +192,9 @@ public interface Task
 
 	void removeReport(Class<? extends Report> aReport);
 
-	List<Class<? extends Report>> getReports();	
+	List<Class<? extends Report>> getReports();
+
+    void markExecuted();
+    
+    boolean didTaskRun();
 }

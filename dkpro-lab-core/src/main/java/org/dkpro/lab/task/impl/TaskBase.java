@@ -62,6 +62,7 @@ public class TaskBase
 	private List<Class<? extends Report>> reports;
 	
 	private boolean initialized = false;
+	private boolean didRun = false;
 
     private TaskContext aContext;
 
@@ -142,6 +143,9 @@ public class TaskBase
 	@Override
 	public void setAttribute(String aKey, String aValue)
 	{
+	    if(didTaskRun()){
+	        throw new IllegalStateException("[An already executed Task cannot be modified]");
+	    }
 	    
 		if (aKey == null) {
 			throw new IllegalArgumentException("Must specify a key");
@@ -178,6 +182,10 @@ public class TaskBase
 	@Override
 	public void setDescriminator(String aKey, String aValue)
 	{
+	    if(didTaskRun()){
+            throw new IllegalStateException("[An already executed Task cannot be modified]");
+        }
+	    
 		if (aKey == null) {
 			throw new IllegalArgumentException("Must specify a key");
 		}
@@ -456,4 +464,16 @@ public class TaskBase
 			}
 		}
 	}
+
+    @Override
+    public void markExecuted()
+    {
+        didRun = true;
+    }
+
+    @Override
+    public boolean didTaskRun()
+    {
+        return didRun;
+    }
 }

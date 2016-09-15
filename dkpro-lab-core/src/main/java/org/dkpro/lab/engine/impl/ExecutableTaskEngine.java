@@ -68,6 +68,8 @@ public class ExecutableTaskEngine
                 throw new ExecutionException(e);
             }
 
+            aConfiguration.markExecuted();
+            
             // End recording (here the reports will nbe done)
             ctx.getLifeCycleManager().complete(ctx, aConfiguration);
 
