@@ -157,6 +157,21 @@ public class TaskBase
 			attributes.put(aKey, aValue);
 		}
 	}
+	
+    @Override
+    public void setTransientAttribute(String aKey, String aValue)
+    {
+        if (aKey == null) {
+            throw new IllegalArgumentException("Must specify a key");
+        }
+        if (aValue == null) {
+            analyzedAttributes.remove(aKey);
+        }
+        else {
+            analyzedAttributes.put(aKey, aValue);
+        }
+        
+    }
 
 	@Override
 	public String getAttribute(String aKey)
@@ -476,4 +491,5 @@ public class TaskBase
     {
         return didRun;
     }
+
 }

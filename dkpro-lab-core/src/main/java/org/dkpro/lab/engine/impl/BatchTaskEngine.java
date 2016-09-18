@@ -138,7 +138,7 @@ public class BatchTaskEngine
 
                 // Set the subtask property and persist again, so the property is available to
                 // reports
-                cfg.setAttribute(SUBTASKS_KEY, executedSubtasks.toString());
+                cfg.setTransientAttribute(SUBTASKS_KEY, executedSubtasks.toString());
                 cfg.persist(ctx);
             }
             catch (LifeCycleException e) {

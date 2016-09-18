@@ -59,6 +59,11 @@ public interface Task
 	 * @param aValue the value.
 	 */
 	void setAttribute(String aKey, String aValue);
+	
+	/**
+	 * Attributes that are set by Lab to pass information between task
+	 */
+	void setTransientAttribute(String aKey, String aValue);
 
 	String getAttribute(String aKey);
 

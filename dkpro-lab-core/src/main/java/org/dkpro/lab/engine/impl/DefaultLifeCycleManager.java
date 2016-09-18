@@ -102,6 +102,8 @@ public class DefaultLifeCycleManager
 		catch (IOException e) {
 			throw new LifeCycleException(e);
 		}
+		
+        aConfiguration.markExecuted();
 	}
 
 	@Override
