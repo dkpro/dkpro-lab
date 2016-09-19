@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2014
+ * Copyright 2016
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  *   
@@ -74,27 +74,4 @@ public class TaskBaseTest {
         consumer.setAttribute("DUMMY_KEY_2", "1234");
 	}
 	
-	@Test(expected=IllegalStateException.class)
-    public void settingDiscriminatorsNotAllowedAfterTaskRan() throws Exception{
-        
-        Task consumer = new ExecutableTaskBase()
-        {
-            @Override
-            public void execute(TaskContext aContext)
-                throws Exception
-            {
-               //do nothing
-            }
-        };
-        
-        //this should still work
-        consumer.setDescriminator("DUMMY_KEY", "123");
-
-        DefaultBatchTask batch = new DefaultBatchTask();
-        batch.addTask(consumer);
-        Lab.getInstance().run(batch);
-        
-        //Task did run - no modification allowed
-        consumer.setDescriminator("DUMMY_KEY_2", "1234");
-    }
 }

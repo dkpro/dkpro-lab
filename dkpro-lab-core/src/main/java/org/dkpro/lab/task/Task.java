@@ -69,16 +69,6 @@ public interface Task
 
 	public Map<String, String> getAttributes();
 
-	/**
-	 * Set a task descriminator.
-	 *
-	 * @param aKey the descriminator name.
-	 * @param aValue the value.
-	 * 
-	 * @see #getDescriminators()
-	 */
-	void setDescriminator(String aKey, String aValue);
-
 	String getDescriminator(String aKey);
 
 	/**

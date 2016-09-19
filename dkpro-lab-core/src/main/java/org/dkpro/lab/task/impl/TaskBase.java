@@ -56,9 +56,8 @@ public class TaskBase
 	private String type;
 	private Map<String, String> imports;
 	private Map<String, String> attributes;
-	private Map<String, String> discriminators;
 	private Map<String, String> analyzedAttributes;
-    private Map<String, String> analyzedDiscriminators;
+    private Map<String, String> discriminators;
 	private List<Class<? extends Report>> reports;
 	
 	private boolean initialized = false;
@@ -70,7 +69,6 @@ public class TaskBase
 		attributes = new HashMap<String, String>();
 		analyzedAttributes = new HashMap<String, String>();
 		discriminators = new HashMap<String, String>();
-		analyzedDiscriminators = new HashMap<String, String>();
 		reports = new ArrayList<Class<? extends Report>>();
 		imports = new HashMap<String, String>();
 	}
@@ -115,9 +113,9 @@ public class TaskBase
 	public final void analyze()
 	{
 	    analyzedAttributes = new HashMap<String, String>();
-        analyzedDiscriminators = new HashMap<String, String>();
+        discriminators = new HashMap<String, String>();
         analyze(getClass(), Property.class, analyzedAttributes);
-        analyze(getClass(), Discriminator.class, analyzedDiscriminators);
+        analyze(getClass(), Discriminator.class, discriminators);
 	}
 	
 	@Override
@@ -195,41 +193,15 @@ public class TaskBase
 	}
 
 	@Override
-	public void setDescriminator(String aKey, String aValue)
-	{
-	    if(didTaskRun()){
-            throw new IllegalStateException("[An already executed Task cannot be modified]");
-        }
-	    
-		if (aKey == null) {
-			throw new IllegalArgumentException("Must specify a key");
-		}
-		if (aValue == null) {
-			discriminators.remove(aKey);
-		}
-		else {
-			discriminators.put(aKey, aValue);
-		}
-	}
-
-	@Override
 	public String getDescriminator(String aKey)
 	{
-	    String value = analyzedDiscriminators.get(aKey);
-	    if(value != null){
-	        return value;
-	    }
-	    
 		return discriminators.get(aKey);
 	}
 
 	@Override
 	public Map<String, String> getDescriminators()
 	{
-	    Map<String,String> allDiscriminators = new HashMap<>();
-        allDiscriminators.putAll(discriminators);
-        allDiscriminators.putAll(analyzedDiscriminators);
-		return allDiscriminators;
+		return discriminators;
 	}
 
 	@Override
