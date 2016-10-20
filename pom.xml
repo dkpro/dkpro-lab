@@ -16,7 +16,7 @@
   </parent>
   <groupId>org.dkpro.lab</groupId>
   <artifactId>dkpro-lab</artifactId>
-  <version>0.13.0</version>
+  <version>0.14.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>DKPro Lab</name>
   <url>http://dkpro.github.io/dkpro-lab/</url>
@@ -75,37 +75,37 @@
       <dependency>
         <groupId>org.dkpro.lab</groupId>
         <artifactId>dkpro-lab-core</artifactId>
-        <version>0.13.0</version>
+        <version>0.14.0-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.dkpro.lab</groupId>
         <artifactId>dkpro-lab-groovy</artifactId>
-        <version>0.13.0</version>
+        <version>0.14.0-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.dkpro.lab</groupId>
         <artifactId>dkpro-lab-ml-example</artifactId>
-        <version>0.13.0</version>
+        <version>0.14.0-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.dkpro.lab</groupId>
         <artifactId>dkpro-lab-support-slf4j</artifactId>
-        <version>0.13.0</version>
+        <version>0.14.0-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.dkpro.lab</groupId>
         <artifactId>dkpro-lab-uima</artifactId>
-        <version>0.13.0</version>
+        <version>0.14.0-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.dkpro.lab</groupId>
         <artifactId>dkpro-lab-uima-engine-cpe</artifactId>
-        <version>0.13.0</version>
+        <version>0.14.0-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.dkpro.lab</groupId>
         <artifactId>dkpro-lab-uima-engine-simple</artifactId>
-        <version>0.13.0</version>
+        <version>0.14.0-SNAPSHOT</version>
       </dependency>
 
       <!-- UIMA/UIMAFIT -->
@@ -312,7 +312,7 @@
       <dependency>
         <groupId>org.dkpro.lab</groupId>
         <artifactId>dkpro-lab-uima-engine-uimaas</artifactId>
-        <version>0.13.0</version>
+        <version>0.14.0-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.apache.uima</groupId>
@@ -388,7 +388,7 @@
     <connection>scm:git:https://github.com/dkpro/dkpro-lab.git</connection>
     <developerConnection>scm:git:https://github.com/dkpro/dkpro-lab.git</developerConnection>
     <url>https://github.com/dkpro/dkpro-lab</url>
-    <tag>dkpro-lab-0.13.0</tag>
+    <tag>HEAD</tag>
   </scm>
   <build>
     <pluginManagement>
