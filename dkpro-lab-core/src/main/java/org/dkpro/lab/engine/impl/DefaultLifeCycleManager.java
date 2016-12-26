@@ -124,24 +124,23 @@ public class DefaultLifeCycleManager
 		aContext.getMetadata().setEnd(System.currentTimeMillis());
 		aContext.message("Completing task ["+aConfiguration.getType()+"]");
 		aContext.message("Running reports for task ["+aConfiguration.getType()+"]");
-		List<Class<? extends Report>> reports = new ArrayList<Class<? extends Report>>(
-				aConfiguration.getReports());
+		List<Report> reports = new ArrayList<Report>(aConfiguration.getReports());
 		int i = 1;
-		for (Class<? extends Report> reportClass : reports) {
+		for (Report report : reports) {
 			for (int g = 0; g < 3; g++) {
 				System.gc();
 			}
 			try {
-				aContext.message("Starting report [" + reportClass.getName() + "] (" + i + "/"
+				aContext.message("Starting report [" + report.getClass().getName() + "] (" + i + "/"
 						+ reports.size() + ")");
-				Report report = reportClass.newInstance();
+//				Report report = reportClass.newInstance();
 				report.setContext(aContext);
 				report.execute();
-				aContext.message("Report complete [" + reportClass.getName() + "] (" + i + "/"
+				aContext.message("Report complete [" + report.getClass().getName() + "] (" + i + "/"
 						+ reports.size() + ")");
 			}
 			catch (Exception e) {
-				aContext.error("Report failed [" + reportClass.getName() + "] (" + i + "/"
+				aContext.error("Report failed [" + report.getClass().getName() + "] (" + i + "/"
 						+ reports.size() + ")", e);
 				throw new LifeCycleException(e);
 			}

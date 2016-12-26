@@ -22,6 +22,7 @@ import java.io.File;
 import org.apache.commons.io.FileUtils;
 import org.dkpro.lab.Lab;
 import org.dkpro.lab.engine.TaskContext;
+import org.dkpro.lab.reporting.Report;
 import org.dkpro.lab.task.impl.DefaultBatchTask;
 import org.dkpro.lab.task.impl.ExecutableTaskBase;
 import org.dkpro.lab.task.impl.TaskBase;
@@ -45,10 +46,18 @@ public class TaskBaseTest {
     }
 
 	@Test(expected=IllegalArgumentException.class)
-	public void nullReportTest() {
+	public void nullReportTest() throws InstantiationException, IllegalAccessException {
 		TaskBase base = new TaskBase();
-		base.addReport(null);
+		Class<? extends Report> dummyReport = null;
+		base.addReport(dummyReport);
 	}
+	
+    @Test(expected=IllegalArgumentException.class)
+    public void nullReportTest2() {
+        TaskBase base = new TaskBase();
+        Report dummyReport = null;
+        base.addReport(dummyReport);
+    }	
 	
 	@Test(expected=IllegalStateException.class)
 	public void settingAttributesNotAllowedAfterTaskRan() throws Exception{

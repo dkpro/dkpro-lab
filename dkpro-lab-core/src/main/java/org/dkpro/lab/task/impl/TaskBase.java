@@ -58,7 +58,7 @@ public class TaskBase
 	private Map<String, String> attributes;
 	private Map<String, String> analyzedAttributes;
     private Map<String, String> discriminators;
-	private List<Class<? extends Report>> reports;
+	private List<Report> reports;
 	
 	private boolean initialized = false;
 	private boolean didRun = false;
@@ -69,7 +69,7 @@ public class TaskBase
 		attributes = new HashMap<String, String>();
 		analyzedAttributes = new HashMap<String, String>();
 		discriminators = new HashMap<String, String>();
-		reports = new ArrayList<Class<? extends Report>>();
+		reports = new ArrayList<Report>();
 		imports = new HashMap<String, String>();
 	}
 
@@ -363,28 +363,16 @@ public class TaskBase
 		return imports;
 	}
 
-	@Override
-	public void addReport(Class<? extends Report> aReport)
+	public void setReports(List<Report> aReports)
 	{
-		if (aReport == null) {
-			throw new IllegalArgumentException("Report class cannot be null.");
+		reports = new ArrayList<Report>(aReports);
+		for(Report r : aReports){
+		    reports.add(r);
 		}
-		reports.add(aReport);
 	}
 
 	@Override
-	public void removeReport(Class<? extends Report> aReport)
-	{
-		reports.remove(aReport);
-	}
-
-	public void setReports(List<Class<? extends Report>> aReports)
-	{
-		reports = new ArrayList<Class<? extends Report>>(aReports);
-	}
-
-	@Override
-	public List<Class<? extends Report>> getReports()
+	public List<Report> getReports()
 	{
 		return reports;
 	}
@@ -462,6 +450,43 @@ public class TaskBase
     public boolean didTaskRun()
     {
         return didRun;
+    }
+
+    @Override
+    public void removeReport(Report aReport)
+    {
+        reports.remove(aReport);
+    }
+    
+    @Override
+    public void removeReport(Class<? extends Report> aReport)
+    {
+        List<Integer> idx = new ArrayList<>();
+        for (int i=0; i < reports.size(); i++){
+            if (reports.get(i).getClass().equals(aReport)){
+                idx.add(i);
+            }
+        }
+        
+        idx.forEach(x->reports.remove(x));
+    }
+
+    @Override
+    public void addReport(Class<? extends Report> aReport) throws InstantiationException, IllegalAccessException
+    {
+        if (aReport == null) {
+            throw new IllegalArgumentException("Report class cannot be null.");
+        }
+        reports.add(aReport.newInstance());
+    }
+    
+    @Override
+    public void addReport(Report aReport)
+    {
+        if (aReport == null) {
+            throw new IllegalArgumentException("Report class cannot be null.");
+        }
+        reports.add(aReport);
     }
 
 }

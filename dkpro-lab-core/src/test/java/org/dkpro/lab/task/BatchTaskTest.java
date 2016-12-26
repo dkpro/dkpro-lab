@@ -95,7 +95,7 @@ public class BatchTaskTest
     public void testNested()
         throws Exception
     {
-        Dimension innerDim = Dimension.create("inner", "1", "2", "3");
+        Dimension<String> innerDim = Dimension.create("inner", "1", "2", "3");
         ParameterSpace innerPSpace = new ParameterSpace(innerDim);
         DefaultBatchTask innerTask = new DefaultBatchTask()
         {
@@ -109,7 +109,7 @@ public class BatchTaskTest
         innerTask.setParameterSpace(innerPSpace);
         innerTask.addTask(new ConfigDumperTask1());
 
-        Dimension outerDim = Dimension.create("outer", "1", "2", "3");
+        Dimension<String> outerDim = Dimension.create("outer", "1", "2", "3");
         ParameterSpace outerPSpace = new ParameterSpace(outerDim);
         DefaultBatchTask outerTask = new DefaultBatchTask()
         {
