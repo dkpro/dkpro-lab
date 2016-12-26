@@ -183,7 +183,7 @@ public interface Task
 	 *
 	 * @param aReport the report class to be executed.
 	 */
-	void addReport(Class<? extends Report> aReport) throws InstantiationException, IllegalAccessException;
+	void addReport(Class<? extends Report> aReport);
 	
 	void addReport(Report aReport);
 

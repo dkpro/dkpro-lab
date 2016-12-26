@@ -472,12 +472,17 @@ public class TaskBase
     }
 
     @Override
-    public void addReport(Class<? extends Report> aReport) throws InstantiationException, IllegalAccessException
+    public void addReport(Class<? extends Report> aReport) 
     {
         if (aReport == null) {
             throw new IllegalArgumentException("Report class cannot be null.");
         }
-        reports.add(aReport.newInstance());
+        try {
+            reports.add(aReport.newInstance());
+        }
+        catch (InstantiationException | IllegalAccessException e) {
+            throw new IllegalArgumentException(e);
+        }
     }
     
     @Override
