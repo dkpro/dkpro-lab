@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2016
+ * Copyright 2014
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  *   
@@ -22,7 +22,6 @@ import java.io.File;
 import org.apache.commons.io.FileUtils;
 import org.dkpro.lab.Lab;
 import org.dkpro.lab.engine.TaskContext;
-import org.dkpro.lab.reporting.Report;
 import org.dkpro.lab.task.impl.DefaultBatchTask;
 import org.dkpro.lab.task.impl.ExecutableTaskBase;
 import org.dkpro.lab.task.impl.TaskBase;
@@ -46,18 +45,10 @@ public class TaskBaseTest {
     }
 
 	@Test(expected=IllegalArgumentException.class)
-	public void nullReportTest() throws InstantiationException, IllegalAccessException {
+	public void nullReportTest() {
 		TaskBase base = new TaskBase();
-		Class<? extends Report> dummyReport = null;
-		base.addReport(dummyReport);
+		base.addReport(null);
 	}
-	
-    @Test(expected=IllegalArgumentException.class)
-    public void nullReportTest2() {
-        TaskBase base = new TaskBase();
-        Report dummyReport = null;
-        base.addReport(dummyReport);
-    }	
 	
 	@Test(expected=IllegalStateException.class)
 	public void settingAttributesNotAllowedAfterTaskRan() throws Exception{
@@ -83,4 +74,27 @@ public class TaskBaseTest {
         consumer.setAttribute("DUMMY_KEY_2", "1234");
 	}
 	
+	@Test(expected=IllegalStateException.class)
+    public void settingDiscriminatorsNotAllowedAfterTaskRan() throws Exception{
+        
+        Task consumer = new ExecutableTaskBase()
+        {
+            @Override
+            public void execute(TaskContext aContext)
+                throws Exception
+            {
+               //do nothing
+            }
+        };
+        
+        //this should still work
+        consumer.setDescriminator("DUMMY_KEY", "123");
+
+        DefaultBatchTask batch = new DefaultBatchTask();
+        batch.addTask(consumer);
+        Lab.getInstance().run(batch);
+        
+        //Task did run - no modification allowed
+        consumer.setDescriminator("DUMMY_KEY_2", "1234");
+    }
 }

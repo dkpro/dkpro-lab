@@ -56,9 +56,10 @@ public class TaskBase
 	private String type;
 	private Map<String, String> imports;
 	private Map<String, String> attributes;
+	private Map<String, String> discriminators;
 	private Map<String, String> analyzedAttributes;
-    private Map<String, String> discriminators;
-	private List<Report> reports;
+    private Map<String, String> analyzedDiscriminators;
+	private List<Class<? extends Report>> reports;
 	
 	private boolean initialized = false;
 	private boolean didRun = false;
@@ -69,7 +70,8 @@ public class TaskBase
 		attributes = new HashMap<String, String>();
 		analyzedAttributes = new HashMap<String, String>();
 		discriminators = new HashMap<String, String>();
-		reports = new ArrayList<Report>();
+		analyzedDiscriminators = new HashMap<String, String>();
+		reports = new ArrayList<Class<? extends Report>>();
 		imports = new HashMap<String, String>();
 	}
 
@@ -113,9 +115,9 @@ public class TaskBase
 	public final void analyze()
 	{
 	    analyzedAttributes = new HashMap<String, String>();
-        discriminators = new HashMap<String, String>();
+        analyzedDiscriminators = new HashMap<String, String>();
         analyze(getClass(), Property.class, analyzedAttributes);
-        analyze(getClass(), Discriminator.class, discriminators);
+        analyze(getClass(), Discriminator.class, analyzedDiscriminators);
 	}
 	
 	@Override
@@ -155,21 +157,6 @@ public class TaskBase
 			attributes.put(aKey, aValue);
 		}
 	}
-	
-    @Override
-    public void setTransientAttribute(String aKey, String aValue)
-    {
-        if (aKey == null) {
-            throw new IllegalArgumentException("Must specify a key");
-        }
-        if (aValue == null) {
-            analyzedAttributes.remove(aKey);
-        }
-        else {
-            analyzedAttributes.put(aKey, aValue);
-        }
-        
-    }
 
 	@Override
 	public String getAttribute(String aKey)
@@ -193,15 +180,41 @@ public class TaskBase
 	}
 
 	@Override
+	public void setDescriminator(String aKey, String aValue)
+	{
+	    if(didTaskRun()){
+            throw new IllegalStateException("[An already executed Task cannot be modified]");
+        }
+	    
+		if (aKey == null) {
+			throw new IllegalArgumentException("Must specify a key");
+		}
+		if (aValue == null) {
+			discriminators.remove(aKey);
+		}
+		else {
+			discriminators.put(aKey, aValue);
+		}
+	}
+
+	@Override
 	public String getDescriminator(String aKey)
 	{
+	    String value = analyzedDiscriminators.get(aKey);
+	    if(value != null){
+	        return value;
+	    }
+	    
 		return discriminators.get(aKey);
 	}
 
 	@Override
 	public Map<String, String> getDescriminators()
 	{
-		return discriminators;
+	    Map<String,String> allDiscriminators = new HashMap<>();
+        allDiscriminators.putAll(discriminators);
+        allDiscriminators.putAll(analyzedDiscriminators);
+		return allDiscriminators;
 	}
 
 	@Override
@@ -363,16 +376,28 @@ public class TaskBase
 		return imports;
 	}
 
-	public void setReports(List<Report> aReports)
+	@Override
+	public void addReport(Class<? extends Report> aReport)
 	{
-		reports = new ArrayList<Report>(aReports);
-		for(Report r : aReports){
-		    reports.add(r);
+		if (aReport == null) {
+			throw new IllegalArgumentException("Report class cannot be null.");
 		}
+		reports.add(aReport);
 	}
 
 	@Override
-	public List<Report> getReports()
+	public void removeReport(Class<? extends Report> aReport)
+	{
+		reports.remove(aReport);
+	}
+
+	public void setReports(List<Class<? extends Report>> aReports)
+	{
+		reports = new ArrayList<Class<? extends Report>>(aReports);
+	}
+
+	@Override
+	public List<Class<? extends Report>> getReports()
 	{
 		return reports;
 	}
@@ -451,47 +476,4 @@ public class TaskBase
     {
         return didRun;
     }
-
-    @Override
-    public void removeReport(Report aReport)
-    {
-        reports.remove(aReport);
-    }
-    
-    @Override
-    public void removeReport(Class<? extends Report> aReport)
-    {
-        List<Integer> idx = new ArrayList<>();
-        for (int i=0; i < reports.size(); i++){
-            if (reports.get(i).getClass().equals(aReport)){
-                idx.add(i);
-            }
-        }
-        
-        idx.forEach(x->reports.remove(x));
-    }
-
-    @Override
-    public void addReport(Class<? extends Report> aReport) 
-    {
-        if (aReport == null) {
-            throw new IllegalArgumentException("Report class cannot be null.");
-        }
-        try {
-            reports.add(aReport.newInstance());
-        }
-        catch (InstantiationException | IllegalAccessException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-    
-    @Override
-    public void addReport(Report aReport)
-    {
-        if (aReport == null) {
-            throw new IllegalArgumentException("Report class cannot be null.");
-        }
-        reports.add(aReport);
-    }
-
 }

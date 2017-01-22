@@ -59,15 +59,20 @@ public interface Task
 	 * @param aValue the value.
 	 */
 	void setAttribute(String aKey, String aValue);
-	
-	/**
-	 * Attributes that are set by Lab to pass information between task
-	 */
-	void setTransientAttribute(String aKey, String aValue);
 
 	String getAttribute(String aKey);
 
 	public Map<String, String> getAttributes();
+
+	/**
+	 * Set a task descriminator.
+	 *
+	 * @param aKey the descriminator name.
+	 * @param aValue the value.
+	 * 
+	 * @see #getDescriminators()
+	 */
+	void setDescriminator(String aKey, String aValue);
 
 	String getDescriminator(String aKey);
 
@@ -184,14 +189,10 @@ public interface Task
 	 * @param aReport the report class to be executed.
 	 */
 	void addReport(Class<? extends Report> aReport);
-	
-	void addReport(Report aReport);
 
 	void removeReport(Class<? extends Report> aReport);
-	
-	void removeReport(Report aReport);
 
-	List<Report> getReports();
+	List<Class<? extends Report>> getReports();
 
     void markExecuted();
     
