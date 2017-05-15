@@ -21,6 +21,9 @@ import static org.dkpro.lab.storage.StorageService.CONTEXT_ID_SCHEME;
 import static org.dkpro.lab.storage.StorageService.LATEST_CONTEXT_SCHEME;
 
 import java.net.URI;
+import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
@@ -40,6 +43,7 @@ import org.dkpro.lab.task.TaskContextMetadata;
 import org.safehaus.uuid.UUIDGenerator;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.annotation.Required;
+import org.springframework.beans.factory.annotation.Value;
 
 public class DefaultTaskContextFactory
     implements BeanNameAware, TaskContextFactory
@@ -55,6 +59,9 @@ public class DefaultTaskContextFactory
 
     private String beanName;
 
+    @Value(value = "${context-id-pattern}")
+    private String contextIdPattern;
+    
     {
         contexts = new ConcurrentHashMap<String, TaskContext>();
     }
@@ -85,13 +92,8 @@ public class DefaultTaskContextFactory
     @Override
     public TaskContext createContext(Task aConfiguration)
     {
-        String shortName = aConfiguration.getType();
-        if (shortName.lastIndexOf('.') > -1) {
-            shortName = shortName.substring(shortName.lastIndexOf('.') + 1);
-        }
-
         TaskContextMetadata metadata = new TaskContextMetadata();
-        metadata.setId(shortName + "-" + nextId());
+        metadata.setId(nextId(aConfiguration));
         metadata.setType(aConfiguration.getType());
         metadata.setImports(aConfiguration.getImports());
 
@@ -155,9 +157,18 @@ public class DefaultTaskContextFactory
         }
     }
 
-    protected String nextId()
+    protected String nextId(Task aConfiguration)
     {
-        return UUIDGenerator.getInstance().generateTimeBasedUUID().toString();
+        String shortName = aConfiguration.getType();
+        if (shortName.lastIndexOf('.') > -1) {
+            shortName = shortName.substring(shortName.lastIndexOf('.') + 1);
+        }
+        
+        String uuid = UUIDGenerator.getInstance().generateTimeBasedUUID().toString();
+
+        String time = new SimpleDateFormat("yyyyMMddHHmm").format(new Date());
+        
+        return MessageFormat.format(contextIdPattern, shortName, time, uuid);
     }
 
     @Override

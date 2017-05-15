@@ -503,6 +503,12 @@ public class BatchTaskEngine
         {
             return contextFactory.getConversionService();
         }
+        
+        @Override
+        protected String nextId(Task aConfiguration)
+        {
+            return contextFactory.nextId(aConfiguration);
+        }
     }
 
     private class ScopedTaskContext
