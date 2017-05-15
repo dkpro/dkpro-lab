@@ -56,6 +56,7 @@ public class DefaultTaskContextFactory
     private ConversionService conversionService;
     private LifeCycleManager lifeCycleManager;
     private TaskExecutionService executionService;
+    private Date lastDate = new Date();
 
     private String beanName;
 
@@ -157,8 +158,13 @@ public class DefaultTaskContextFactory
         }
     }
 
-    protected String nextId(Task aConfiguration)
+    protected synchronized String nextId(Task aConfiguration) 
     {
+        Date now = new Date();
+        if(now.getTime() == lastDate.getTime()){
+            now = new Date();
+        }
+        
         String shortName = aConfiguration.getType();
         if (shortName.lastIndexOf('.') > -1) {
             shortName = shortName.substring(shortName.lastIndexOf('.') + 1);
@@ -166,7 +172,8 @@ public class DefaultTaskContextFactory
         
         String uuid = UUIDGenerator.getInstance().generateTimeBasedUUID().toString();
 
-        String time = new SimpleDateFormat("yyyyMMddHHmm").format(new Date());
+        String time = new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date());
+        lastDate = now;
         
         return MessageFormat.format(contextIdPattern, shortName, time, uuid);
     }

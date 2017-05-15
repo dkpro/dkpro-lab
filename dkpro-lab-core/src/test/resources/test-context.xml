@@ -8,7 +8,7 @@
         <property name="ignoreResourceNotFound" value="true" />
         <property name="properties">
             <props>
-                <prop key="context-id-pattern">{0}-{2}</prop>
+                <prop key="context-id-pattern">{0}-{1}</prop>
             </props>
         </property>
     </bean>
