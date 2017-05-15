@@ -57,6 +57,7 @@ public class DefaultTaskContextFactory
     private ConversionService conversionService;
     private LifeCycleManager lifeCycleManager;
     private TaskExecutionService executionService;
+    private Date lastDate = new Date();
 
     private String beanName;
 
@@ -160,6 +161,8 @@ public class DefaultTaskContextFactory
 
     protected synchronized String nextId(Task aConfiguration) 
     {
+    	Date now = ensureUnsuedDateObject();
+    	
         String shortName = aConfiguration.getType();
         if (shortName.lastIndexOf('.') > -1) {
             shortName = shortName.substring(shortName.lastIndexOf('.') + 1);
@@ -172,7 +175,24 @@ public class DefaultTaskContextFactory
         return MessageFormat.format(contextIdPattern, shortName, time, uuid);
     }
 
-    @Override
+	private Date ensureUnsuedDateObject() {
+		// for the case the time stamp is exclusively used as pattern we have to
+		// ensure uniqueness
+		Date now = new Date();
+		if (now.getTime() == lastDate.getTime()) {
+			try {
+				wait(2000);
+			} catch (InterruptedException e) {
+				// Ignore silently
+			}
+			now = new Date();
+		}
+		lastDate = now;
+
+		return now;
+	}
+
+	@Override
     public void setBeanName(String aName)
     {
         try {
