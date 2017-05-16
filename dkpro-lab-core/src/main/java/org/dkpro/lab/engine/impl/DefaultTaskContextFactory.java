@@ -181,7 +181,7 @@ public class DefaultTaskContextFactory
 		Date now = new Date();
 		if (now.getTime() == lastDate.getTime()) {
 			try {
-				wait(2000);
+				wait(5);
 			} catch (InterruptedException e) {
 				// Ignore silently
 			}
