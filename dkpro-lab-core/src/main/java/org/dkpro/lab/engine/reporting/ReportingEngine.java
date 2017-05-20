@@ -70,4 +70,10 @@ public class ReportingEngine
 	{
 		contextFactory = aContextFactory;
 	}
+	
+    @Override
+    public TaskContextFactory getContextFactory()
+    {
+        return contextFactory;
+    }
 }

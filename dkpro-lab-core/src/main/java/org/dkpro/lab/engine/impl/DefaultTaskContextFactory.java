@@ -23,8 +23,10 @@ import static org.dkpro.lab.storage.StorageService.LATEST_CONTEXT_SCHEME;
 import java.net.URI;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
+import java.util.Set;
 import java.util.Map.Entry;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
@@ -262,5 +264,17 @@ public class DefaultTaskContextFactory
     public TaskExecutionService getExecutionService()
     {
         return executionService;
+    }
+    
+    @Override
+    public Set<String> getScope()
+    {
+        return Collections.emptySet();
+    }
+    
+    @Override
+    public Set<String> getTransitiveScope()
+    {
+        return getScope();
     }
 }

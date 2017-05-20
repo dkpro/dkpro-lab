@@ -186,4 +186,10 @@ public class SimpleExecutionEngine
     {
         contextFactory = aContextFactory;
     }
+    
+    @Override
+    public TaskContextFactory getContextFactory()
+    {
+        return contextFactory;
+    }
 }

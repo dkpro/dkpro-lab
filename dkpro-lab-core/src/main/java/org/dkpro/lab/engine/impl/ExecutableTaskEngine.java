@@ -87,4 +87,10 @@ public class ExecutableTaskEngine
     {
         contextFactory = aContextFactory;
     }
+    
+    @Override
+    public TaskContextFactory getContextFactory()
+    {
+        return contextFactory;
+    }
 }

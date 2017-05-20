@@ -172,6 +172,12 @@ public class BatchTaskEngine
     {
         contextFactory = aContextFactory;
     }
+    
+    @Override
+    public TaskContextFactory getContextFactory()
+    {
+        return contextFactory;
+    }
 
     /**
      * Locate the latest task execution compatible with the given task configuration.
@@ -336,8 +342,7 @@ public class BatchTaskEngine
     {
         TaskExecutionService execService = aContext.getExecutionService();
         TaskExecutionEngine engine = execService.createEngine(aTask);
-        engine.setContextFactory(
-                new ScopedTaskContextFactory(execService.getContextFactory(), aConfig, aScope));
+        engine.setContextFactory(new ScopedTaskContextFactory(contextFactory, aConfig, aScope));
         String uuid = engine.run(aTask);
         return aContext.getStorageService().getContext(uuid);
     }
@@ -429,14 +434,14 @@ public class BatchTaskEngine
     protected class ScopedTaskContextFactory
         extends DefaultTaskContextFactory
     {
-        private final DefaultTaskContextFactory contextFactory;
+        private final DefaultTaskContextFactory parentContextFactory;
         private final Map<String, Object> config;
         private final Set<String> scope;
 
         public ScopedTaskContextFactory(TaskContextFactory aContextFactory,
                 Map<String, Object> aConfig, Set<String> aScope)
         {
-            contextFactory = (DefaultTaskContextFactory) aContextFactory;
+            parentContextFactory = (DefaultTaskContextFactory) aContextFactory;
             config = aConfig;
             scope = aScope;
         }
@@ -444,7 +449,7 @@ public class BatchTaskEngine
         @Override
         protected TaskContext createContext(TaskContextMetadata aMetadata)
         {
-            ScopedTaskContext ctx = new ScopedTaskContext(contextFactory);
+            ScopedTaskContext ctx = new ScopedTaskContext(this);
             ctx.setExecutionService(getExecutionService());
             ctx.setLifeCycleManager(getLifeCycleManager());
             ctx.setStorageService(getStorageService());
@@ -452,62 +457,76 @@ public class BatchTaskEngine
             ctx.setLoggingService(getLoggingService());
             ctx.setMetadata(aMetadata);
             ctx.setConfig(config);
-            ctx.setScope(scope);
             return ctx;
         }
 
         @Override
         public void registerContext(TaskContext aContext)
         {
-            contextFactory.registerContext(aContext);
+            parentContextFactory.registerContext(aContext);
         }
 
         @Override
         public void unregisterContext(TaskContext aContext)
         {
-            contextFactory.unregisterContext(aContext);
+            parentContextFactory.unregisterContext(aContext);
         }
 
         @Override
         public String getId()
         {
-            return contextFactory.getId();
+            return parentContextFactory.getId();
         }
 
         @Override
         public LifeCycleManager getLifeCycleManager()
         {
-            return contextFactory.getLifeCycleManager();
+            return parentContextFactory.getLifeCycleManager();
         }
 
         @Override
         public LoggingService getLoggingService()
         {
-            return contextFactory.getLoggingService();
+            return parentContextFactory.getLoggingService();
         }
 
         @Override
         public StorageService getStorageService()
         {
-            return contextFactory.getStorageService();
+            return parentContextFactory.getStorageService();
         }
 
         @Override
         public TaskExecutionService getExecutionService()
         {
-            return contextFactory.getExecutionService();
+            return parentContextFactory.getExecutionService();
         }
 
         @Override
         public ConversionService getConversionService()
         {
-            return contextFactory.getConversionService();
+            return parentContextFactory.getConversionService();
         }
         
         @Override
         protected String nextId(Task aConfiguration)
         {
-            return contextFactory.nextId(aConfiguration);
+            return parentContextFactory.nextId(aConfiguration);
+        }
+        
+        @Override
+        public Set<String> getScope()
+        {
+            return scope;
+        }
+        
+        @Override
+        public Set<String> getTransitiveScope()
+        {
+            Set<String> transitiveScope = new LinkedHashSet<String>();
+            transitiveScope.addAll(parentContextFactory.getTransitiveScope());
+            transitiveScope.addAll(scope);
+            return transitiveScope;
         }
     }
 
@@ -515,7 +534,6 @@ public class BatchTaskEngine
         extends DefaultTaskContext
     {
         private Map<String, Object> config;
-        private Set<String> scope;
 
         public ScopedTaskContext(TaskContextFactory aOwner)
         {
@@ -525,11 +543,6 @@ public class BatchTaskEngine
         public void setConfig(Map<String, Object> aConfig)
         {
             config = aConfig;
-        }
-
-        public void setScope(Set<String> aScope)
-        {
-            scope = aScope;
         }
 
         @Override
@@ -558,10 +571,11 @@ public class BatchTaskEngine
                 throw new DataAccessResourceFailureException(
                         "Unknown scheme in import [" + aUri + "]");
             }
-
+            
+            Set<String> scope = getTaskContextFactory().getTransitiveScope();
             if (!scope.contains(meta.getId())) {
                 throw new UnresolvedImportException(this, aUri.toString(),
-                        "Resolved context [" + meta.getId() + "] not in scope " + scope);
+                        "Resolved context [" + meta.getId() + "] not in transitive scope " + scope);
             }
 
             return meta;

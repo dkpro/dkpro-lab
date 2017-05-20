@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.dkpro.lab.uima.engine.uimaas;
 
-import static org.dkpro.lab.Util.close;
 import static org.dkpro.lab.Util.getUrlAsFile;
 import static org.apache.uima.UIMAFramework.newDefaultResourceManager;
 import static org.apache.uima.fit.factory.ExternalResourceFactory.bindResource;
@@ -30,7 +29,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.uima.UIMAFramework;
@@ -56,7 +54,6 @@ import org.dkpro.lab.engine.TaskExecutionEngine;
 import org.dkpro.lab.task.Task;
 import org.dkpro.lab.uima.task.TaskContextProvider;
 import org.dkpro.lab.uima.task.UimaTask;
-import org.xml.sax.SAXException;
 
 /**
  * UIMA AS-based execution engine. An {@link UimaTask} is be executed using the UIMA AS framework.
@@ -271,6 +268,12 @@ public class UimaAsExecutionEngine
 	{
 		contextFactory = aContextFactory;
 	}
+
+    @Override
+    public TaskContextFactory getContextFactory()
+    {
+        return contextFactory;
+    }
 
 	/**
 	 * Callback Listener. Receives event notifications from UIMA AS.

@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.dkpro.lab.engine;
 
+import java.util.Set;
+
 import org.dkpro.lab.task.Task;
 import org.dkpro.lab.task.TaskContextMetadata;
 
@@ -48,4 +50,19 @@ public interface TaskContextFactory
 	 * @return the ID.
 	 */
 	String getId();
+	
+	/**
+	 * Gets the scope of the context, i.e. which executions it can see.
+	 * 
+	 * @return the scope.
+	 */
+	Set<String> getScope();
+	
+    /**
+     * Gets the transitive scope of the context, i.e. which executions it can see. This also
+     * includes the scope inherited from a parent context.
+     * 
+     * @return the scope.
+     */
+    Set<String> getTransitiveScope();
 }

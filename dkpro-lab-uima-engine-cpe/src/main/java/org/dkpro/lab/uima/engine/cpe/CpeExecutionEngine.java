@@ -136,6 +136,12 @@ public class CpeExecutionEngine
 	{
 		contextFactory = aContextFactory;
 	}
+	
+	@Override
+	public TaskContextFactory getContextFactory()
+	{
+	    return contextFactory;
+	}
 
 	private class StatusCallbackListenerImpl
 		implements StatusCallbackListener

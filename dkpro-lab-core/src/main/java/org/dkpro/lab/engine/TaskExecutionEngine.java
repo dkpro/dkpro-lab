@@ -25,4 +25,6 @@ public interface TaskExecutionEngine
 		throws ExecutionException, LifeCycleException;
 
 	void setContextFactory(TaskContextFactory aContextFactory);
+	
+	TaskContextFactory getContextFactory();
 }
