@@ -188,11 +188,16 @@ public interface Task
 	 *
 	 * @param aReport the report class to be executed.
 	 */
+	void addReport(Report aReport);
+	
+	/**
+	 * Legacy support. Allows passing class objects which are internally instantiated. 
+	 */
 	void addReport(Class<? extends Report> aReport);
 
-	void removeReport(Class<? extends Report> aReport);
+	void removeReport(Report aReport);
 
-	List<Class<? extends Report>> getReports();
+	List<Report> getReports();
 
     void markExecuted();
     

@@ -59,7 +59,7 @@ public class TaskBase
 	private Map<String, String> discriminators;
 	private Map<String, String> analyzedAttributes;
     private Map<String, String> analyzedDiscriminators;
-	private List<Class<? extends Report>> reports;
+	private List<Report> reports;
 	
 	private boolean initialized = false;
 	private boolean didRun = false;
@@ -71,7 +71,7 @@ public class TaskBase
 		analyzedAttributes = new HashMap<String, String>();
 		discriminators = new HashMap<String, String>();
 		analyzedDiscriminators = new HashMap<String, String>();
-		reports = new ArrayList<Class<? extends Report>>();
+		reports = new ArrayList<Report>();
 		imports = new HashMap<String, String>();
 	}
 
@@ -377,27 +377,41 @@ public class TaskBase
 	}
 
 	@Override
-	public void addReport(Class<? extends Report> aReport)
+	public void addReport(Report aReport)
 	{
 		if (aReport == null) {
 			throw new IllegalArgumentException("Report class cannot be null.");
 		}
 		reports.add(aReport);
 	}
+	
+	@Override
+    public void addReport(Class<? extends Report> aReport) 
+    {
+        if (aReport == null) {
+            throw new IllegalArgumentException("Report class cannot be null.");
+        }
+        
+        try{
+            reports.add(aReport.newInstance());
+        }catch(Exception e){
+            throw new UnsupportedOperationException(e);
+        }
+    }
 
 	@Override
-	public void removeReport(Class<? extends Report> aReport)
+	public void removeReport(Report aReport)
 	{
 		reports.remove(aReport);
 	}
 
-	public void setReports(List<Class<? extends Report>> aReports)
+	public void setReports(List<Report> aReports)
 	{
-		reports = new ArrayList<Class<? extends Report>>(aReports);
+		reports = new ArrayList<Report>(aReports);
 	}
 
 	@Override
-	public List<Class<? extends Report>> getReports()
+	public List<Report> getReports()
 	{
 		return reports;
 	}
