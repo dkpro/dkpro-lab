@@ -172,7 +172,7 @@ public class DefaultTaskContextFactory
         
         String uuid = UUIDGenerator.getInstance().generateTimeBasedUUID().toString();
 
-        String time = new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date());
+        String time = new SimpleDateFormat("yyyyMMddHHmmssSSS").format(now);
         
         return MessageFormat.format(contextIdPattern, shortName, time, uuid);
     }
