@@ -46,9 +46,8 @@
 			<classifier>asl</classifier>
 		</dependency>
 		<dependency>
-			<groupId>jfree</groupId>
+			<groupId>org.jfree</groupId>
 			<artifactId>jfreechart</artifactId>
-			<version>1.0.13</version>
 		</dependency>
 		<dependency>
 			<groupId>net.sf.opencsv</groupId>
