@@ -344,7 +344,7 @@ public class FlexTable<V>
             private boolean isDouble(String val)
             {
                 try {
-                    double d = Double.parseDouble(val); // TODO: A bit of a hack; use Regex instead?
+                    Double.parseDouble(val); // TODO: A bit of a hack; use Regex instead?
                 }
                 catch (NumberFormatException ex) {
                     return false;
@@ -532,7 +532,7 @@ public class FlexTable<V>
             private boolean isDouble(String val)
             {
                 try {
-                    double d = Double.parseDouble(val); // TODO: A bit of a hack; use Regex instead?
+                    Double.parseDouble(val); // TODO: A bit of a hack; use Regex instead?
                 }
                 catch (NumberFormatException ex) {
                     return false;
@@ -621,6 +621,7 @@ public class FlexTable<V>
                 }
 
                 writer.flush();
+                writer.close();
             }
         };
     }
@@ -648,6 +649,7 @@ public class FlexTable<V>
                         }
                         addRow(data[0], row);
                     }
+                    reader.close();
                 }
                 catch (IOException e) {
                     throw e;
@@ -722,6 +724,7 @@ public class FlexTable<V>
                 }
 
                 wb.write(aStream);
+                wb.close();
             }
         };
     }
