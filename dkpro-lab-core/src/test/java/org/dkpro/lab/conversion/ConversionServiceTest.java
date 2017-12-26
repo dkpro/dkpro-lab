@@ -81,7 +81,7 @@ public class ConversionServiceTest
         batch.setParameterSpace(ps);
         batch.addTask(consumer);
 
-        Lab instance = Lab.getInstance();
+        Lab instance = Lab.newInstance(Lab.DEFAULT_CONTEXT);
         instance.run(batch);
         assertEquals("3", discriminatorText);
     }
@@ -96,7 +96,7 @@ public class ConversionServiceTest
         batch.setParameterSpace(ps);
         batch.addTask(consumer);
 
-        Lab instance = Lab.getInstance();
+        Lab instance = Lab.newInstance(Lab.DEFAULT_CONTEXT);
         // we register an alternative text for the integer value which should be used instead of the
         // default of converting the numerical value to string
         instance.getConversionService().registerDiscriminable(integer, "three");
@@ -106,7 +106,7 @@ public class ConversionServiceTest
     
     @Test
     public void testConversionService(){
-        Lab instance = Lab.getInstance();
+        Lab instance = Lab.newInstance(Lab.DEFAULT_CONTEXT);
         ConversionService conversionService = instance.getConversionService();
         assertNotNull(conversionService);
         
