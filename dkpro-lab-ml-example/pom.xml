@@ -156,4 +156,7 @@
       </plugins>
     </pluginManagement>
   </build>
+  <properties>
+  	<maven.deploy.skip>true</maven.deploy.skip>
+  </properties>
 </project>
