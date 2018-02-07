@@ -9,6 +9,12 @@
 # Possible status: "stable", "unstable"
 
 # stable versions
+- version: 0.14.0
+  date: 2018-02-01
+  status: stable
+  groupId: org.dkpro.lab
+  artifactId: dkpro-lab
+  
 - version: 0.13.0
   date: 2016-10-20
   status: stable
@@ -28,7 +34,7 @@
   artifactId: dkpro-lab
 
 # unstable versions
-- version: 0.14.0-SNAPSHOT
+- version: 0.15.0-SNAPSHOT
   status: unstable
   groupId: de.dkpro.lab
   artifactId: dkpro-lab
