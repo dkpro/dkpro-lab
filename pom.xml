@@ -21,7 +21,7 @@
   <parent>
     <groupId>org.dkpro</groupId>
     <artifactId>dkpro-parent-pom</artifactId>
-    <version>16</version>
+    <version>19</version>
   </parent>
   <groupId>org.dkpro.lab</groupId>
   <artifactId>dkpro-lab</artifactId>
@@ -30,6 +30,10 @@
   <name>DKPro Lab</name>
   <url>http://dkpro.github.io/dkpro-lab/</url>
   <description>DKPro Lab is a lightweight framework for parameter sweeping experiments. It allows to set up experiments consisting of multiple interdependent tasks in a declarative manner with minimal overhead. Parameters are injected into tasks using via annotated class fields. Data produced by a task for any particular parameter configuration is stored and re-used whenever possible to avoid the needless recalculation of results. Reports can be attached to each task to post-process the experimental results and present them in a convenient manner, e.g. as tables or charts.</description>
+  <organization>
+    <url>https://www.ukp.tu-darmstadt.de/</url>
+    <name>Ubiquitous Knowledge Processing (UKP) Lab, Technische Universität Darmstadt</name>
+  </organization>
   <issueManagement>
     <url>https://github.com/dkpro/dkpro-lab/issues</url>
     <system>GitHub Issues</system>
@@ -51,6 +55,7 @@
     <slf4j.version>1.7.25</slf4j.version>
     <xalan.version>2.7.1</xalan.version>
     <xerces.version>2.9.1</xerces.version>
+    <groovy.version>2.4.15</groovy.version>
   </properties>
   <modules>
     <module>dkpro-lab-core</module>
@@ -380,7 +385,7 @@
       <dependency>
         <groupId>org.codehaus.groovy</groupId>
         <artifactId>groovy</artifactId>
-        <version>2.4.6</version>
+        <version>${groovy.version}</version>
       </dependency>
 
       <!-- - UIMA-AS module does currently not work -->
@@ -466,30 +471,6 @@
     <tag>HEAD</tag>
   </scm>
   <build>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.5.1</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-surefire-plugin</artifactId>
-          <version>2.19.1</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.rat</groupId>
-          <artifactId>apache-rat-plugin</artifactId>
-          <version>0.11</version>
-        </plugin>
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>build-helper-maven-plugin</artifactId>
-          <version>1.10</version>
-        </plugin>
-      </plugins>
-    </pluginManagement>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -705,8 +686,4 @@
       </build>
     </profile>
   </profiles>
-  <organization>
-    <url>https://www.ukp.tu-darmstadt.de/</url>
-    <name>Ubiquitous Knowledge Processing (UKP) Lab, Technische Universität Darmstadt</name>
-  </organization>
 </project>

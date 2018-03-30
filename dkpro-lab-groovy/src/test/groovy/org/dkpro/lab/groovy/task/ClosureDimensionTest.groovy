@@ -26,41 +26,41 @@ import org.junit.Test
 
 public class ClosureDimensionTest
 {
-	@Test
-	public void testSimpleClosures()
-	{
-		def dimTest = new ClosureDimension("test", { "value" })
-		dimTest.setConfiguration [:];
-		
-		assertEquals "value", dimTest.next()
-		assertFalse dimTest.hasNext()
-		
-		dimTest.rewind()
-		
-		assertEquals "value", dimTest.next()
-		assertFalse dimTest.hasNext()
-	}
+    @Test
+    public void testSimpleClosures()
+    {
+        def dimTest = new ClosureDimension("test", { "value" })
+        dimTest.setConfiguration([:]);
+        
+        assertEquals "value", dimTest.next()
+        assertFalse dimTest.hasNext()
+        
+        dimTest.rewind()
+        
+        assertEquals "value", dimTest.next()
+        assertFalse dimTest.hasNext()
+    }
 
-	@Test
-	public void testDiscriminableClosures()
-	{
-		def dimTest = new ClosureDimension("test", [first: { "one" }, second: { "two" }])
-		dimTest.setConfiguration [:];
-		
-		def first = dimTest.next() as DiscriminableClosure
-		assertEquals "first", first.getDiscriminatorValue()
-		assertEquals "one", first()
-		
-		def second = dimTest.next() as DiscriminableClosure
-		assertEquals "second", second.getDiscriminatorValue()
-		assertEquals "two", second()
-		
-		assertFalse dimTest.hasNext()
-		
-		dimTest.rewind()
-		
-		assertEquals "one", dimTest.next()()
-		assertEquals "two", dimTest.next()()
-		assertFalse dimTest.hasNext()
-	}
+    @Test
+    public void testDiscriminableClosures()
+    {
+        def dimTest = new ClosureDimension("test", [first: { "one" }, second: { "two" }])
+        dimTest.setConfiguration([:]);
+        
+        def first = dimTest.next() as DiscriminableClosure
+        assertEquals "first", first.getDiscriminatorValue()
+        assertEquals "one", first()
+        
+        def second = dimTest.next() as DiscriminableClosure
+        assertEquals "second", second.getDiscriminatorValue()
+        assertEquals "two", second()
+        
+        assertFalse dimTest.hasNext()
+        
+        dimTest.rewind()
+        
+        assertEquals "one", dimTest.next()()
+        assertEquals "two", dimTest.next()()
+        assertFalse dimTest.hasNext()
+    }
 }
