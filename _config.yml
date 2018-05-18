@@ -31,8 +31,8 @@ improve_content: //github.com/dkpro/dkpro-lab/edit/gh-pages
 # This URL points directly to the images directory making
 # things easier to link to images in posts and templates. It needs a slash.
 #
-# Example: <img src="{{ site.urlimg }}/{{ post.image.title }}">
-# Markdown-Example for posts ![Image Text]({{ site.urlimg }}/image.jpg)
+# Example: <img src="{{ site.urlimg }}/{{ post.image.title }}">
+# Markdown-Example for posts ![Image Text]({{ site.urlimg }}/image.jpg)
 #
 urlimg: "/dkpro-lab/images/"
 
@@ -217,4 +217,4 @@ google_analytics_tracking_id: UA-25169727-2
 #
 # used in _includes/sidebar.html
 
-openhub_id: dkpro-lab
+# openhub_id: dkpro-lab
