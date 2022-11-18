@@ -20,6 +20,7 @@ package org.dkpro.lab.reporting;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
@@ -50,7 +51,7 @@ public class ChartUtilTest
         chart.getXYPlot().getRangeAxis().setRange(0.0, 1.0);
         chart.getXYPlot().getDomainAxis().setRange(0.0, 1.0);
 
-        File tmp = File.createTempFile("testfile", ".svg");
+        File tmp = Files.createTempFile("testfile", ".svg").toFile();
         try (OutputStream os = new FileOutputStream(tmp)) {
             ChartUtil.writeChartAsSVG(os, chart, 400, 400);
         }
@@ -81,7 +82,7 @@ public class ChartUtilTest
         chart.getXYPlot().getRangeAxis().setRange(0.0, 1.0);
         chart.getXYPlot().getDomainAxis().setRange(0.0, 1.0);
 
-        File tmp = File.createTempFile("testfile", ".pdf");
+        File tmp = Files.createTempFile("testfile", ".pdf").toFile();
         try (OutputStream os = new FileOutputStream(tmp)) {
             ChartUtil.writeChartAsPDF(os, chart, 400, 400);
         }

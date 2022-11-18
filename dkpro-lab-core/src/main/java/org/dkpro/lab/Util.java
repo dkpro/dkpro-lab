@@ -28,6 +28,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.GZIPInputStream;
@@ -97,7 +98,7 @@ public class Util
 
 			// Get a temporary file which will be deleted when the JVM shuts
 			// down.
-			file = File.createTempFile(name, suffix);
+			file = Files.createTempFile(name, suffix).toFile();
 			file.deleteOnExit();
 
 			// Now copy the file from the URL to the file.
@@ -130,7 +131,7 @@ public class Util
 	{
 		OutputStream os = null;
 		try {
-			final File f = File.createTempFile("lab_stream", "tmp");
+			final File f = Files.createTempFile("lab_stream", "tmp").toFile();
 			f.deleteOnExit();
 			os = new FileOutputStream(f);
 			shove(is, os);
